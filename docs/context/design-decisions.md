@@ -349,6 +349,53 @@ Multi-level testing approach:
 
 ---
 
+## DD-011: PostgreSQL as Single Database (Defer Redis and WatermelonDB)
+
+**Date**: 2026-02-03
+**Status**: Accepted
+
+### Context
+The original technology stack called for four separate storage technologies: PostgreSQL (relational data), Redis (caching, sessions, Socket.io pub/sub), WatermelonDB (mobile offline database), and S3-compatible storage (files/blobs). This introduces significant infrastructure complexity before any code has been written.
+
+Key observations:
+- JWT authentication is stateless — no shared session store is needed
+- Socket.io works fine on a single instance without a Redis adapter
+- The mobile app serves 10% of users with focused tasks (time tracking, photos, daily reports) — a full offline relational database is overkill at launch
+- PostgreSQL natively supports LISTEN/NOTIFY for lightweight pub/sub
+- Redis-level caching is premature optimization before we have measured performance
+
+### Decision
+Launch with **PostgreSQL as the single database** and S3-compatible storage for files. Defer Redis and WatermelonDB until concrete scaling or offline requirements justify them.
+
+**Storage at launch:**
+- **PostgreSQL 15+** — all relational data, sessions (if needed), pub/sub via LISTEN/NOTIFY
+- **S3-compatible** (MinIO locally, AWS S3 in production) — photos, documents, file uploads
+
+**Deferred (add when needed):**
+- **Redis** — add when horizontal scaling requires a Socket.io adapter, or when measured query performance demands a caching layer
+- **WatermelonDB** — add if mobile offline requirements grow beyond what React Query persistence + AsyncStorage can handle
+
+### Consequences
+
+**Positive:**
+- Simpler infrastructure (one database to manage, back up, and monitor)
+- Faster local development (fewer Docker containers)
+- Lower cognitive overhead for contributors
+- No premature optimization
+- Clear upgrade path when scaling demands it
+
+**Negative:**
+- PostgreSQL LISTEN/NOTIFY is less capable than Redis pub/sub (no message persistence, no pattern matching)
+- No query-level caching at launch (acceptable — optimize when measured)
+- Mobile offline is limited to React Query cache + AsyncStorage (acceptable for 10% field usage scope)
+
+### Alternatives Considered
+- Keep all four storage systems from day one: Unnecessary complexity before first user
+- Drop S3 and store files in PostgreSQL: Bad practice for binary blobs, poor scalability
+- Use SQLite instead of PostgreSQL: Would limit query capabilities and scaling options
+
+---
+
 ## Template for New Decisions
 
 ```markdown

@@ -44,9 +44,10 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 - React Native Reanimated for animations
 
 **Offline Capabilities**:
-- WatermelonDB for local database
+- React Query persistence with AsyncStorage for offline caching
 - NetInfo for connection status
 - Background sync with queue
+- No dedicated offline database at launch — add WatermelonDB only if offline requirements grow
 
 **Mobile-Specific Features**:
 - Camera for photo capture
@@ -65,19 +66,16 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 - WebSocket support
 
 **Database**:
-- PostgreSQL 15+ for relational data
+- PostgreSQL 15+ as the single data store
 - Prisma ORM for type-safe queries
 - Migrations with Prisma Migrate
-
-**Caching**:
-- Redis for session storage
-- Query result caching
-- Real-time pub/sub
+- PostgreSQL LISTEN/NOTIFY for basic pub/sub
+- No Redis at launch — add only if horizontal scaling demands it
 
 **Real-Time**:
-- Socket.io for WebSocket server
-- Redis adapter for horizontal scaling
+- Socket.io for WebSocket server (single-instance, no Redis adapter initially)
 - Event-driven architecture
+- PostgreSQL LISTEN/NOTIFY as lightweight pub/sub channel
 
 **File Storage**:
 - S3-compatible storage (AWS S3, MinIO, etc.)
@@ -163,7 +161,6 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 ### Development Environment
 - Docker Compose for local services
 - PostgreSQL container
-- Redis container
 - MinIO for local S3
 
 ### Production Considerations
@@ -251,13 +248,12 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 ## Scalability Strategy
 
 ### Horizontal Scaling
-- Stateless API servers
-- Redis for shared session state
-- Socket.io Redis adapter
+- Stateless API servers (JWT — no shared session state needed)
+- Add Redis for Socket.io adapter and caching only when scaling beyond a single instance
 
 ### Database Scaling
 - Read replicas for queries
-- Connection pooling
+- Connection pooling (PgBouncer or Prisma connection pooling)
 - Efficient indexing
 
 ### Monitoring & Alerts
@@ -279,11 +275,13 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 - Over-the-air updates
 - Strong mobile ecosystem
 
-### Why PostgreSQL?
-- ACID compliance
-- Complex queries support
-- JSON support for flexible fields
-- Open source
+### Why PostgreSQL as the Single Database?
+- ACID compliance for financial and scheduling data
+- Complex queries and joins for construction workflows
+- JSONB support for flexible/semi-structured fields
+- LISTEN/NOTIFY for lightweight pub/sub (replaces Redis at launch)
+- Open source, mature, and well-supported
+- Eliminates Redis as a dependency until horizontal scaling is needed
 
 ### Why Prisma?
 - Type safety

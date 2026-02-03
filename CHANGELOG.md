@@ -48,5 +48,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Fixed` for any bug fixes
 - `Security` in case of vulnerabilities
 
-[unreleased]: https://github.com/yourusername/ProManage/compare/v0.0.1...HEAD
-[0.0.1]: https://github.com/yourusername/ProManage/releases/tag/v0.0.1
+[unreleased]: https://github.com/mattstub/ProManage/compare/v0.0.1...HEAD
+[0.0.1]: https://github.com/mattstub/ProManage/releases/tag/v0.0.1

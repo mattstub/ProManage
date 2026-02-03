@@ -65,16 +65,16 @@
    - [x] SECURITY.md
 
 10. **Placeholder READMEs**
-    - [x] apps/web/README.md
-    - [x] apps/mobile/README.md
-    - [x] apps/api/README.md
-    - [x] packages/core/README.md
-    - [x] packages/ui-components/README.md
-    - [x] packages/mobile-components/README.md
-    - [x] packages/api-client/README.md
-    - [x] packages/real-time/README.md
-    - [x] docs/README.md
-    - [x] docs/tools/README.md
+   - [x] apps/web/README.md
+   - [x] apps/mobile/README.md
+   - [x] apps/api/README.md
+   - [x] packages/core/README.md
+   - [x] packages/ui-components/README.md
+   - [x] packages/mobile-components/README.md
+   - [x] packages/api-client/README.md
+   - [x] packages/real-time/README.md
+   - [x] docs/README.md
+   - [x] docs/tools/README.md
 
 ## Pending Tasks (Require User Input)
 

@@ -1,7 +1,7 @@
 {
   "name": "promanage",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "description": "Open-source construction management tools for small contractors",
   "keywords": [
     "construction",
@@ -15,8 +15,8 @@
     "type": "git",
     "url": "https://github.com/mattstub/ProManage.git"
   },
+  "author": "Matt Stubenhofer",
   "license": "AGPL-3.0",
-  "author": "Matt Stubblefield",
   "workspaces": [
     "apps/*",
     "packages/*"

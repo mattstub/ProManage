@@ -56,17 +56,17 @@ pnpm dev
 ```
 ProManage/
 ├── apps/
-│   ├── web/          # Next.js web application (desktop-first)
-│   ├── mobile/       # React Native mobile app (field companion)
-│   └── api/          # Backend API server
+│   ├── web/                # Next.js web application (desktop-first)
+│   ├── mobile/             # React Native mobile app (field companion)
+│   └── api/                # Backend API server
 ├── packages/
-│   ├── core/         # Shared business logic
-│   ├── ui-components/        # Web UI components
-│   ├── mobile-components/    # Mobile UI components
-│   ├── api-client/           # API client library
-│   └── real-time/            # WebSocket/SSE client
-├── docs/             # Documentation
-└── scripts/          # Development scripts
+│   ├── core/               # Shared business logic
+│   ├── ui-components/      # Web UI components
+│   ├── mobile-components/  # Mobile UI components
+│   ├── api-client/         # API client library
+│   └── real-time/          # WebSocket/SSE client
+├── docs/                   # Documentation
+└── scripts/                # Development scripts
 ```
 
 ## Documentation

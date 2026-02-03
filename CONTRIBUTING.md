@@ -11,10 +11,12 @@ This project adheres to a Code of Conduct that all contributors are expected to 
 ### Reporting Bugs
 
 Before submitting a bug report:
+
 - Check the [existing issues](https://github.com/mattstub/ProManage/issues) to avoid duplicates
 - Collect relevant information (OS, Node version, steps to reproduce)
 
 When submitting a bug report, use the bug report template and include:
+
 - A clear, descriptive title
 - Detailed steps to reproduce the issue
 - Expected vs actual behavior
@@ -24,6 +26,7 @@ When submitting a bug report, use the bug report template and include:
 ### Suggesting Features
 
 Feature suggestions are welcome! Use the feature request template and include:
+
 - A clear description of the problem you're trying to solve
 - Your proposed solution
 - Any alternative solutions you've considered
@@ -32,23 +35,27 @@ Feature suggestions are welcome! Use the feature request template and include:
 ### Submitting Pull Requests
 
 1. **Fork the repository** and create your branch from `main`
+
    ```bash
    git checkout -b feature/my-feature
    ```
 
 2. **Set up your development environment**
+
    ```bash
    pnpm install
    cp config/.env.example .env
    ```
 
 3. **Make your changes**
+
    - Write clean, readable code
    - Follow the existing code style
    - Add tests for new features
    - Update documentation as needed
 
 4. **Test your changes**
+
    ```bash
    pnpm test
    pnpm lint
@@ -56,16 +63,19 @@ Feature suggestions are welcome! Use the feature request template and include:
    ```
 
 5. **Commit your changes**
+
    - Use [Conventional Commits](https://www.conventionalcommits.org/) format
    - Write clear, concise commit messages
    - Example: `feat(rfi): add status filter to RFI list`
 
 6. **Push to your fork** and submit a pull request
+
    ```bash
    git push origin feature/my-feature
    ```
 
 7. **Wait for review**
+
    - Address any feedback from reviewers
    - Keep your PR up to date with the main branch
 
@@ -83,7 +93,7 @@ Feature suggestions are welcome! Use the feature request template and include:
 
 We use Conventional Commits for automatic changelog generation:
 
-```
+```email
 <type>(<scope>): <subject>
 
 <body>
@@ -92,6 +102,7 @@ We use Conventional Commits for automatic changelog generation:
 ```
 
 **Types:**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -101,7 +112,8 @@ We use Conventional Commits for automatic changelog generation:
 - `chore`: Maintenance tasks
 
 **Examples:**
-```
+
+```cmd
 feat(submittal): add PDF extraction for spec sheets
 fix(rfi): correct date formatting in export
 docs(readme): update installation instructions
@@ -130,20 +142,20 @@ docs(readme): update installation instructions
 
 ## Project Structure
 
-```
+```bash
 ProManage/
 ├── apps/
-│   ├── web/          # Next.js web application
-│   ├── mobile/       # React Native mobile app
-│   └── api/          # Backend API server
+│   ├── web/                  # Next.js web application
+│   ├── mobile/               # React Native mobile app
+│   └── api/                  # Backend API server
 ├── packages/
-│   ├── core/         # Shared business logic
+│   ├── core/                 # Shared business logic
 │   ├── ui-components/        # Web UI components
 │   ├── mobile-components/    # Mobile components
 │   ├── api-client/           # API client
 │   └── real-time/            # Real-time communication
-├── docs/             # Documentation
-└── scripts/          # Build and development scripts
+├── docs/                     # Documentation
+└── scripts/                  # Build and development scripts
 ```
 
 ## Setting Up Development Environment
@@ -157,28 +169,33 @@ ProManage/
 ### Initial Setup
 
 1. **Clone your fork**
+
    ```bash
    git clone https://github.com/YOUR_USERNAME/ProManage.git
    cd ProManage
    ```
 
 2. **Add upstream remote**
+
    ```bash
    git remote add upstream https://github.com/mattstub/ProManage.git
    ```
 
 3. **Install dependencies**
+
    ```bash
    pnpm install
    ```
 
 4. **Set up environment**
+
    ```bash
    cp config/.env.example .env
    # Edit .env with your local settings
    ```
 
 5. **Start development servers**
+
    ```bash
    # All apps
    pnpm dev
@@ -207,7 +224,8 @@ git push origin main
 ## Recognition
 
 Contributors will be recognized in:
-- The project README
+
+- The project [README](README.md)
 - Release notes for their contributions
 - The GitHub contributors page
 

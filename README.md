@@ -53,7 +53,7 @@ pnpm dev
 
 ## Project Structure
 
-```
+```bash
 ProManage/
 ├── apps/
 │   ├── web/                # Next.js web application (desktop-first)
@@ -110,5 +110,5 @@ We chose AGPL-3.0 to ensure that all improvements to ProManage remain open sourc
 
 ---
 
-Built with ❤️ for small contractors by the construction community
-Built with [Claude](https://www.claude.ai)
+Built with ❤️ for small contractors by the construction community.  
+Built with [Claude](https://www.claude.ai).

@@ -6,14 +6,16 @@ We are committed to providing a welcoming and inclusive environment for all cont
 
 ## Our Standards
 
-### Positive Behavior Includes:
+### Positive Behavior Includes
+
 - Using welcoming and inclusive language
 - Being respectful of differing viewpoints and experiences
 - Gracefully accepting constructive criticism
 - Focusing on what is best for the community
 - Showing empathy towards other community members
 
-### Unacceptable Behavior Includes:
+### Unacceptable Behavior Includes
+
 - Trolling, insulting comments, and personal attacks
 - Public or private harassment of any kind
 - Publishing others' private information without permission
@@ -40,27 +42,31 @@ The project team is obligated to maintain confidentiality with regard to the rep
 Project maintainers will follow these Community Impact Guidelines in determining the consequences for any action they deem in violation of this Code of Conduct:
 
 ### 1. Correction
+
 **Community Impact**: Use of inappropriate language or other behavior deemed unprofessional.
 
 **Consequence**: A private, written warning providing clarity around the nature of the violation and an explanation of why the behavior was inappropriate.
 
 ### 2. Warning
+
 **Community Impact**: A violation through a single incident or series of actions.
 
 **Consequence**: A warning with consequences for continued behavior. No interaction with the people involved for a specified period of time.
 
 ### 3. Temporary Ban
+
 **Community Impact**: A serious violation of community standards.
 
 **Consequence**: A temporary ban from any sort of interaction or public communication with the community for a specified period of time.
 
 ### 4. Permanent Ban
+
 **Community Impact**: Demonstrating a pattern of violation of community standards.
 
 **Consequence**: A permanent ban from any sort of public interaction within the community.
 
 ## Attribution
 
-This Code of Conduct is adapted from the [Contributor Covenant](https://www.contributor-covenant.org), version 2.1, available at https://www.contributor-covenant.org/version/2/1/code_of_conduct.html.
+This Code of Conduct is adapted from the [Contributor Covenant](https://www.contributor-covenant.org), [Version 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct.html).
 
 Community Impact Guidelines were inspired by [Mozilla's code of conduct enforcement ladder](https://github.com/mozilla/diversity).

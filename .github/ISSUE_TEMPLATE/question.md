@@ -17,6 +17,7 @@ Provide context about why you're asking this question or what you're trying to a
 ## What I've Tried
 
 Describe what you've already tried or researched:
+
 - Documentation sections you've read
 - Similar issues you've looked at
 - Solutions you've attempted
@@ -24,12 +25,14 @@ Describe what you've already tried or researched:
 ## Environment (if relevant)
 
 **Application:**
+
 - [ ] Web App
 - [ ] Mobile App
 - [ ] API
 - [ ] General/Conceptual
 
 **Setup:**
+
 - OS: [e.g., macOS, Windows, Linux]
 - Node.js Version: [if applicable]
 - ProManage Version: [if applicable]
@@ -43,6 +46,7 @@ Describe what you've already tried or researched:
 ## Expected Answer
 
 What type of answer are you looking for?
+
 - [ ] How-to / Tutorial
 - [ ] Explanation / Concept
 - [ ] Code Example

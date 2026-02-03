@@ -67,6 +67,7 @@ Add any other context, links, or references about the feature request here.
 ## Implementation Considerations (Optional)
 
 If you have technical insights or suggestions about implementation, share them here:
+
 - Technical complexity
 - Dependencies
 - Breaking changes

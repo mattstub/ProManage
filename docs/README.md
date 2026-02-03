@@ -4,13 +4,15 @@ Welcome to the ProManage documentation! This directory contains comprehensive gu
 
 ## Documentation Structure
 
-```
+```bash
 docs/
-├── context/           # Project context and design documents
-├── development/       # Development guides and best practices
-├── guides/            # User and feature guides
-├── tools/             # Tool-specific documentation
-└── README.md         # This file
+├── context/            # Project context and design documents
+├── development/        # Development guides and best practices
+├── guides/             # User and feature guides
+├── tools/              # Tool-specific documentation
+├── ARCHITECTURE.md     # System architecture overview
+├── README.md           # This file
+└── ROADMAP.md          # Future plans and milestones
 ```
 
 ## Quick Start

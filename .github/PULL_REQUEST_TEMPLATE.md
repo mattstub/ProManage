@@ -1,11 +1,9 @@
 # Pull Request
 
 ## Description
-
 <!-- Provide a brief description of the changes in this PR -->
 
 ## Type of Change
-
 <!-- Mark the relevant option with an 'x' -->
 
 - [ ] Bug fix (non-breaking change that fixes an issue)
@@ -19,7 +17,6 @@
 - [ ] Dependency updates
 
 ## Related Issues
-
 <!-- Link to related issues using keywords: Fixes #123, Closes #456, Related to #789 -->
 
 Fixes #
@@ -27,7 +24,6 @@ Closes #
 Related to #
 
 ## Changes Made
-
 <!-- List the main changes in this PR -->
 
 -
@@ -35,7 +31,6 @@ Related to #
 -
 
 ## Technical Details (if applicable)
-
 <!-- Provide technical context about the implementation -->
 
 **Architecture Changes:**
@@ -51,7 +46,6 @@ Related to #
 <!-- Detail any breaking changes and migration path -->
 
 ## Testing
-
 <!-- Describe the tests you've added or run -->
 
 ### Manual Testing
@@ -74,7 +68,6 @@ Related to #
 <!-- Include coverage percentage if applicable -->
 
 ## Screenshots/Videos (if applicable)
-
 <!-- Add screenshots or videos demonstrating the changes -->
 
 **Before:**
@@ -84,7 +77,6 @@ Related to #
 <!-- Screenshot/video of after the changes -->
 
 ## Checklist
-
 <!-- Mark completed items with an 'x' -->
 
 ### Code Quality
@@ -134,7 +126,6 @@ Related to #
 - [ ] Security vulnerabilities checked (`pnpm audit`)
 
 ## Deployment Notes
-
 <!-- Special instructions for deployment -->
 
 - [ ] Requires database migration
@@ -152,7 +143,6 @@ NEW_VAR=value
 ```
 
 ## Performance Impact
-
 <!-- Describe any performance implications -->
 
 - [ ] No performance impact
@@ -160,15 +150,12 @@ NEW_VAR=value
 - [ ] Potential performance impact (describe below)
 
 ## Rollback Plan
-
 <!-- How to rollback if issues are found after deployment -->
 
 ## Reviewer Notes
-
 <!-- Any specific areas you'd like reviewers to focus on -->
 
 ## Post-Merge Tasks
-
 <!-- List any tasks that need to be done after merging -->
 
 - [ ] Task 1

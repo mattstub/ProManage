@@ -1,0 +1,48 @@
+{
+  "name": "promanage",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Open-source construction management tools for small contractors",
+  "keywords": [
+    "construction",
+    "project-management",
+    "contractors",
+    "submittal",
+    "rfi",
+    "permits"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mattstub/ProManage.git"
+  },
+  "license": "AGPL-3.0",
+  "author": "Matt Stubblefield",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "dev:web": "turbo run dev --filter=web",
+    "dev:mobile": "turbo run dev --filter=mobile",
+    "dev:api": "turbo run dev --filter=api",
+    "build": "turbo run build",
+    "build:web": "turbo run build --filter=web",
+    "build:mobile": "turbo run build --filter=mobile",
+    "build:api": "turbo run build --filter=api",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "clean": "turbo run clean && rm -rf node_modules .turbo",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5",
+    "turbo": "^1.12.4"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.4"
+}

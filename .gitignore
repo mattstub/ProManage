@@ -2,23 +2,13 @@
 # SECURITY - NEVER COMMIT THESE
 # ===========================================
 
-# Your actual credentials
-config.py
-
-# Runtime state (contains server file history)
-mod_state.json
-*.json
-
-# Any backup files with credentials
-config.py.bak
-config.py.backup
-config.py.old
-*.bak
-
-# Environment variables file (if you use one)
+# Environment variables
 .env
 .env.local
 .env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # SSH keys (if accidentally placed in project)
 *.pem
@@ -28,71 +18,73 @@ id_rsa.pub
 *.ppk
 
 # ===========================================
-# PYTHON
+# NODE.JS / NPM / PNPM
 # ===========================================
 
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
 
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
+# pnpm
+.pnpm-debug.log*
+pnpm-lock.yaml
+
+# Testing
+coverage/
+.nyc_output/
+
+# ===========================================
+# BUILD OUTPUTS
+# ===========================================
+
+# Next.js
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# Turbo
+.turbo/
+
+# Build directories
 dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+build/
+*.local
 
-# Virtual environments
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-.venv/
+# TypeScript
+*.tsbuildinfo
 
-# PyInstaller
-*.manifest
-*.spec
+# ===========================================
+# REACT NATIVE / MOBILE
+# ===========================================
 
-# Unit test / coverage
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-cover/
+# Expo
+.expo/
+.expo-shared/
 
-# Jupyter Notebook
-.ipynb_checkpoints
+# Android
+android/app/build/
+android/.gradle/
+android/local.properties
+android/.idea/
+android/*.iml
+*.apk
+*.aab
 
-# pyenv
-.python-version
+# iOS
+ios/Pods/
+ios/build/
+*.ipa
+*.dSYM.zip
+*.dSYM
+xcuserdata/
+*.xcworkspace
+!default.xcworkspace
+DerivedData/
 
-# Celery
-celerybeat-schedule
-celerybeat.pid
+# React Native
+.react-native/
 
 # ===========================================
 # IDE / EDITOR
@@ -102,7 +94,7 @@ celerybeat.pid
 .vscode/
 *.code-workspace
 
-# PyCharm
+# IntelliJ / WebStorm
 .idea/
 *.iml
 *.iws
@@ -149,7 +141,7 @@ $RECYCLE.BIN/
 .Trash-*
 .nfs*
 
-# ===========================================0
+# ===========================================
 # LOGS & TEMPORARY FILES
 # ===========================================
 
@@ -157,6 +149,10 @@ $RECYCLE.BIN/
 *.log
 logs/
 *.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 
 # Temporary files
 *.tmp
@@ -168,17 +164,19 @@ temp/
 # PROJECT SPECIFIC
 # ===========================================
 
-# Test files (if you create them)
-test_config.py
-*_test.py
+# Test files
+*.test.local.*
+test-results/
 
 # Local scripts
-local_*.sh
-local_*.py
+local_*
 
 # Documentation builds
 docs/_build/
 site/
+
+# Storybook
+storybook-static/
 
 # ===========================================
 # NOTES & SCRATCHPAD
@@ -202,3 +200,6 @@ drafts/
 backup/
 backups/
 old/
+
+# Wiki folder (using in-repo docs instead)
+.wiki/

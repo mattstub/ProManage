@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(test:*)",
+      "WebFetch(domain:www.gnu.org)"
+    ]
+  }
+}

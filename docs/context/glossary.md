@@ -59,7 +59,7 @@
 
 ## Construction Roles
 
-**Architect:** Architects are the creative visionaries who design buildings and structures that not only inspire but also serve communities. They work directly with clients to draw detailed plans that dwell on aesthetics, functionality, and building codes in the process, then subsequently consult with clients and engineers through construction. Often lack the real life experience to understand how their ideas will actually come together in the field.
+**Architect:** Architects are the creative visionaries who design buildings and structures that not only inspire but also serve communities. They work directly with clients to draw detailed plans that dwell on aesthetics, functionality, and building codes in the process, then subsequently consult with clients and engineers through construction. Often they lack the real life experience to understand how their ideas will actually come together in the field.
 
 **Interior Designer:**
 <!-- TODO: define role -->

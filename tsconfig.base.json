@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "@promanage/core": ["./packages/core/src"],
+      "@promanage/core/*": ["./packages/core/src/*"],
+      "@promanage/ui-components": ["./packages/ui-components/src"],
+      "@promanage/ui-components/*": ["./packages/ui-components/src/*"],
+      "@promanage/api-client": ["./packages/api-client/src"],
+      "@promanage/api-client/*": ["./packages/api-client/src/*"],
+      "@promanage/real-time": ["./packages/real-time/src"],
+      "@promanage/real-time/*": ["./packages/real-time/src/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "build", ".next", ".turbo"]
+}

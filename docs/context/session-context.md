@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-02-28 (Session 3)
+**Last Updated**: 2026-03-01 (Session 4)
 
 ---
 
@@ -74,13 +74,18 @@ apps/api/              COMPLETE (Sub-phases C+D)
 apps/web/              NOT STARTED (Sub-phase G)
 apps/mobile/           DEFERRED
 
-packages/core/         COMPLETE (Sub-phase B — 24 files)
+packages/core/         COMPLETE (Sub-phase B - 24 files)
   src/types/             api, auth, user, role, org, project
   src/schemas/           auth, user, org, project (Zod)
   src/constants/         roles, permissions, project-status, api
   src/utils/             pagination, format-date, format-currency
+packages/api-client/   COMPLETE (Sub-phase E - 10 files)
+  src/client.ts          ProManageClient (fetch wrapper, auto-refresh on 401)
+  src/errors.ts          ApiClientError class
+  src/types.ts           ClientConfig, RequestOptions, PaginatedResult
+  src/resources/         auth, users, organizations, health
+  src/index.ts           createApiClient() factory + all exports
 packages/ui-components/ NOT STARTED (Sub-phase F)
-packages/api-client/    NOT STARTED (Sub-phase E)
 
 Root tooling:          COMPLETE (Sub-phase A)
   tsconfig.base.json, .eslintrc.json, .prettierrc, docker-compose.yml
@@ -88,12 +93,13 @@ Root tooling:          COMPLETE (Sub-phase A)
 
 ---
 
-## Current State (2026-02-28)
+## Current State (2026-03-01)
 
-- **Phase 1, Sub-phases A-D**: Complete (~80 source files)
+- **Phase 1, Sub-phases A-E**: Complete (~90 source files)
 - **API**: Runs on http://localhost:3001 | Swagger at http://localhost:3001/docs
 - **DB**: PostgreSQL in Docker, seeded
-- **Next**: Sub-phase E (api-client), F (ui-components), G (apps/web)
+- **api-client**: Built and typed, project references wired
+- **Next**: Sub-phase F (ui-components), Sub-phase G (apps/web)
 
 ### Seed Credentials
 
@@ -111,9 +117,20 @@ Root tooling:          COMPLETE (Sub-phase A)
 source ~/.nvm/nvm.sh && nvm use 20
 docker-compose up -d
 cd apps/api && pnpm dev
+# Build packages if dist/ is missing (must clean tsbuildinfo first):
+pnpm --filter @promanage/core build
+pnpm --filter @promanage/api-client build
 # Optional DB reset:
 npx prisma db push --force-reset && npx ts-node prisma/seed.ts
 ```
+
+---
+
+## TypeScript Build Notes
+
+- packages/core and packages/api-client both use tsc --build (project references, composite:true)
+- Clean must remove tsconfig.tsbuildinfo alongside dist/ or incremental build skips emit
+- Build order: core first, then api-client
 
 ---
 
@@ -129,19 +146,20 @@ See: docs/ROADMAP.md
 
 ## Session Log
 
-### Session 1 — 2026-02-02
+### Session 1 - 2026-02-02
 Created 42 foundation files (docs, config, scripts, templates), monorepo structure.
 
-### Session 2 — 2026-02-03
+### Session 2 - 2026-02-03
 DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-decisions docs.
 
-### Session 3 — 2026-02-28
-- Parsed Obsidian canvas (17+ modules)
-- Built ROADMAP.md (10 phases)
+### Session 3 - 2026-02-28
+- Parsed Obsidian canvas (17+ modules), built ROADMAP.md (10 phases)
 - Installed Node 20 + pnpm via nvm, Docker Engine in WSL
-- Sub-phase A: root tooling (tsconfig, prettier, eslint, docker-compose)
-- Sub-phase B: packages/core (24 files — types, schemas, constants, utils)
-- Sub-phase C: database (schema.prisma 8 models, seed.ts, Docker + prisma db push)
-- Sub-phase D: Fastify API server (~30 files — full auth, users, orgs, middleware, services)
+- Sub-phase A-D: root tooling, packages/core, database, Fastify API server
 - Verified: health check + login returning JWT working
 
+### Session 4 - 2026-03-01
+- Sub-phase E: packages/api-client (10 files) - ProManageClient, resources, ApiClientError, createApiClient()
+- TypeScript project references wired (composite + tsc --build on both packages)
+- Removed .claude/settings.local.json from git tracking
+- PR merged by user

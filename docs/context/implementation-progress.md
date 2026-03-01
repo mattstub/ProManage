@@ -149,7 +149,7 @@ ProManageClient (fetch wrapper), AuthResource, UsersResource, OrganizationsResou
 
 To complete Phase 1, remaining work:
 
-1. **Sub-phase E** — api-client package (typed fetch wrapper)
+1. ~~**Sub-phase E** — api-client package (DONE)~~
 2. **Sub-phase F** — ui-components package (Radix + Tailwind)
 3. **Sub-phase G** — apps/web shell (Next.js, auth pages, dashboard layout)
 

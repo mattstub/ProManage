@@ -1,35 +1,42 @@
 # Session Context — Quick Reference
 
-**Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations so we don't re-read all documentation every time.
+**Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-02-03
+**Last Updated**: 2026-02-28 (Session 3)
 
 ---
 
 ## Project Summary
 
-**ProManage** is an open-source (AGPL-3.0) construction management platform for general contractors. Desktop-first web app (90% office use) with a mobile companion (10% field use).
+**ProManage** — open-source (AGPL-3.0) construction management platform. Desktop-first web app (90%) + mobile companion (10%).
 
 - **Repo**: https://github.com/mattstub/ProManage
 - **Author**: Matt Stubenhofer
-- **Version**: 0.1.0
+- **Version**: 0.1.0-dev
 
 ---
 
-## Tech Stack (Simplified)
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
 | Web frontend | Next.js 14+, React 18+, TailwindCSS, Radix UI, Zustand, TanStack Query |
-| Mobile | React Native + Expo, NativeWind, React Query persistence + AsyncStorage |
+| Mobile | React Native + Expo (deferred) |
 | API server | Node.js 20+, Fastify, TypeScript |
-| Database | **PostgreSQL 15+ (single database)** — Prisma ORM |
-| File storage | S3-compatible (MinIO local, AWS S3 prod) |
-| Real-time | Socket.io (single-instance), PostgreSQL LISTEN/NOTIFY |
-| Auth | JWT with refresh token rotation |
+| Database | PostgreSQL 15+ via Prisma ORM |
+| File storage | MinIO (local), AWS S3 (prod) |
+| Auth | JWT 15min + refresh token rotation 7d (httpOnly cookie) |
 | Monorepo | pnpm workspaces + Turborepo |
 
-**Deferred** (add when scaling demands): Redis, WatermelonDB
+**Deferred**: Redis, WatermelonDB
+
+---
+
+## Code Style Conventions
+
+- No semicolons, single quotes, 2-space indent
+- camelCase vars/functions, PascalCase components/classes, snake_case DB columns (Prisma @map)
+- ESLint import order: external -> @promanage/* -> relative -> type
 
 ---
 
@@ -37,91 +44,104 @@
 
 | ID | Decision | Status |
 |---|---|---|
-| DD-001 | Desktop-first architecture (90/10 split) | Accepted |
-| DD-002 | Monorepo with pnpm + Turborepo | Accepted |
-| DD-003 | WebSocket (Socket.io) for real-time | Accepted |
+| DD-001 | Desktop-first (90/10 split) | Accepted |
+| DD-002 | pnpm + Turborepo monorepo | Accepted |
 | DD-004 | TypeScript everywhere | Accepted |
 | DD-005 | Prisma ORM | Accepted |
-| DD-006 | AGPL-3.0 license | Accepted |
+| DD-006 | AGPL-3.0 | Accepted |
 | DD-007 | Radix UI + TailwindCSS | Proposed |
-| DD-008 | React Native + Expo for mobile | Accepted |
-| DD-009 | JWT + refresh token rotation | Proposed |
-| DD-010 | Multi-level testing (Vitest, Playwright, etc.) | Proposed |
-| DD-011 | PostgreSQL as single DB, defer Redis/WatermelonDB | Accepted |
-
-Full details: [design-decisions.md](design-decisions.md)
+| DD-009 | JWT + refresh token rotation | Accepted |
+| DD-011 | PostgreSQL only, defer Redis/WatermelonDB | Accepted |
 
 ---
 
-## Directory Map
+## Directory Map (Current State)
 
 ```
 ProManage/
-├── apps/
-│   ├── api/          # Fastify API server (src/ empty — ready for implementation)
-│   ├── web/          # Next.js web app (src/ empty)
-│   └── mobile/       # React Native/Expo (src/ empty)
-├── packages/
-│   ├── core/         # Business logic, types, validation (Zod)
-│   ├── ui-components/  # React component library
-│   ├── mobile-components/  # React Native components
-│   ├── api-client/   # Type-safe API client
-│   └── real-time/    # WebSocket utilities
-├── docs/
-│   ├── context/      # Strategic docs (this file, vision, tech stack, decisions)
-│   ├── development/  # Dev guides (setup, standards, testing, git, API, mobile)
-│   ├── guides/       # User guides (planned)
-│   └── tools/        # Tool docs
-├── config/           # .env templates (base, dev, prod)
-├── scripts/          # setup.sh, validate-env.sh, dev.sh
-└── .github/          # Issue/PR templates, security policy
+apps/api/              COMPLETE (Sub-phases C+D)
+  prisma/schema.prisma   8 models, multi-tenant
+  prisma/seed.ts         demo org, 6 roles, 64 perms, 3 users, 2 projects
+  src/config/            Zod env validation
+  src/lib/               errors, response helpers, pino logger
+  src/middleware/        authenticate, authorize, error-handler
+  src/plugins/           prisma, swagger
+  src/routes/            health, auth, users, organizations
+  src/services/          auth, user, org, token, password
+  src/types/             fastify.d.ts augmentation
+  src/app.ts             Fastify builder
+  src/server.ts          entry point
+apps/web/              NOT STARTED (Sub-phase G)
+apps/mobile/           DEFERRED
+
+packages/core/         COMPLETE (Sub-phase B — 24 files)
+  src/types/             api, auth, user, role, org, project
+  src/schemas/           auth, user, org, project (Zod)
+  src/constants/         roles, permissions, project-status, api
+  src/utils/             pagination, format-date, format-currency
+packages/ui-components/ NOT STARTED (Sub-phase F)
+packages/api-client/    NOT STARTED (Sub-phase E)
+
+Root tooling:          COMPLETE (Sub-phase A)
+  tsconfig.base.json, .eslintrc.json, .prettierrc, docker-compose.yml
 ```
 
 ---
 
-## Key Files by Topic
+## Current State (2026-02-28)
 
-**Start here**: This file + [ROADMAP.md](../ROADMAP.md)
+- **Phase 1, Sub-phases A-D**: Complete (~80 source files)
+- **API**: Runs on http://localhost:3001 | Swagger at http://localhost:3001/docs
+- **DB**: PostgreSQL in Docker, seeded
+- **Next**: Sub-phase E (api-client), F (ui-components), G (apps/web)
 
-**Architecture & strategy**:
-- [technology-stack.md](technology-stack.md) — full tech details
-- [design-decisions.md](design-decisions.md) — all DD records
-- [design-system.md](design-system.md) — colors, typography, UI principles
-- [project-vision.md](project-vision.md) — vision (template, needs user input)
-- [field-office-workflows.md](field-office-workflows.md) — workflows (template, needs user input)
+### Seed Credentials
 
-**Development guides**:
-- [setup.md](../development/setup.md) — environment setup
-- [coding-standards.md](../development/coding-standards.md) — code style
-- [testing.md](../development/testing.md) — testing strategy
-- [api-design.md](../development/api-design.md) — API conventions
-- [git-workflow.md](../development/git-workflow.md) — branching, commits
-
-**Implementation**:
-- [implementation-progress.md](implementation-progress.md) — detailed progress log
-- Database schema: `apps/api/prisma/schema.prisma` (to be created)
-- API routes: `apps/api/src/` (to be created)
-- Web pages: `apps/web/src/` (to be created)
+| Email | Password | Role |
+|---|---|---|
+| admin@demo.com | password123 | Admin |
+| pm@demo.com | password123 | ProjectManager |
+| field@demo.com | password123 | FieldUser |
 
 ---
 
-## Current State (2026-02-03)
+## How to Restart
 
-- **Foundation**: Complete (42 files — docs, config, scripts, templates)
-- **Code**: Not started — all `src/` directories empty
-- **Database**: Schema not yet created
-- **Next step**: User is writing ROADMAP.md with feature priorities, then we begin Prisma schema design
+```bash
+source ~/.nvm/nvm.sh && nvm use 20
+docker-compose up -d
+cd apps/api && pnpm dev
+# Optional DB reset:
+npx prisma db push --force-reset && npx ts-node prisma/seed.ts
+```
+
+---
+
+## Module Map (from Obsidian Canvas)
+
+17+ modules in notes/ProManage Suite.canvas.
+Core (Ph 1-4): Dashboard, Projects, Contacts, Auth
+Parallelizable (Ph 5+): Safety, Scheduling, Daily Reports, Time Tracking, RFIs, Submittals, Change Orders, POs, Estimation, Material DB, Contracts, Permits, Inspections, Pay Applications, Equipment, Licensing
+
+See: docs/ROADMAP.md
 
 ---
 
 ## Session Log
 
 ### Session 1 — 2026-02-02
-- Created 42 foundation files (docs, config, scripts, templates)
-- Established monorepo structure, coding standards, dev guides
+Created 42 foundation files (docs, config, scripts, templates), monorepo structure.
 
 ### Session 2 — 2026-02-03
-- Simplified database strategy: PostgreSQL only, defer Redis/WatermelonDB (DD-011)
-- Updated technology-stack.md, design-decisions.md, implementation-progress.md
-- Created this session-context.md for quick reference
-- User writing ROADMAP.md — next step is schema design
+DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-decisions docs.
+
+### Session 3 — 2026-02-28
+- Parsed Obsidian canvas (17+ modules)
+- Built ROADMAP.md (10 phases)
+- Installed Node 20 + pnpm via nvm, Docker Engine in WSL
+- Sub-phase A: root tooling (tsconfig, prettier, eslint, docker-compose)
+- Sub-phase B: packages/core (24 files — types, schemas, constants, utils)
+- Sub-phase C: database (schema.prisma 8 models, seed.ts, Docker + prisma db push)
+- Sub-phase D: Fastify API server (~30 files — full auth, users, orgs, middleware, services)
+- Verified: health check + login returning JWT working
+

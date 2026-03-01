@@ -3,7 +3,11 @@
     "allow": [
       "Bash(tree:*)",
       "Bash(test:*)",
-      "WebFetch(domain:www.gnu.org)"
+      "WebFetch(domain:www.gnu.org)",
+      "Bash(find:*)",
+      "Bash(wsl -d Ubuntu -e bash -c:*)",
+      "Bash(wsl -d Ubuntu -e bash -lc:*)",
+      "Bash(wsl -d Ubuntu -- bash:*)"
     ]
   }
 }

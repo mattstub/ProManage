@@ -4,73 +4,45 @@
 
 ## Overview
 
-ProManage is an open-source construction management platform designed for general contractors to streamline project workflows between office and field teams.
+ProManage is an open-source construction management platform designed for contractors to streamline project workflows between office and field teams.
 
 ## Problem Statement
 
 ### Current Pain Points
 
-<!-- Please describe the main challenges contractors face today -->
+Small to mid-sized construction contractors are forced to cobble together many different disconnected software systems to manage their projects, creating information silos that lead to lost documents, miscommunication, and wasted time. Many of these affordable solutions feel like they're designed by people without real field experience and require technical expertise that field crews don't always have. While enterprise-level construction management solutions exist that have some better intuition into day to day workflow built in, become crippling due to rising costs of this current SAAS model that has been developed.
 
-**Example areas to cover:**
-- Paper-based processes and disconnected systems
-- Lack of real-time communication between field and office
-- Difficulty tracking project progress and costs
-- Limited mobile solutions for field workers
-- Data silos across different tools
+The result is a fragmented workflow where critical project documents are scattered across time tracking apps, ancient accounting systems, varying databases or complex spreadsheets, and email threads. Project managers spend excessive time manually exporting, converting, and re-entering data between systems instead of managing projects. Field teams lack a centralized communication hub for even basic updates like weather cancellations, and document access is inconsistent across roles and different project locations.
+
+This broken workflow doesn't just waste time—it creates compliance risks, scheduling delays, budget overruns, and team frustration. Contractors need an open source, intuitive, field-worker-friendly platform that centralizes document management and communication without requiring a computer science degree or enterprise-level budget to implement.
 
 ### Who We're Solving For
 
-<!-- Describe your target users -->
-
-**Office Users (90%):**
-- Project managers
-- Estimators
-- Office administrators
-- Accounting staff
-
-**Field Users (10%):**
-- Superintendents
-- Foremen
-- Field engineers
+Small to mid sized construction contractors that need to dissiminate materials to multiple crews in many locations. While office personnel like Project Managers, Office Administrators and Accounting staff will likely handle a lot of the data entry and analysis. This solution needs to be developed with the field users in mind who already have the difficult task of actually doing the physical construction tasks in order for the project to be completed in time and under budget. So a solution that helps anyone from a common laborer all the way up to a Company President have an easy package to analyze the project wholistically as it pertains to their role in the company
 
 ## Vision Statement
 
-<!-- Your 1-2 sentence vision for what ProManage will become -->
-
-Example: "To be the most intuitive, mobile-friendly construction management platform that eliminates the gap between field and office operations."
+"To revolutionize construction project management for the companies that build our communities by creating software that's built by contractors, for contractors; open source, practical, and designed around real workflows, not corporate IT departments."
 
 ## Goals & Success Metrics
 
 ### Short-term Goals (6-12 months)
+<!-- TODO: What do you want to achieve in the first year? -->
 
-<!-- What do you want to achieve in the first year? -->
-
-- [ ] Goal 1
-- [ ] Goal 2
-- [ ] Goal 3
+- [ ] Document Management UI w/ Database & Blob Storage
+- [ ] Primary Module Creation (identified in canva)
+- [ ] Workflows of modules working correctly (identified in canva)
 
 ### Long-term Goals (1-3 years)
+<!-- TODO: Where do you see the project in 3 years? -->
 
-<!-- Where do you see the project in 3 years? -->
-
-- [ ] Goal 1
-- [ ] Goal 2
-- [ ] Goal 3
+- [ ] Mobile Communication Platform
+- [ ] Mobile Time Tracking
+- [ ] Accounting Export Capability
+- [ ] optimizations of core modules being implemented
 
 ### Success Metrics
-
-<!-- How will you measure success? -->
-
-**User Metrics:**
-- Active users:
-- User retention:
-- Feature adoption:
-
-**Business Metrics:**
-- Time saved per project:
-- Reduction in paperwork:
-- Improved communication speed:
+<!-- TODO: How will you measure success? -->
 
 ## Core Principles
 
@@ -89,39 +61,34 @@ AGPL-3.0 license ensures all SaaS improvements remain open source and benefit th
 ## Target Market
 
 ### Primary Market
+<!-- TODO: Dress this up -- Who are your ideal first users? -->
 
-<!-- Who are your ideal first users? -->
-
-- Company size:
-- Project types:
-- Geographic focus:
-- Technical sophistication:
+- Company size: 1-50 employees
+- Project types: commercial construction
+- Geographic focus: north america
+- Technical sophistication: entry level
 
 ### Future Expansion
-
 <!-- Where might you expand later? -->
 
-- Adjacent markets:
-- International opportunities:
-- Enterprise features:
+- Adjacent markets: specialized construction industries
 
 ## Competitive Landscape
 
 ### Existing Solutions
-
 <!-- What tools exist today? What are their limitations? -->
+<!-- TODO: Existing solutions -->
 
-**Tool 1:**
-- Strengths:
-- Weaknesses:
+**Procore:**
+- Strengths: Good version control, document management and creation in one place, offers an API marketplace with loads of 3rd party add-in's
+- Weaknesses: Not intuitive for navigation, silos between different stages of construction, internal communication is difficult, pricey
 
-**Tool 2:**
-- Strengths:
-- Weaknesses:
+**Knowify:**
+- Strengths: AIA billing capability, some document control and creation
+- Weaknesses: Designed for service contractors or residential contractors in mind
 
 ### Our Differentiators
-
-<!-- What makes ProManage unique? -->
+<!-- TODO: What makes ProManage unique? -->
 
 1. **Open Source**: AGPL-3.0 licensed, community-driven
 2. **Desktop-First**: Optimized for office workflows
@@ -143,12 +110,10 @@ AGPL-3.0 license ensures all SaaS improvements remain open source and benefit th
 - Feature scope creep
 
 ### Mitigation Strategies
-
-<!-- How will you address these risks? -->
+<!-- TODO: How will you address these risks? -->
 
 ## Timeline & Milestones
-
-<!-- High-level timeline - details go in ROADMAP.md -->
+<!-- TODO: High-level timeline - details go in ROADMAP.md -->
 
 **Phase 1: Foundation** (Months 1-3)
 - Core infrastructure
@@ -185,5 +150,5 @@ Where we need help:
 
 ---
 
-**Last Updated**: 2026-02-02
-**Status**: Draft - Needs User Input
+**Last Updated**: 2026-02-03
+**Status**: Draft - 50% complete in identifying information, needs to be more fleshed out nad professional

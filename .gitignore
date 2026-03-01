@@ -203,3 +203,9 @@ old/
 
 # Wiki folder (using in-repo docs instead)
 .wiki/
+
+# TypeScript build artifacts — prevent compiled files from leaking into src/
+**/*.tsbuildinfo
+
+# Claude Code local settings (machine-specific paths)
+.claude/settings.local.json

@@ -107,8 +107,8 @@
 - POST /api/v1/auth/login -> user + JWT (admin@demo.com / password123)
 - GET /docs -> Swagger UI
 
-### Sub-phase E — packages/api-client ⏳ NOT STARTED
-~10 files — typed fetch wrapper for all API routes
+### Sub-phase E — packages/api-client ✅ COMPLETE (10 files)
+ProManageClient (fetch wrapper), AuthResource, UsersResource, OrganizationsResource, HealthResource, ApiClientError, createApiClient factory. Auto-refresh on 401, credentials: include for httpOnly cookie.
 
 ### Sub-phase F — packages/ui-components ⏳ NOT STARTED
 ~18 files — Radix UI + Tailwind base components (Button, Input, Card, Modal, Table, Form, etc.)

@@ -203,3 +203,6 @@ old/
 
 # Wiki folder (using in-repo docs instead)
 .wiki/
+
+# TypeScript build artifacts — prevent compiled files from leaking into src/
+**/*.tsbuildinfo

@@ -206,3 +206,6 @@ old/
 
 # TypeScript build artifacts — prevent compiled files from leaking into src/
 **/*.tsbuildinfo
+
+# Claude Code local settings (machine-specific paths)
+.claude/settings.local.json

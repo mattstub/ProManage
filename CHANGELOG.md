@@ -7,56 +7,71 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added — Phase 1: Foundation & Core Infrastructure (Session 3, 2026-02-28)
+### Added - Phase 1 Sub-phase F (Session 5, 2026-03-01)
 
-**Sub-phase A — Root Tooling**
-- `tsconfig.base.json` — shared TypeScript base config (ES2022, bundler resolution, path aliases for all `@promanage/*` packages)
-- `.prettierrc` / `.prettierignore` — code formatting (no semis, single quotes, 2-space indent)
-- `.eslintrc.json` / `.eslintignore` — linting with `@typescript-eslint` and `eslint-plugin-import` with enforced import order
-- Updated root `package.json` with TypeScript/ESLint/Prettier devDependencies
-- Updated `docker-compose.yml` — PostgreSQL 15 (port 5432) + MinIO (ports 9000/9001) with healthchecks
+**Sub-phase F - packages/ui-components (30 files)**
+- 26 React components built with Radix UI primitives + TailwindCSS utility classes
+- Form: Button (CVA variants + asChild for Link composition), Input, Textarea, Label, Checkbox, RadioGroup/RadioGroupItem, Switch, Select (+Group/Value/Trigger/Content/Item/Label/Separator)
+- Layout: Card (+Header/Title/Description/Content/Footer), Container (maxWidth CVA), Stack (direction/gap/align/justify), Grid (cols/gap), Separator
+- Navigation: Tabs (+List/Trigger/Content), Breadcrumbs (accessible nav with aria-current), Pagination (ellipsis logic, imports Button)
+- Feedback: Alert (info/success/warning/error variants), Toast (+Provider/Viewport/Title/Description/Action/Close), Dialog (+Trigger/Close/Overlay/Content/Header/Title/Description), Tooltip (+Provider/Trigger/Content), Progress (Radix + translateX indicator), Skeleton
+- Data Display: Table (+Header/Body/Row/Head/Cell/Caption), Badge (6 variants), Avatar (+Image/Fallback, size CVA), StatusIndicator (status + size CVA)
+- Utils: cn() combining clsx + tailwind-merge for safe class composition
+- Build: tsc --build (composite:true, jsx:react-jsx), zero errors; React as peerDependency; Tailwind NOT bundled (consuming app scans src paths)
+- All components: forwardRef where applicable, displayName set, consistent import order
 
-**Sub-phase B — `packages/core` (24 files)**
-- Shared TypeScript types: `ApiResponse<T>`, `PaginationMeta`, `User`, `UserWithRoles`, `Organization`, `Project`, `RoleName`, `TokenPayload`, `AuthResponse`
-- Zod validation schemas: `loginSchema`, `registerSchema`, `createProjectSchema`, `updateProjectSchema`
-- Constants: `RESOURCES` (16), `ACTIONS` (4), `DEFAULT_ROLE_PERMISSIONS` (full mapping per role), `USER_ROLES`, `ERROR_CODES` (13), `HTTP_STATUS`
-- Utilities: `parsePagination`, `buildPaginationMeta`, `formatDate`, `formatCurrency`, `formatCurrencyCompact`
-- Package exports configured for `./types`, `./schemas`, `./constants`, `./utils`
+### Added - Phase 1 Sub-phase E (Session 4, 2026-03-01)
 
-**Sub-phase C — Database Layer**
-- `apps/api/prisma/schema.prisma` — 8 models: `Organization`, `User`, `Role`, `Permission`, `RolePermission`, `UserRole`, `RefreshToken`, `Project`
-- Multi-tenant design: all data scoped to `organizationId`; `@@unique([name, organizationId])` on Role, `@@unique([number, organizationId])` on Project
-- `apps/api/prisma/seed.ts` — 64 permissions (16 resources × 4 actions), demo org, 6 system roles with permission assignments, 3 seed users, 2 sample projects
-- `apps/api/package.json`, `apps/api/tsconfig.json`, `apps/api/.env`
-- Docker containers running; database migrated and seeded via `prisma db push`
+**Sub-phase E - packages/api-client (10 files)**
+- ProManageClient: typed fetch wrapper, JWT access token in memory, credentials: include for httpOnly cookie
+- Auto-refresh on 401: calls /auth/refresh and retries once before calling onAuthError
+- createApiClient() factory composing all resource namespaces into a single ApiClient interface
+- AuthResource: register, login, refresh, logout, me (sets/clears token automatically)
+- UsersResource: list (paginated + meta), get, update, deactivate
+- OrganizationsResource: getCurrent, updateCurrent
+- HealthResource: connectivity ping
+- ApiClientError: typed error with status, code, isUnauthorized/isForbidden/isNotFound/isConflict helpers
+- TypeScript project references: packages/core upgraded to composite:true, both packages use tsc --build
+- Updated clean scripts to remove tsconfig.tsbuildinfo alongside dist/
+- Removed .claude/settings.local.json from git; added to .gitignore
+- Added *.tsbuildinfo pattern to root .gitignore
 
-**Sub-phase D — Fastify API Server (~30 files)**
-- Config: `src/config/env.ts` (Zod env validation), `src/config/index.ts`
-- Lib: `AppError` class hierarchy (NotFound, Unauthorized, Forbidden, Validation, Conflict), response helpers (`success`, `created`, `paginated`, `noContent`), Pino logger
-- Types: `src/types/fastify.d.ts` — augments `FastifyInstance` with `prisma`, `FastifyRequest` with `user`
-- Plugins: Prisma plugin (connect/disconnect lifecycle), Swagger/OpenAPI 3.0 (docs at `/docs`)
-- Middleware: `authenticate` (JWT preHandler), `authorize` (role + permission factory functions), `error-handler` (AppError, ZodError, Prisma errors)
-- Services: `password.service` (bcrypt), `token.service` (JWT sign + crypto refresh tokens), `auth.service` (register, login, refresh, logout, getMe), `user.service` (list/get/update/deactivate), `organization.service`
-- Routes: `GET /health`, auth CRUD at `/api/v1/auth/*`, users at `/api/v1/users/:id`, org at `/api/v1/organizations/current`
-- Auth pattern: JWT access token (15 min) + refresh token (7 days, httpOnly cookie, rotation on refresh)
-- `src/app.ts` (Fastify builder) + `src/server.ts` (entry point)
+### Added - Phase 1 Foundation (Session 3, 2026-02-28)
+
+**Sub-phase A - Root Tooling**
+- tsconfig.base.json, .prettierrc/.prettierignore, .eslintrc.json/.eslintignore, docker-compose.yml, root package.json devDeps
+
+**Sub-phase B - packages/core (24 files)**
+- Types: ApiResponse, PaginationMeta, User, UserWithRoles, Organization, Project, RoleName, TokenPayload, AuthResponse
+- Zod schemas: loginSchema, registerSchema, createProjectSchema, updateProjectSchema
+- Constants: RESOURCES (16), ACTIONS (4), DEFAULT_ROLE_PERMISSIONS, USER_ROLES, ERROR_CODES (13), HTTP_STATUS
+- Utils: parsePagination, buildPaginationMeta, formatDate, formatCurrency, formatCurrencyCompact
+
+**Sub-phase C - Database Layer**
+- schema.prisma: 8 models (Organization, User, Role, Permission, RolePermission, UserRole, RefreshToken, Project)
+- seed.ts: 64 permissions, 6 roles, demo org, 3 users, 2 projects
+- Docker PostgreSQL 15 + MinIO running; DB pushed and seeded
+
+**Sub-phase D - Fastify API Server (~30 files)**
+- Config, lib (AppError hierarchy, response helpers, Pino logger), Fastify type augmentation
+- Plugins: Prisma, Swagger/OpenAPI
+- Middleware: authenticate, authorize (role+permission factories), error-handler
+- Services: password, token, auth, user, organization
+- Routes: /health, /api/v1/auth/*, /api/v1/users/:id, /api/v1/organizations/current
+- Auth: JWT 15min access + 7d refresh token (httpOnly cookie, rotation)
+- Verified: health check + login returning JWT working
 
 **Infrastructure**
-- Node.js 20.20.0 + pnpm 8.15.9 installed in WSL via nvm
-- Docker Engine installed and running in WSL
-- API server verified operational on `http://localhost:3001`
-- Seeded login `admin@demo.com` / `password123` verified returning JWT
+- Node.js 20.20.0 + pnpm 8.15.9 via nvm in WSL
+- Docker Engine in WSL; PostgreSQL on :5432, MinIO on :9000
 
-### Added — Earlier Sessions (Foundation, Sessions 1–2)
-- Initial project structure and monorepo setup
-- Core documentation (README, CONTRIBUTING, CODE_OF_CONDUCT)
-- Development environment configuration files (42 files total)
-- Workspace configuration for pnpm monorepo + Turborepo pipeline
-- Full docs: context/, development/, config/ templates, scripts/, .github/ templates
+### Added - Foundation (Sessions 1-2)
+- 42 foundation files: docs, config, scripts, GitHub templates
+- pnpm workspaces + Turborepo pipeline configuration
 
 ### Changed
-- Database strategy simplified: PostgreSQL as single database, Redis and WatermelonDB deferred (DD-011)
-- Updated technology-stack.md and design-decisions.md to reflect DD-011
+- Database strategy: PostgreSQL only, Redis and WatermelonDB deferred (DD-011)
+- Updated technology-stack.md and design-decisions.md
 
 ### Deprecated
 - Nothing yet
@@ -81,12 +96,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Types of Changes
 
-- `Added` for new features
-- `Changed` for changes in existing functionality
-- `Deprecated` for soon-to-be removed features
-- `Removed` for now removed features
-- `Fixed` for any bug fixes
-- `Security` in case of vulnerabilities
+- Added for new features
+- Changed for changes in existing functionality
+- Deprecated for soon-to-be removed features
+- Removed for now removed features
+- Fixed for any bug fixes
+- Security in case of vulnerabilities
 
 [unreleased]: https://github.com/mattstub/ProManage/compare/v0.0.1...HEAD
 [0.0.1]: https://github.com/mattstub/ProManage/releases/tag/v0.0.1

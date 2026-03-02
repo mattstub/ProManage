@@ -110,8 +110,15 @@
 ### Sub-phase E — packages/api-client ✅ COMPLETE (10 files)
 ProManageClient (fetch wrapper), AuthResource, UsersResource, OrganizationsResource, HealthResource, ApiClientError, createApiClient factory. Auto-refresh on 401, credentials: include for httpOnly cookie.
 
-### Sub-phase F — packages/ui-components ⏳ NOT STARTED
-~18 files — Radix UI + Tailwind base components (Button, Input, Card, Modal, Table, Form, etc.)
+### Sub-phase F — packages/ui-components ✅ COMPLETE (30 files)
+30 files — Radix UI + Tailwind base components. tsc --build verified, zero errors.
+- Form: Button (CVA+asChild), Input, Textarea, Label, Checkbox, RadioGroup, Switch, Select
+- Layout: Card (+Header/Title/Description/Content/Footer), Container, Stack, Grid, Separator
+- Navigation: Tabs, Breadcrumbs, Pagination
+- Feedback: Alert, Toast (+Provider/Viewport), Dialog, Tooltip (+Provider), Progress, Skeleton
+- Data Display: Table (+Header/Body/Row/Head/Cell/Caption), Badge, Avatar, StatusIndicator
+- Utils: cn() (clsx + tailwind-merge)
+- Note: apps/web tailwind.config.ts must include ui-components src in content array
 
 ### Sub-phase G — apps/web ⏳ NOT STARTED
 ~35 files — Next.js 14 App Router shell:
@@ -149,8 +156,8 @@ ProManageClient (fetch wrapper), AuthResource, UsersResource, OrganizationsResou
 
 To complete Phase 1, remaining work:
 
-1. **Sub-phase E** — api-client package (typed fetch wrapper)
-2. **Sub-phase F** — ui-components package (Radix + Tailwind)
+1. ~~**Sub-phase E** — api-client package (DONE)~~
+2. ~~**Sub-phase F** — ui-components package (DONE)~~
 3. **Sub-phase G** — apps/web shell (Next.js, auth pages, dashboard layout)
 
 After Phase 1, Phase 2 begins: Dashboard module (real data, widgets, project summary, activity feed).

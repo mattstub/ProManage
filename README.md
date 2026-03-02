@@ -2,37 +2,60 @@
 
 > Open-source construction management tools for small contractors
 
-ProManage is a collection of free, open-source tools designed to help small construction contractors manage their projects without being locked into expensive SaaS platforms. Built with a desktop-first approach and a mobile companion app for field workers.
+ProManage is a free, open-source platform designed to help small construction contractors manage their projects without being locked into expensive SaaS platforms. Built desktop-first for office personnel with a mobile companion app for field workers.
+
+## Current Status
+
+> **Phase 1 (Foundation) — In Progress**
+>
+> Sub-phases A–F complete (~120 source files). The API server and shared packages are fully built. The web application shell (Sub-phase G) is next.
+>
+> | Sub-phase | Component | Status |
+> |---|---|---|
+> | A | Root Tooling (monorepo, tsconfig, ESLint, Prettier, Docker) | ✅ Complete |
+> | B | packages/core (types, schemas, constants, utils) | ✅ Complete |
+> | C | Database (Prisma schema, Docker PostgreSQL, seed data) | ✅ Complete |
+> | D | apps/api (Fastify API server, auth, RBAC, Swagger) | ✅ Complete |
+> | E | packages/api-client (typed fetch wrapper, auto-refresh) | ✅ Complete |
+> | F | packages/ui-components (Radix + Tailwind, 26 components) | ✅ Complete |
+> | G | apps/web (Next.js 14 App Router shell) | ⏳ Not Started |
 
 ## Features
 
-- **Project Management** - Organize jobs, tasks, and timelines
-- **Request for Information (RFI)** - Track and manage RFIs
-- **Change Proposal Requests (CPR)** - Handle change orders efficiently
-- **Permit & Inspection Management** - Track permits and inspections
-- **Submittal Tools** - Manage submittals and product specifications
-- **Real-Time Sync** - Office and field stay connected with live updates
+- **Project Management** — Organize jobs, tasks, and timelines
+- **Request for Information (RFI)** — Track and manage RFIs
+- **Change Proposal Requests (CPR)** — Handle change orders efficiently
+- **Permit & Inspection Management** — Track permits and inspections
+- **Submittal Tools** — Manage submittals and product specifications
+- **Daily Reports & Time Tracking** — Field-to-office workflow
+- **Scheduling & Equipment** — Resource and equipment management
 
 ## Architecture
 
 - **Desktop-First**: Primary interface optimized for office personnel (90% of usage)
 - **Mobile Companion**: React Native app for field workers (status updates, photos)
 - **API-First**: Clean backend separation enables future integrations
-- **Real-Time**: WebSocket/SSE for bidirectional office-field communication
+- **Multi-Tenant**: All data scoped by organization
 
 ## Technology Stack
 
-- **Frontend**: React + Next.js (web), React Native + Expo (mobile)
-- **Backend**: Node.js + TypeScript
-- **Monorepo**: pnpm + Turborepo
-- **License**: AGPL-3.0 (ensures all improvements remain open source)
+| Layer | Technology |
+|---|---|
+| Web Frontend | Next.js 14, React 18, TailwindCSS, Radix UI, Zustand, TanStack Query |
+| API Server | Node.js 20, Fastify, TypeScript, Prisma |
+| Database | PostgreSQL 15 |
+| File Storage | MinIO (local) / AWS S3 (production) |
+| Auth | JWT 15min access + 7d refresh token rotation (httpOnly cookie) |
+| Monorepo | pnpm workspaces + Turborepo |
+| Mobile | React Native + Expo (deferred) |
 
 ## Quick Start
 
 ### Prerequisites
 
-- Node.js 18+ (recommend using [nvm](https://github.com/nvm-sh/nvm) or [fnm](https://github.com/Schniz/fnm))
-- pnpm 8+ (`npm install -g pnpm`)
+- **Node.js 20+** — use [nvm](https://github.com/nvm-sh/nvm): `nvm install 20 && nvm use 20`
+- **pnpm 8+** — `npm install -g pnpm`
+- **Docker & Docker Compose** — for local PostgreSQL and MinIO
 
 ### Installation
 
@@ -44,39 +67,58 @@ cd ProManage
 # Install dependencies
 pnpm install
 
-# Copy environment template
-cp config/.env.example .env
+# Start local services (PostgreSQL + MinIO)
+docker-compose up -d
 
-# Start development servers
-pnpm dev
+# Configure the API environment
+cp apps/api/.env.example apps/api/.env
+# Edit apps/api/.env with your database credentials
+
+# Seed the database
+cd apps/api && npx ts-node prisma/seed.ts && cd ../..
+
+# Start the API server
+pnpm --filter api dev
 ```
+
+Once running, visit:
+- API health check: http://localhost:3001/health
+- Swagger docs: http://localhost:3001/docs
+
+### Demo Credentials (after seeding)
+
+| Email | Password | Role |
+|---|---|---|
+| admin@demo.com | password123 | Admin |
+| pm@demo.com | password123 | ProjectManager |
+| field@demo.com | password123 | FieldUser |
 
 ## Project Structure
 
-```bash
+```
 ProManage/
 ├── apps/
+│   ├── api/                # Fastify API server (TypeScript, Prisma, JWT auth)
 │   ├── web/                # Next.js web application (desktop-first)
-│   ├── mobile/             # React Native mobile app (field companion)
-│   └── api/                # Backend API server
+│   └── mobile/             # React Native mobile app (deferred)
 ├── packages/
-│   ├── core/               # Shared business logic
-│   ├── ui-components/      # Web UI components
-│   ├── mobile-components/  # Mobile UI components
-│   ├── api-client/         # API client library
-│   └── real-time/          # WebSocket/SSE client
+│   ├── core/               # Shared types, Zod schemas, constants, utils
+│   ├── ui-components/      # Radix UI + Tailwind component library
+│   ├── api-client/         # Typed fetch wrapper with auto-refresh
+│   ├── mobile-components/  # Mobile UI components (deferred)
+│   └── real-time/          # WebSocket/SSE client (deferred)
 ├── docs/                   # Documentation
 └── scripts/                # Development scripts
 ```
 
 ## Documentation
 
-- [Getting Started](docs/guides/getting-started.md) - Quick start guide
-- [User Guide](docs/guides/user-guide.md) - End-user documentation
-- [Development Setup](docs/development/setup.md) - Developer environment setup
-- [Contributing](CONTRIBUTING.md) - How to contribute
-- [Architecture](docs/ARCHITECTURE.md) - System architecture overview
-- [Roadmap](docs/ROADMAP.md) - Future plans and milestones
+- [Architecture](docs/ARCHITECTURE.md) — System architecture overview
+- [Roadmap](docs/ROADMAP.md) — Development phases and milestones
+- [Technology Stack](docs/context/technology-stack.md) — Stack decisions and rationale
+- [Design System](docs/context/design-system.md) — Component and style guidelines
+- [Contributing](CONTRIBUTING.md) — How to contribute
+- [Changelog](CHANGELOG.md) — Version history
 
 ## Contributing
 
@@ -84,9 +126,8 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+3. Commit your changes following [conventional commits](https://www.conventionalcommits.org/) format
+4. Push to the branch and open a Pull Request
 
 ## Community
 
@@ -95,11 +136,9 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 
 ## License
 
-This project is licensed under the AGPL-3.0 License - see the [LICENSE](LICENSE) file for details.
+AGPL-3.0 — see [LICENSE](LICENSE) for details.
 
-## Why AGPL-3.0?
-
-We chose AGPL-3.0 to ensure that all improvements to ProManage remain open source, even when used in SaaS applications. This protects the community and prevents proprietary forks that don't give back.
+We chose AGPL-3.0 to ensure that all improvements to ProManage remain open source, even when deployed as a SaaS application. This protects the community and prevents proprietary forks that don't give back.
 
 ## Support
 
@@ -110,5 +149,5 @@ We chose AGPL-3.0 to ensure that all improvements to ProManage remain open sourc
 
 ---
 
-Built with ❤️ for small contractors by the construction community.  
+Built for small contractors by the construction community.
 Built with [Claude](https://www.claude.ai).

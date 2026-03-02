@@ -37,46 +37,42 @@ Establish the monorepo, database, authentication, and API framework that everyth
 - [x] CI/CD pipeline templates
 - [x] Documentation foundation (42 files)
 
-### 1.2 Database & ORM
-- [ ] PostgreSQL setup (Docker Compose for local dev)
-- [ ] Prisma schema — core entities
-    - [ ] Organization (tenant)
-    - [ ] User (with roles)
-    - [ ] UserRole / Permission
-- [ ] Prisma Migrate workflow
-- [ ] Seed scripts for development data
+### 1.2 Database & ORM ✅ COMPLETE
+- [x] PostgreSQL setup (Docker Compose for local dev)
+- [x] Prisma schema — 8 models (Organization, User, Role, Permission, RolePermission, UserRole, RefreshToken, Project)
+- [x] Prisma db push workflow (dev)
+- [x] Seed scripts (64 permissions, 6 roles, demo org, 3 users, 2 projects)
 
-### 1.3 Authentication & Authorization
-- [ ] JWT access tokens (short-lived)
-- [ ] Refresh token rotation (httpOnly cookie)
-- [ ] Login / Logout / Register endpoints
-- [ ] Password hashing (bcrypt)
-- [ ] RBAC middleware (Admin, Project Manager, Superintendent, Foreman, Field User, Office Admin)
-- [ ] Organization-scoped data isolation
+### 1.3 Authentication & Authorization ✅ COMPLETE
+- [x] JWT access tokens (15min, short-lived)
+- [x] Refresh token rotation (httpOnly cookie, 7d)
+- [x] Login / Logout / Register endpoints
+- [x] Password hashing (bcrypt)
+- [x] RBAC middleware (Admin, ProjectManager, Superintendent, Foreman, FieldUser, OfficeAdmin)
+- [x] Organization-scoped data isolation (organizationId on all models)
 
-### 1.4 API Framework
-- [ ] Fastify server setup with TypeScript
-- [ ] Route structure and plugin architecture
-- [ ] Zod request/response validation
-- [ ] Error handling middleware
-- [ ] CORS, Helmet, rate limiting
-- [ ] OpenAPI/Swagger documentation generation
-- [ ] Health check endpoint
+### 1.4 API Framework ✅ COMPLETE
+- [x] Fastify server setup with TypeScript
+- [x] Route structure and plugin architecture (Prisma plugin, Swagger plugin)
+- [x] Zod request/response validation
+- [x] Error handling middleware (AppError hierarchy)
+- [x] CORS, Helmet, rate limiting
+- [x] OpenAPI/Swagger documentation generation (at /docs)
+- [x] Health check endpoint
 
-### 1.5 Web Application Shell
+### 1.5 Web Application Shell ⏳ IN PROGRESS (Sub-phase G)
 - [ ] Next.js 14+ with App Router
 - [ ] TailwindCSS + Radix UI setup
 - [ ] Layout system (sidebar navigation, top bar, content area)
-- [ ] Auth pages (login, register, forgot password)
+- [ ] Auth pages (login, register)
 - [ ] Protected route middleware
 - [ ] TanStack Query provider
 - [ ] Zustand store setup
-- [ ] Theme system (light/dark)
 
-### 1.6 Shared Packages
-- [ ] `packages/core` — shared types, Zod schemas, utilities
-- [ ] `packages/ui-components` — base component library (buttons, inputs, tables, modals, forms)
-- [ ] `packages/api-client` — type-safe API client with auth interceptors
+### 1.6 Shared Packages ✅ COMPLETE
+- [x] `packages/core` — shared types, Zod schemas, constants, utils (24 files)
+- [x] `packages/ui-components` — Radix + Tailwind component library (26 components, 30 files)
+- [x] `packages/api-client` — typed fetch wrapper with auto-refresh on 401 (10 files)
 
 ---
 

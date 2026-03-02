@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - Phase 1 Sub-phase F (Session 5, 2026-03-01)
+
+**Sub-phase F - packages/ui-components (30 files)**
+- 26 React components built with Radix UI primitives + TailwindCSS utility classes
+- Form: Button (CVA variants + asChild for Link composition), Input, Textarea, Label, Checkbox, RadioGroup/RadioGroupItem, Switch, Select (+Group/Value/Trigger/Content/Item/Label/Separator)
+- Layout: Card (+Header/Title/Description/Content/Footer), Container (maxWidth CVA), Stack (direction/gap/align/justify), Grid (cols/gap), Separator
+- Navigation: Tabs (+List/Trigger/Content), Breadcrumbs (accessible nav with aria-current), Pagination (ellipsis logic, imports Button)
+- Feedback: Alert (info/success/warning/error variants), Toast (+Provider/Viewport/Title/Description/Action/Close), Dialog (+Trigger/Close/Overlay/Content/Header/Title/Description), Tooltip (+Provider/Trigger/Content), Progress (Radix + translateX indicator), Skeleton
+- Data Display: Table (+Header/Body/Row/Head/Cell/Caption), Badge (6 variants), Avatar (+Image/Fallback, size CVA), StatusIndicator (status + size CVA)
+- Utils: cn() combining clsx + tailwind-merge for safe class composition
+- Build: tsc --build (composite:true, jsx:react-jsx), zero errors; React as peerDependency; Tailwind NOT bundled (consuming app scans src paths)
+- All components: forwardRef where applicable, displayName set, consistent import order
+
 ### Added - Phase 1 Sub-phase E (Session 4, 2026-03-01)
 
 **Sub-phase E - packages/api-client (10 files)**

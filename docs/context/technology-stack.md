@@ -60,10 +60,10 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 ### API Server (apps/api)
 
 **Runtime**: Node.js 20+ with TypeScript
-**Framework**: Fastify or Express
-- High performance
-- Plugin ecosystem
-- WebSocket support
+**Framework**: Fastify
+- High performance, schema-based validation
+- Plugin ecosystem (Prisma plugin, Swagger plugin)
+- TypeScript-first with full type augmentation
 
 **Database**:
 - PostgreSQL 15+ as the single data store
@@ -113,8 +113,9 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 - Shared mobile UI patterns
 
 ### packages/api-client
-- Type-safe API client
-- Generated from OpenAPI spec
+- Type-safe fetch wrapper (handcrafted, not OpenAPI-generated)
+- Auto-refresh on 401: retries with new accessToken before calling onAuthError
+- Resource namespaces: auth, users, organizations, health
 - Used by web and mobile apps
 
 ### packages/real-time
@@ -297,5 +298,5 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 
 ---
 
-**Last Updated**: 2026-02-02
-**Status**: Complete
+**Last Updated**: 2026-03-01
+**Status**: Updated through Phase 1 Sub-phase F

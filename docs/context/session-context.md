@@ -85,7 +85,10 @@ packages/api-client/   COMPLETE (Sub-phase E - 10 files)
   src/types.ts           ClientConfig, RequestOptions, PaginatedResult
   src/resources/         auth, users, organizations, health
   src/index.ts           createApiClient() factory + all exports
-packages/ui-components/ NOT STARTED (Sub-phase F)
+packages/ui-components/ COMPLETE (Sub-phase F - 30 files)
+  src/utils/cn.ts        clsx + tailwind-merge utility
+  src/components/        26 components (Button, Input, Card, Table, Dialog, Toast, etc.)
+  src/index.ts           barrel exports + type re-exports
 
 Root tooling:          COMPLETE (Sub-phase A)
   tsconfig.base.json, .eslintrc.json, .prettierrc, docker-compose.yml
@@ -95,11 +98,12 @@ Root tooling:          COMPLETE (Sub-phase A)
 
 ## Current State (2026-03-01)
 
-- **Phase 1, Sub-phases A-E**: Complete (~90 source files)
+- **Phase 1, Sub-phases A-F**: Complete (~120 source files)
 - **API**: Runs on http://localhost:3001 | Swagger at http://localhost:3001/docs
 - **DB**: PostgreSQL in Docker, seeded
 - **api-client**: Built and typed, project references wired
-- **Next**: Sub-phase F (ui-components), Sub-phase G (apps/web)
+- **ui-components**: Built (tsc --build, zero errors), 26 Radix+Tailwind components
+- **Next**: Sub-phase G (apps/web)
 
 ### Seed Credentials
 
@@ -128,9 +132,11 @@ npx prisma db push --force-reset && npx ts-node prisma/seed.ts
 
 ## TypeScript Build Notes
 
-- packages/core and packages/api-client both use tsc --build (project references, composite:true)
+- packages/core, packages/api-client, packages/ui-components all use tsc --build (composite:true)
 - Clean must remove tsconfig.tsbuildinfo alongside dist/ or incremental build skips emit
-- Build order: core first, then api-client
+- Build order: core first, then api-client / ui-components (parallel)
+- ui-components requires "jsx": "react-jsx" and "include": ["src/**/*.ts", "src/**/*.tsx"] in tsconfig
+- React is a peerDependency in ui-components — do NOT add as a direct dep
 
 ---
 
@@ -163,3 +169,12 @@ DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-d
 - TypeScript project references wired (composite + tsc --build on both packages)
 - Removed .claude/settings.local.json from git tracking
 - PR merged by user
+
+### Session 5 - 2026-03-01
+- Sub-phase F: packages/ui-components (30 files) - tsc --build, zero errors
+- 26 components: Button, Input, Textarea, Label, Checkbox, RadioGroup, Switch, Select,
+  Card, Container, Stack, Grid, Separator, Tabs, Breadcrumbs, Pagination,
+  Alert, Toast, Dialog, Tooltip, Progress, Skeleton,
+  Table, Badge, Avatar, StatusIndicator
+- Pattern: Radix UI primitives + CVA variants + cn() (clsx + tailwind-merge)
+- React as peerDependency; Tailwind NOT a dep (apps/web runs Tailwind, scans ui-components src)

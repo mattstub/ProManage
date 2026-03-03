@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - Phase 1 Sub-phase G (Session 6, 2026-03-02)
+
+**Sub-phase G - apps/web Next.js 14 App Router shell (~30 files)**
+- Next.js 14.1 + React 19 app with App Router, TypeScript, Tailwind CSS
+- Auth pages: `/login` (LoginForm) and `/register` (RegisterForm) with react-hook-form + Zod validation via `@promanage/core/schemas`
+- Dashboard layout: sidebar nav (NavItem with active-state detection) + header (Avatar, role Badge, sign-out)
+- Protected dashboard page: placeholder stat cards using `@promanage/ui-components`
+- Middleware: inverted-whitelist route guard — redirects unauthenticated users to `/login` based on `refresh_token` cookie; redirects authenticated users away from auth pages
+- AuthProvider: restores session on mount via `auth.me()`, distinguishes 401/403 (clearAuth) from network errors (unblock UI without clearing session)
+- Zustand auth store: `user`, `accessToken`, `isAuthenticated`, `isLoading`, `setAuth`, `setToken`, `clearAuth`, `setLoading`
+- TanStack Query: QueryClient singleton, 60s stale time, configured at root via QueryProvider
+- API client singleton: `getApiClient()` with `onTokenRefresh` → Zustand, `onAuthError` → redirect; `resetApiClient()` called on logout to clear in-memory token
+- Security hardening: `loginSchema` max constraints (email: 254, password: 128), open-redirect footgun removed from middleware, API client singleton reset on logout, network vs auth error distinction in AuthProvider
+- .claude/commands/: `/startup`, `/new-branch`, `/commit-pr` slash commands for Claude Code workflow automation
+- packages/core build: zero errors after schema change
+
 ### Added - Phase 1 Sub-phase F (Session 5, 2026-03-01)
 
 **Sub-phase F - packages/ui-components (30 files)**

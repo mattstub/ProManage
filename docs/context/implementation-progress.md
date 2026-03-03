@@ -120,13 +120,12 @@ ProManageClient (fetch wrapper), AuthResource, UsersResource, OrganizationsResou
 - Utils: cn() (clsx + tailwind-merge)
 - Note: apps/web tailwind.config.ts must include ui-components src in content array
 
-### Sub-phase G — apps/web ⏳ NOT STARTED
-~35 files — Next.js 14 App Router shell:
-- Auth pages (login, register)
-- Dashboard layout (sidebar nav, header)
-- Protected route middleware
-- TanStack Query + Zustand setup
-- Basic dashboard page
+### Sub-phase G — apps/web ✅ COMPLETE (~30 files)
+
+**Build verified**: tsc --noEmit zero errors, pnpm build → ✓ Compiled, 5 routes  
+**Security fixes**: middleware inverted whitelist, loginSchema max constraints, resetApiClient on logout, AuthProvider error distinction
+
+Key files: package.json (React 19), middleware.ts, auth.store.ts, providers/auth-provider.tsx, lib/api-client.ts, components/auth/login-form.tsx, register-form.tsx, components/layout/sidebar.tsx, header.tsx, .claude/commands/ (3 slash commands)
 
 ---
 

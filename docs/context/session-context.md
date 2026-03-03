@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-01 (Session 4)
+**Last Updated**: 2026-03-02 (Session 6)
 
 ---
 
@@ -71,7 +71,13 @@ apps/api/              COMPLETE (Sub-phases C+D)
   src/types/             fastify.d.ts augmentation
   src/app.ts             Fastify builder
   src/server.ts          entry point
-apps/web/              NOT STARTED (Sub-phase G)
+apps/web/              COMPLETE (Sub-phase G)
+  src/app/               App Router: /, /login, /register, /dashboard
+  src/middleware.ts      Inverted-whitelist route guard
+  src/stores/            Zustand auth store
+  src/providers/         AuthProvider, QueryProvider
+  src/components/        auth forms, layout (sidebar, header, nav-item)
+  src/lib/               api-client singleton, query-client
 apps/mobile/           DEFERRED
 
 packages/core/         COMPLETE (Sub-phase B - 24 files)
@@ -96,14 +102,14 @@ Root tooling:          COMPLETE (Sub-phase A)
 
 ---
 
-## Current State (2026-03-01)
+## Current State (2026-03-02)
 
-- **Phase 1, Sub-phases A-F**: Complete (~120 source files)
+- **Phase 1, Sub-phases A-G**: COMPLETE (~150 source files)
 - **API**: Runs on http://localhost:3001 | Swagger at http://localhost:3001/docs
 - **DB**: PostgreSQL in Docker, seeded
 - **api-client**: Built and typed, project references wired
 - **ui-components**: Built (tsc --build, zero errors), 26 Radix+Tailwind components
-- **Next**: Sub-phase G (apps/web)
+- **Next**: Phase 2 — Dashboard module (real data, widgets, project summary)
 
 ### Seed Credentials
 
@@ -112,6 +118,18 @@ Root tooling:          COMPLETE (Sub-phase A)
 | admin@demo.com | password123 | Admin |
 | pm@demo.com | password123 | ProjectManager |
 | field@demo.com | password123 | FieldUser |
+
+---
+
+## Claude Code Workflow Commands
+
+Three slash commands live in `.claude/commands/` — invoke them in any Claude Code session:
+
+| Command | Purpose |
+|---|---|
+| `/startup` | Full session startup checklist (infra, builds, git state) |
+| `/new-branch` | Create a properly-named branch for a sub-phase or feature |
+| `/commit-pr` | Stage, commit, and prepare a PR with correct format |
 
 ---
 
@@ -170,7 +188,14 @@ DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-d
 - Removed .claude/settings.local.json from git tracking
 - PR merged by user
 
-### Session 5 - 2026-03-01
+### Session 6 - 2026-03-02
+- Created .claude/commands/ workflow system: /startup, /new-branch, /commit-pr
+- Sub-phase G: apps/web Next.js 14 App Router shell -- 30 files, build clean (5 routes)
+- Multi-agent: Builder + Security Agent (7 findings) + Testing Agent
+- Fixes: React 19 type alignment, ESLint import/order auto-fix, security hardening
+- Phase 1 COMPLETE: All sub-phases A through G done
+
+### Session 5 - 2026-03-02
 - Sub-phase F: packages/ui-components (30 files) - tsc --build, zero errors
 - 26 components: Button, Input, Textarea, Label, Checkbox, RadioGroup, Switch, Select,
   Card, Container, Stack, Grid, Separator, Tabs, Breadcrumbs, Pagination,
@@ -178,3 +203,9 @@ DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-d
   Table, Badge, Avatar, StatusIndicator
 - Pattern: Radix UI primitives + CVA variants + cn() (clsx + tailwind-merge)
 - React as peerDependency; Tailwind NOT a dep (apps/web runs Tailwind, scans ui-components src)
+- Documentation sweep: wrote ARCHITECTURE.md from scratch (was empty), updated README
+  (Node 20, Docker prereq, Quick Start, status table), checked off ROADMAP Phase 1
+  items, fixed technology-stack.md (Fastify, api-client description), updated
+  CHANGELOG with Sub-phase F entry
+- Branch feat/phase1-subphase-f-ui-components created, 2 commits staged and ready
+  (push pending — run from terminal due to WSL git push hang)

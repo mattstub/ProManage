@@ -16,7 +16,13 @@ export function getApiClient() {
       onAuthError: () => {
         useAuthStore.getState().clearAuth()
         if (typeof window !== 'undefined') {
-          window.location.href = '/login'
+          const publicPaths = ['/login', '/register']
+          const isPublic = publicPaths.some((p) =>
+            window.location.pathname.startsWith(p)
+          )
+          if (!isPublic) {
+            window.location.href = '/login'
+          }
         }
       },
     })

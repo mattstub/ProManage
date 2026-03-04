@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-02 (Session 6)
+**Last Updated**: 2026-03-03 (Session 7)
 
 ---
 
@@ -71,12 +71,13 @@ apps/api/              COMPLETE (Sub-phases C+D)
   src/types/             fastify.d.ts augmentation
   src/app.ts             Fastify builder
   src/server.ts          entry point
-apps/web/              COMPLETE (Sub-phase G)
-  src/app/               App Router: /, /login, /register, /dashboard
+apps/web/              COMPLETE Phase 2.1 (Session 7)
+  src/app/               App Router: /, /login, /register, /dashboard, /projects
   src/middleware.ts      Inverted-whitelist route guard
   src/stores/            Zustand auth store
   src/providers/         AuthProvider, QueryProvider
-  src/components/        auth forms, layout (sidebar, header, nav-item)
+  src/components/        auth forms, layout (sidebar+icons+role-nav, header, nav-item), dashboard (stats-card, project-summary-list)
+  src/hooks/             use-auth, use-dashboard-stats, use-organization, use-projects
   src/lib/               api-client singleton, query-client
 apps/mobile/           DEFERRED
 
@@ -102,14 +103,15 @@ Root tooling:          COMPLETE (Sub-phase A)
 
 ---
 
-## Current State (2026-03-02)
+## Current State (2026-03-03)
 
 - **Phase 1, Sub-phases A-G**: COMPLETE (~150 source files)
-- **API**: Runs on http://localhost:3001 | Swagger at http://localhost:3001/docs
+- **Phase 2.1 Dashboard**: COMPLETE — real data, projects list, stats widgets, role-aware sidebar
+- **API**: Runs on http://localhost:3001 | Routes: /auth, /dashboard/stats, /organizations, /projects (CRUD), /users
 - **DB**: PostgreSQL in Docker, seeded
-- **api-client**: Built and typed, project references wired
+- **api-client**: Built — now includes ProjectsResource + DashboardResource
 - **ui-components**: Built (tsc --build, zero errors), 26 Radix+Tailwind components
-- **Next**: Phase 2 — Dashboard module (real data, widgets, project summary)
+- **Next**: Phase 2.2–2.6 — Notifications, Messaging, Calendar, Tasks, Procedures
 
 ### Seed Credentials
 
@@ -187,6 +189,14 @@ DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-d
 - TypeScript project references wired (composite + tsc --build on both packages)
 - Removed .claude/settings.local.json from git tracking
 - PR merged by user
+
+### Session 7 - 2026-03-03
+- Phase 2.1 Dashboard module COMPLETE — multi-agent build (Project Manager, API Builder, API Client Builder, Frontend Builder, Code Review, 2× Security Analyst, Testing)
+- API: project.service + dashboard.service, /projects CRUD routes, /dashboard/stats route
+- packages/core: DashboardStats type; packages/api-client: ProjectsResource + DashboardResource, rebuilt zero errors
+- apps/web: stats-card, project-summary-list, 3 new hooks, dashboard real data, /projects page, sidebar with Heroicons + role-aware nav
+- Security reviews: PASS (all 12 checks across API + frontend layers)
+- Build: pnpm type-check + pnpm build → zero errors, 6 routes
 
 ### Session 6 - 2026-03-02
 - Created .claude/commands/ workflow system: /startup, /new-branch, /commit-pr

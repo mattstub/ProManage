@@ -122,10 +122,48 @@ ProManageClient (fetch wrapper), AuthResource, UsersResource, OrganizationsResou
 
 ### Sub-phase G — apps/web ✅ COMPLETE (~30 files)
 
-**Build verified**: tsc --noEmit zero errors, pnpm build → ✓ Compiled, 5 routes  
+**Build verified**: tsc --noEmit zero errors, pnpm build → ✓ Compiled, 5 routes
 **Security fixes**: middleware inverted whitelist, loginSchema max constraints, resetApiClient on logout, AuthProvider error distinction
 
 Key files: package.json (React 19), middleware.ts, auth.store.ts, providers/auth-provider.tsx, lib/api-client.ts, components/auth/login-form.tsx, register-form.tsx, components/layout/sidebar.tsx, header.tsx, .claude/commands/ (3 slash commands)
+
+---
+
+## Phase 2: Dashboard & Hub
+
+### Phase 2.1 — Dashboard Layout ✅ COMPLETE (Session 7, 2026-03-03)
+
+**Build verified**: pnpm type-check + pnpm build → zero errors, 6 routes
+
+**New files**:
+- `packages/core/src/types/dashboard.ts` — `DashboardStats` interface
+- `apps/api/src/services/project.service.ts` — listProjects, getProject, createProject, updateProject, archiveProject
+- `apps/api/src/services/dashboard.service.ts` — getDashboardStats (Promise.all aggregate)
+- `apps/api/src/routes/projects/index.ts` — CRUD with RBAC (GET: all roles; POST/PATCH: Admin/PM; DELETE: Admin)
+- `apps/api/src/routes/dashboard/index.ts` — GET /stats (all authenticated roles)
+- `packages/api-client/src/resources/projects.ts` — ProjectsResource (list, get, create, update, archive)
+- `packages/api-client/src/resources/dashboard.ts` — DashboardResource (getStats)
+- `apps/web/src/hooks/use-dashboard-stats.ts` — TanStack Query hook
+- `apps/web/src/hooks/use-projects.ts` — useProjects (paginated) + useProject (single)
+- `apps/web/src/hooks/use-organization.ts` — TanStack Query hook
+- `apps/web/src/components/dashboard/stats-card.tsx` — StatsCard with skeleton + variants
+- `apps/web/src/components/dashboard/project-summary-list.tsx` — badge color-coding, skeleton rows
+- `apps/web/src/app/(dashboard)/projects/page.tsx` — Table with sorting/skeleton/empty state, stub Create dialog
+
+**Modified files**:
+- `apps/api/src/routes/index.ts` — registered /projects + /dashboard routes
+- `packages/api-client/src/index.ts` — ApiClient interface + createApiClient() updated
+- `apps/web/src/app/(dashboard)/dashboard/page.tsx` — real data (stats, org name, project list)
+- `apps/web/src/components/layout/sidebar.tsx` — Heroicons + role-aware nav (Org: Admin/OfficeAdmin; Settings: Admin)
+
+**Security reviews**: API PASS (6/6), Frontend PASS (6/6)
+
+### Phase 2.2–2.6 — Notifications, Messaging, Calendar, Tasks, Procedures
+- [ ] 2.2 Notifications (WebSocket required)
+- [ ] 2.3 Internal Communication (Socket.io required)
+- [ ] 2.4 Company Calendar (calendar library required)
+- [ ] 2.5 Task Management (DB model + CRUD + UI)
+- [ ] 2.6 General Procedures (rich text editor required)
 
 ---
 

@@ -33,6 +33,10 @@ export type {
 } from './auth'
 
 export type {
+  DashboardStats,
+} from './dashboard'
+
+export type {
   ProjectType,
   ProjectStatus,
   Project,

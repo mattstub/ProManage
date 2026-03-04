@@ -1,14 +1,60 @@
+'use client'
+
+import {
+  BuildingOffice2Icon,
+  Cog6ToothIcon,
+  FolderOpenIcon,
+  HomeIcon,
+} from '@heroicons/react/24/outline'
 import Link from 'next/link'
+
 
 import { NavItem } from './nav-item'
 
-const navItems = [
-  { href: '/dashboard', label: 'Dashboard' },
-  { href: '/projects', label: 'Projects' },
-  { href: '/contacts', label: 'Contacts' },
+import type { RoleName } from '@promanage/core'
+
+import { useAuth } from '@/hooks/use-auth'
+
+interface NavItemConfig {
+  href: string
+  label: string
+  icon: React.ReactNode
+  roles?: RoleName[]
+}
+
+const NAV_ITEMS: NavItemConfig[] = [
+  {
+    href: '/dashboard',
+    label: 'Dashboard',
+    icon: <HomeIcon className="h-5 w-5" />,
+  },
+  {
+    href: '/projects',
+    label: 'Projects',
+    icon: <FolderOpenIcon className="h-5 w-5" />,
+  },
+  {
+    href: '/organization',
+    label: 'Organization',
+    icon: <BuildingOffice2Icon className="h-5 w-5" />,
+    roles: ['Admin', 'OfficeAdmin'],
+  },
+  {
+    href: '/settings',
+    label: 'Settings',
+    icon: <Cog6ToothIcon className="h-5 w-5" />,
+    roles: ['Admin'],
+  },
 ]
 
 export function Sidebar() {
+  const { user } = useAuth()
+  const userRoles = user?.roles ?? []
+
+  const visibleItems = NAV_ITEMS.filter(
+    (item) => !item.roles || item.roles.some((r) => userRoles.includes(r))
+  )
+
   return (
     <aside className="w-60 bg-white border-r border-gray-200 flex flex-col">
       <div className="h-16 flex items-center px-6 border-b border-gray-200">
@@ -17,8 +63,8 @@ export function Sidebar() {
         </Link>
       </div>
       <nav className="flex-1 p-4 space-y-1">
-        {navItems.map((item) => (
-          <NavItem key={item.href} href={item.href} label={item.label} />
+        {visibleItems.map((item) => (
+          <NavItem key={item.href} href={item.href} label={item.label} icon={item.icon} />
         ))}
       </nav>
     </aside>

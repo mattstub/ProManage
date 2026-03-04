@@ -76,8 +76,20 @@ cd apps/api && npx prisma db push --force-reset && npx ts-node prisma/seed.ts
 ## Phase Status
 
 - **Phase 1** (Foundation): ALL COMPLETE — sub-phases A through G
-- **Phase 2** (Dashboard module): NOT STARTED — real data, widgets, project summary
+- **Phase 2** (Dashboard module): IN PROGRESS — 2.1 complete (dashboard, projects, real data)
 - Full roadmap: `docs/ROADMAP.md`
+
+---
+
+## Next Session Discussion Items
+
+Before starting Phase 2.2+, discuss and decide on:
+
+1. **CI/CD Pipeline** — What should the pipeline look like? Options: GitHub Actions for lint/type-check/build on PR, automated test runs, deployment target (VPS, Vercel, Railway, etc.), environment promotion strategy (dev → staging → prod).
+
+2. **Unit Testing strategy** — No tests exist yet. Decide on: framework (Vitest for packages + API, Playwright for E2E), coverage targets, what to test first (API services vs. UI components vs. auth flows), and whether to add tests retroactively to Phase 1 or write them alongside Phase 2+ work.
+
+3. **Logging/Observability** — API uses Pino (structured JSON logging). Discuss: log levels per environment, log aggregation service (Loki, Papertrail, Datadog), frontend error tracking (Sentry), and whether to add request tracing before the project scales.
 
 ---
 

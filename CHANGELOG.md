@@ -7,6 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - Phase 2 Dashboard Module (Session 7, 2026-03-03)
+
+**Phase 2.1 — Dashboard & Hub (multi-agent build)**
+
+*API layer (apps/api)*
+- `project.service.ts`: `listProjects` (paginated + status filter), `getProject`, `createProject`, `updateProject`, `archiveProject` — full `organizationId` scoping
+- `dashboard.service.ts`: `getDashboardStats` — single `Promise.all` → `activeProjectCount`, `totalProjectCount`, `teamMemberCount`, `projectsByStatus` breakdown
+- `routes/projects/index.ts`: GET /, GET /:id, POST / (Admin/PM), PATCH /:id (Admin/PM), DELETE /:id (Admin)
+- `routes/dashboard/index.ts`: GET /stats (all authenticated roles)
+- Registered both route groups in `routes/index.ts`
+
+*packages/core*
+- `types/dashboard.ts`: `DashboardStats` interface exported from `types/index.ts`
+
+*packages/api-client*
+- `resources/projects.ts`: `ProjectsResource` — `list`, `get`, `create`, `update`, `archive` with typed params/responses
+- `resources/dashboard.ts`: `DashboardResource` — `getStats()`
+- `index.ts`: `ApiClient` interface + `createApiClient()` updated with `projects` and `dashboard` namespaces
+- Rebuilt: `pnpm --filter @promanage/api-client build` — zero errors
+
+*apps/web*
+- `@heroicons/react` added as dependency
+- Hooks: `use-dashboard-stats`, `use-projects`, `use-organization` (TanStack Query)
+- `components/dashboard/stats-card.tsx`: `StatsCard` — loading skeleton, blue/green/default variants
+- `components/dashboard/project-summary-list.tsx`: `ProjectSummaryList` — status Badge color-coding, skeleton rows
+- `app/(dashboard)/dashboard/page.tsx`: replaced placeholders with live data (stats, org name, project list)
+- `app/(dashboard)/projects/page.tsx`: full projects table (number, name, type, status Badge, dates), skeleton loading, empty state, "New Project" button (Admin/PM) with stub Dialog
+- `components/layout/sidebar.tsx`: Heroicons icons (Home, FolderOpen, Users, Building, Cog), role-aware nav (Organization: Admin/OfficeAdmin; Settings: Admin only)
+
+*Security (both agents — all PASS)*
+- API: authentication on all routes, RBAC on writes, organizationId from JWT only, Zod validation, no raw SQL
+- Frontend: no token exposure, role gates via Zustand only, resetApiClient() on logout, no localStorage cache, no XSS
+
 ### Added - Phase 1 Sub-phase G (Session 6, 2026-03-02)
 
 **Sub-phase G - apps/web Next.js 14 App Router shell (~30 files)**

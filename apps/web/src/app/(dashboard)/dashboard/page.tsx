@@ -1,17 +1,19 @@
 'use client'
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Grid,
-} from '@promanage/ui-components'
+import { Grid } from '@promanage/ui-components'
 
+import { ProjectSummaryList } from '@/components/dashboard/project-summary-list'
+import { StatsCard } from '@/components/dashboard/stats-card'
 import { useAuth } from '@/hooks/use-auth'
+import { useDashboardStats } from '@/hooks/use-dashboard-stats'
+import { useOrganization } from '@/hooks/use-organization'
+import { useProjects } from '@/hooks/use-projects'
 
 export default function DashboardPage() {
   const { user } = useAuth()
+  const { data: stats, isLoading: statsLoading } = useDashboardStats()
+  const { data: org, isLoading: orgLoading } = useOrganization()
+  const { data: projectsResult, isLoading: projectsLoading } = useProjects({ perPage: 5 })
 
   return (
     <div className="space-y-6">
@@ -25,44 +27,34 @@ export default function DashboardPage() {
       </div>
 
       <Grid cols={3} gap={6}>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium text-gray-500">
-              Active Projects
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold text-gray-900">—</p>
-            <p className="text-xs text-gray-400 mt-1">Phase 2: real data</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium text-gray-500">
-              Team Members
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold text-gray-900">—</p>
-            <p className="text-xs text-gray-400 mt-1">Phase 2: real data</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium text-gray-500">
-              Organization
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-lg font-semibold text-gray-900 truncate">
-              {user?.organizationId ? 'Loaded' : '—'}
-            </p>
-            <p className="text-xs text-gray-400 mt-1">Phase 2: org name</p>
-          </CardContent>
-        </Card>
+        <StatsCard
+          title="Active Projects"
+          value={stats?.activeProjectCount ?? '—'}
+          description={
+            stats
+              ? `${stats.totalProjectCount} total project${stats.totalProjectCount !== 1 ? 's' : ''}`
+              : undefined
+          }
+          isLoading={statsLoading}
+          variant="blue"
+        />
+        <StatsCard
+          title="Team Members"
+          value={stats?.teamMemberCount ?? '—'}
+          isLoading={statsLoading}
+          variant="green"
+        />
+        <StatsCard
+          title="Organization"
+          value={org?.name ?? '—'}
+          isLoading={orgLoading}
+        />
       </Grid>
+
+      <ProjectSummaryList
+        projects={projectsResult?.data ?? []}
+        isLoading={projectsLoading}
+      />
     </div>
   )
 }

@@ -1,18 +1,23 @@
 export { ProManageClient } from './client'
 export { ApiClientError } from './errors'
 export { AuthResource } from './resources/auth'
-export { UsersResource } from './resources/users'
-export { OrganizationsResource } from './resources/organizations'
+export { DashboardResource } from './resources/dashboard'
 export { HealthResource } from './resources/health'
+export { OrganizationsResource } from './resources/organizations'
+export { ProjectsResource } from './resources/projects'
+export { UsersResource } from './resources/users'
 
-export type { ClientConfig, RequestOptions, PaginationParams, PaginatedResult } from './types'
+export type { ClientConfig, PaginatedResult, PaginationParams, RequestOptions } from './types'
 export type { HealthResponse } from './resources/health'
+export type { ListProjectsParams } from './resources/projects'
 
 import { ProManageClient } from './client'
 import { AuthResource } from './resources/auth'
-import { UsersResource } from './resources/users'
-import { OrganizationsResource } from './resources/organizations'
+import { DashboardResource } from './resources/dashboard'
 import { HealthResource } from './resources/health'
+import { OrganizationsResource } from './resources/organizations'
+import { ProjectsResource } from './resources/projects'
+import { UsersResource } from './resources/users'
 
 import type { ClientConfig } from './types'
 
@@ -26,22 +31,24 @@ import type { ClientConfig } from './types'
  * // Login
  * const { user, accessToken } = await client.auth.login({ email, password })
  *
- * // Fetch users (access token is now set on the client)
- * const { data: users, meta } = await client.users.list({ page: 1 })
+ * // Fetch projects (access token is now set on the client)
+ * const { data: projects, meta } = await client.projects.list({ page: 1 })
  * ```
  */
 export interface ApiClient {
   /** Core HTTP client — use directly for custom requests. */
   core: ProManageClient
   auth: AuthResource
-  users: UsersResource
-  organizations: OrganizationsResource
+  dashboard: DashboardResource
   health: HealthResource
+  organizations: OrganizationsResource
+  projects: ProjectsResource
+  users: UsersResource
 }
 
 /**
  * Create a configured ProManage API client.
- * The returned object exposes typed resource namespaces (auth, users, etc.)
+ * The returned object exposes typed resource namespaces (auth, projects, etc.)
  * and the underlying core client for advanced use.
  */
 export function createApiClient(config: ClientConfig): ApiClient {
@@ -50,8 +57,10 @@ export function createApiClient(config: ClientConfig): ApiClient {
   return {
     core,
     auth: new AuthResource(core),
-    users: new UsersResource(core),
-    organizations: new OrganizationsResource(core),
+    dashboard: new DashboardResource(core),
     health: new HealthResource(core),
+    organizations: new OrganizationsResource(core),
+    projects: new ProjectsResource(core),
+    users: new UsersResource(core),
   }
 }

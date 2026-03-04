@@ -12,7 +12,7 @@ const cookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
   sameSite: 'lax' as const,
-  path: '/api/v1/auth',
+  path: '/',
   maxAge: 7 * 24 * 60 * 60, // 7 days in seconds
 }
 
@@ -71,7 +71,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
         await authService.logout(fastify, token)
       }
 
-      reply.clearCookie(REFRESH_COOKIE, { path: '/api/v1/auth' })
+      reply.clearCookie(REFRESH_COOKIE, { path: '/' })
 
       return reply.status(204).send()
     }

@@ -190,6 +190,21 @@ DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-d
 - Removed .claude/settings.local.json from git tracking
 - PR merged by user
 
+### Session 8 - 2026-03-04
+- Auth redirect loop bug fixed: logout route made unauthenticated; onAuthError calls logout before redirect
+- Vitest testing infrastructure added: packages/core (35 tests) + apps/api (25 tests) = 60 total, all passing
+- Pre-existing build issues fixed: API tsconfig paths, authenticate.ts jwtVerify typing, error-handler unused param
+- scripts/dev.sh rewritten (docker compose v2, WSL-aware); scripts/status.sh added
+- CLAUDE.md updated with Testing section and mocking conventions
+- Branch: fix/phase2-auth-loop-vitest-infra — 3 commits, ready to push
+- ⚠️ BLOCKED ON MERGE: CodeQL security finding — missing rate limiting on authorized routes
+  Affected: apps/api/src/routes/users/index.ts, projects/index.ts, organizations/index.ts, dashboard/index.ts
+  All four route groups perform authorization (authenticate + authorize middleware) but are not
+  individually rate-limited. The global rate limiter in app.ts applies, but CodeQL flags per-route
+  handlers that gate on auth without explicit rate limit preHandlers.
+  FIX NEXT SESSION BEFORE MERGING: add @fastify/rate-limit preHandler to sensitive auth-gated routes,
+  or configure route-level overrides for stricter limits on write operations (POST/PATCH/DELETE).
+
 ### Session 7 - 2026-03-03
 - Phase 2.1 Dashboard module COMPLETE — multi-agent build (Project Manager, API Builder, API Client Builder, Frontend Builder, Code Review, 2× Security Analyst, Testing)
 - API: project.service + dashboard.service, /projects CRUD routes, /dashboard/stats route

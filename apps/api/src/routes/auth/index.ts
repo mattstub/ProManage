@@ -60,22 +60,22 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
     return success(reply, { accessToken: result.accessToken })
   })
 
-  // POST /auth/logout
-  fastify.post(
-    '/logout',
-    { preHandler: [authenticate] },
-    async (request, reply) => {
-      const token = (request.cookies as Record<string, string>)[REFRESH_COOKIE]
+  // POST /auth/logout — intentionally unauthenticated.
+  // The client may call this when the access token has already expired (e.g.
+  // from onAuthError). We revoke whatever refresh token is in the cookie and
+  // clear it. This is the only way to break the redirect loop caused by an
+  // expired/revoked cookie that the Next.js middleware still trusts.
+  fastify.post('/logout', async (request, reply) => {
+    const token = (request.cookies as Record<string, string>)[REFRESH_COOKIE]
 
-      if (token) {
-        await authService.logout(fastify, token)
-      }
-
-      reply.clearCookie(REFRESH_COOKIE, { path: '/' })
-
-      return reply.status(204).send()
+    if (token) {
+      await authService.logout(fastify, token)
     }
-  )
+
+    reply.clearCookie(REFRESH_COOKIE, { path: '/' })
+
+    return reply.status(204).send()
+  })
 
   // GET /auth/me
   fastify.get(

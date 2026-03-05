@@ -7,7 +7,11 @@ export async function authenticate(
   _reply: FastifyReply
 ) {
   try {
-    const payload = await request.jwtVerify()
+    const payload = await request.jwtVerify<{
+      sub: string
+      email: string
+      organizationId: string
+    }>()
     request.user = {
       id: payload.sub,
       email: payload.email,

@@ -9,7 +9,7 @@ import type { FastifyError, FastifyReply, FastifyRequest } from 'fastify'
 
 export function errorHandler(
   error: FastifyError | Error,
-  request: FastifyRequest,
+  _request: FastifyRequest,
   reply: FastifyReply
 ) {
   // App errors (our own error classes)

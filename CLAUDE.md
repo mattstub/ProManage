@@ -31,7 +31,7 @@ Monorepo: `pnpm workspaces` + `Turborepo`. Author: Matt Stubenhofer.
 ```bash
 # Start infrastructure
 source ~/.nvm/nvm.sh && nvm use 20
-docker-compose up -d
+docker compose up -d   # Note: 'docker compose' (v2), NOT 'docker-compose' (v1)
 
 # Package build order (core first, then parallel)
 pnpm --filter @promanage/core build
@@ -81,15 +81,63 @@ cd apps/api && npx prisma db push --force-reset && npx ts-node prisma/seed.ts
 
 ---
 
+## Testing
+
+### Run Tests
+
+```bash
+pnpm test                                      # all packages via turbo
+pnpm --filter @promanage/core test             # unit tests only
+pnpm --filter @promanage/api test              # API service + route tests only
+```
+
+### Test Infrastructure
+
+| Package | Config | Helpers |
+|---|---|---|
+| `packages/core` | `vitest.config.ts` + `tsconfig.test.json` | — |
+| `apps/api` | `vitest.config.ts` + `tsconfig.test.json` + `src/__tests__/setup.ts` | `build-app.ts`, `mock-prisma.ts` |
+
+### Adding Tests for a New Feature
+
+**Required: tests ship with the feature, not after it.**
+
+1. **New API route/service** → add tests in `apps/api/src/__tests__/`
+   - `services/[name].service.test.ts` — business logic, mock Prisma via `createMockPrisma()`
+   - `routes/[name].routes.test.ts` — HTTP contract (status codes, cookies, body shape), use `buildAuthTestApp()` or add a new `build[Name]TestApp()` helper
+   - For a new route group, add a `buildXxxTestApp()` in `helpers/build-app.ts`
+
+2. **New `packages/core` schema or util** → add tests in `packages/core/src/__tests__/`
+   - `schemas/[name].test.ts` — valid + invalid inputs, boundary values
+   - `utils/[name].test.ts` — all branches + edge cases
+
+3. **What to test at each layer**
+
+   | Layer | What to test | What NOT to test |
+   |---|---|---|
+   | Service | Business rules, error branches (wrong password, revoked token, inactive user) | DB queries in isolation — trust Prisma |
+   | Route | Status codes, response shape, cookie set/clear, auth required vs public | Internal service logic |
+   | Schema | Regex/length constraints, required fields, type coercion | Implementation details |
+   | Utils | Return values for all branches + edge cases (0, negative, max) | Intl internals |
+
+### Mocking Conventions
+
+- **Prisma**: `createMockPrisma()` from `apps/api/src/__tests__/helpers/mock-prisma.ts` — add new model mocks there as new features are added
+- **External services** (bcrypt, crypto, token signing): `vi.mock()` at the top of service test files
+- **Fastify app**: `buildAuthTestApp()` for auth routes; create parallel helpers for other route groups
+- **JWTs in route tests**: `signTestToken(app, payload)` — signs with the test secret
+
+### Key Design Decisions
+
+- Auth loop fix (Session 8): `logout` is unauthenticated — the client calls it from `onAuthError` to clear the httpOnly cookie before redirecting, preventing the middleware redirect loop caused by expired cookies
+
+---
+
 ## Next Session Discussion Items
 
-Before starting Phase 2.2+, discuss and decide on:
+1. **CI/CD Pipeline** — GitHub Actions for lint/type-check/build/test on PR, deployment target (VPS, Vercel, Railway), environment promotion strategy.
 
-1. **CI/CD Pipeline** — What should the pipeline look like? Options: GitHub Actions for lint/type-check/build on PR, automated test runs, deployment target (VPS, Vercel, Railway, etc.), environment promotion strategy (dev → staging → prod).
-
-2. **Unit Testing strategy** — No tests exist yet. Decide on: framework (Vitest for packages + API, Playwright for E2E), coverage targets, what to test first (API services vs. UI components vs. auth flows), and whether to add tests retroactively to Phase 1 or write them alongside Phase 2+ work.
-
-3. **Logging/Observability** — API uses Pino (structured JSON logging). Discuss: log levels per environment, log aggregation service (Loki, Papertrail, Datadog), frontend error tracking (Sentry), and whether to add request tracing before the project scales.
+2. **Logging/Observability** — Pino log levels per environment, log aggregation (Loki, Papertrail, Datadog), Sentry for frontend errors.
 
 ---
 

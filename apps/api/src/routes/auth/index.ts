@@ -2,6 +2,7 @@ import { loginSchema, registerSchema } from '@promanage/core'
 
 import { authenticate } from '../../middleware/authenticate'
 import { success } from '../../lib/response'
+import { RATE_LIMITS } from '../../lib/rate-limit'
 import * as authService from '../../services/auth.service'
 
 import type { FastifyPluginAsync } from 'fastify'
@@ -16,54 +17,85 @@ const cookieOptions = {
   maxAge: 7 * 24 * 60 * 60, // 7 days in seconds
 }
 
+// Stricter rate limits for auth endpoints to prevent brute-force attacks
+
 const authRoutes: FastifyPluginAsync = async (fastify) => {
+  // Create rate limit preHandlers using fastify's rateLimit decorator
+  const authRateLimiter = fastify.rateLimit(AUTH_RATE_LIMIT)
+  const writeRateLimiter = fastify.rateLimit(RATE_LIMITS.WRITE)
+  const readRateLimiter = fastify.rateLimit(RATE_LIMITS.READ)
+
   // POST /auth/register
-  fastify.post('/register', async (request, reply) => {
-    const input = registerSchema.parse(request.body)
-    const result = await authService.register(fastify, input)
+  fastify.post(
+    '/register',
+    {
+      config: {
+        rateLimit: RATE_LIMITS.WRITE,
+      },
+    },
+    async (request, reply) => {
+      const input = registerSchema.parse(request.body)
+      const result = await authService.register(fastify, input)
 
-    reply.setCookie(REFRESH_COOKIE, result.refreshToken, cookieOptions)
+      reply.setCookie(REFRESH_COOKIE, result.refreshToken, cookieOptions)
 
-    return success(reply, {
-      user: result.user,
-      accessToken: result.accessToken,
-    }, 201)
-  })
+      return success(reply, {
+        user: result.user,
+        accessToken: result.accessToken,
+      }, 201)
+    }
+  )
 
   // POST /auth/login
-  fastify.post('/login', async (request, reply) => {
-    const input = loginSchema.parse(request.body)
-    const result = await authService.login(fastify, input)
+  fastify.post(
+    '/login',
+    {
+      config: {
+        rateLimit: RATE_LIMITS.WRITE,
+      },
+    },
+    async (request, reply) => {
+      const input = loginSchema.parse(request.body)
+      const result = await authService.login(fastify, input)
 
-    reply.setCookie(REFRESH_COOKIE, result.refreshToken, cookieOptions)
+      reply.setCookie(REFRESH_COOKIE, result.refreshToken, cookieOptions)
 
-    return success(reply, {
-      user: result.user,
-      accessToken: result.accessToken,
-    })
-  })
-
-  // POST /auth/refresh
-  fastify.post('/refresh', async (request, reply) => {
-    const token = (request.cookies as Record<string, string>)[REFRESH_COOKIE]
-
-    if (!token) {
-      return reply.status(401).send({
-        error: { code: 'UNAUTHORIZED', message: 'No refresh token provided' },
+      return success(reply, {
+        user: result.user,
+        accessToken: result.accessToken,
       })
     }
+  )
 
-    const result = await authService.refresh(fastify, token)
+  // POST /auth/refresh
+  fastify.post(
+    '/refresh',
+    { preHandler: writeRateLimiter },
+    async (request, reply) => {
+      const token = (request.cookies as Record<string, string>)[REFRESH_COOKIE]
 
-    reply.setCookie(REFRESH_COOKIE, result.refreshToken, cookieOptions)
+      if (!token) {
+        return reply.status(401).send({
+          error: { code: 'UNAUTHORIZED', message: 'No refresh token provided' },
+        })
+      }
 
-    return success(reply, { accessToken: result.accessToken })
-  })
+      const result = await authService.refresh(fastify, token)
 
-  // POST /auth/logout
+      reply.setCookie(REFRESH_COOKIE, result.refreshToken, cookieOptions)
+
+      return success(reply, { accessToken: result.accessToken })
+    }
+  )
+
+  // POST /auth/logout — intentionally unauthenticated.
+  // The client may call this when the access token has already expired (e.g.
+  // from onAuthError). We revoke whatever refresh token is in the cookie and
+  // clear it. This is the only way to break the redirect loop caused by an
+  // expired/revoked cookie that the Next.js middleware still trusts.
   fastify.post(
     '/logout',
-    { preHandler: [authenticate] },
+    { preHandler: writeRateLimiter },
     async (request, reply) => {
       const token = (request.cookies as Record<string, string>)[REFRESH_COOKIE]
 
@@ -80,7 +112,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
   // GET /auth/me
   fastify.get(
     '/me',
-    { preHandler: [authenticate] },
+    { preHandler: [readRateLimiter, authenticate] },
     async (request, reply) => {
       const result = await authService.getMe(fastify, request.user.id)
       return success(reply, result)

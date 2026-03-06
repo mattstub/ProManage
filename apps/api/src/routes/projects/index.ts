@@ -14,6 +14,22 @@ const projectRoutes: FastifyPluginAsync = async (fastify) => {
     global: false,
   })
 
+  // apply a default rate limit to all routes in this plugin unless they
+  // explicitly define their own `config.rateLimit`
+  fastify.addHook('onRoute', (routeOptions) => {
+    if (!routeOptions.config) {
+      routeOptions.config = {}
+    }
+    if (!('rateLimit' in routeOptions.config!)) {
+      ;(routeOptions.config as any).rateLimit = {
+        max: 100,
+        timeWindow: '1 minute',
+      }
+    }
+  })
+
+  // authenticate hook applied globally; individual routes only specify roles or
+  // additional limits as needed
   fastify.addHook('preHandler', authenticate)
 
   // GET /projects

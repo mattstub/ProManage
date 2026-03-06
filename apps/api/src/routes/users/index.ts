@@ -3,6 +3,7 @@ import { updateUserSchema } from '@promanage/core'
 import { authenticate } from '../../middleware/authenticate'
 import { requireRole } from '../../middleware/authorize'
 import { success, paginated, noContent } from '../../lib/response'
+import { routeRateLimit } from '../../lib/rate-limit'
 import * as userService from '../../services/user.service'
 
 import type { FastifyPluginAsync } from 'fastify'
@@ -14,7 +15,10 @@ const userRoutes: FastifyPluginAsync = async (fastify) => {
   // GET /users
   fastify.get(
     '/',
-    { preHandler: [requireRole('Admin', 'ProjectManager', 'OfficeAdmin')] },
+    {
+      preHandler: [requireRole('Admin', 'ProjectManager', 'OfficeAdmin')],
+      ...routeRateLimit('READ'),
+    },
     async (request, reply) => {
       const query = request.query as { page?: string; perPage?: string }
       const result = await userService.listUsers(
@@ -27,39 +31,50 @@ const userRoutes: FastifyPluginAsync = async (fastify) => {
   )
 
   // GET /users/:id
-  fastify.get('/:id', async (request, reply) => {
-    const { id } = request.params as { id: string }
-    const user = await userService.getUser(
-      fastify,
-      id,
-      request.user.organizationId
-    )
-    return success(reply, user)
-  })
+  fastify.get(
+    '/:id',
+    routeRateLimit('READ'),
+    async (request, reply) => {
+      const { id } = request.params as { id: string }
+      const user = await userService.getUser(
+        fastify,
+        id,
+        request.user.organizationId
+      )
+      return success(reply, user)
+    }
+  )
 
   // PATCH /users/:id
-  fastify.patch('/:id', async (request, reply) => {
-    const { id } = request.params as { id: string }
-    const input = updateUserSchema.parse(request.body)
+  fastify.patch(
+    '/:id',
+    routeRateLimit('WRITE'),
+    async (request, reply) => {
+      const { id } = request.params as { id: string }
+      const input = updateUserSchema.parse(request.body)
 
-    // Users can update themselves, admins can update anyone
-    if (id !== request.user.id) {
-      await requireRole('Admin')(request, reply)
+      // Users can update themselves, admins can update anyone
+      if (id !== request.user.id) {
+        await requireRole('Admin')(request, reply)
+      }
+
+      const user = await userService.updateUser(
+        fastify,
+        id,
+        request.user.organizationId,
+        input
+      )
+      return success(reply, user)
     }
-
-    const user = await userService.updateUser(
-      fastify,
-      id,
-      request.user.organizationId,
-      input
-    )
-    return success(reply, user)
-  })
+  )
 
   // DELETE /users/:id
   fastify.delete(
     '/:id',
-    { preHandler: [requireRole('Admin')] },
+    {
+      preHandler: [requireRole('Admin')],
+      ...routeRateLimit('SENSITIVE'),
+    },
     async (request, reply) => {
       const { id } = request.params as { id: string }
       await userService.deactivateUser(

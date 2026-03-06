@@ -25,3 +25,10 @@ export {
   type CreateProjectSchemaInput,
   type UpdateProjectSchemaInput,
 } from './project'
+
+export {
+  createTaskSchema,
+  updateTaskSchema,
+  type CreateTaskSchemaInput,
+  type UpdateTaskSchemaInput,
+} from './task'

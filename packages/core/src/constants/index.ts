@@ -16,4 +16,11 @@ export {
   PROJECT_TYPE_LIST,
 } from './project-status'
 
+export {
+  TASK_STATUSES,
+  TASK_PRIORITIES,
+  TASK_STATUS_LIST,
+  TASK_PRIORITY_LIST,
+} from './task-status'
+
 export { ERROR_CODES, HTTP_STATUS, type ErrorCode } from './api'

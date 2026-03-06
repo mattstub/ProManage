@@ -7,6 +7,7 @@ import type { PrismaClient } from '@prisma/client'
 
 import { errorHandler } from '../../middleware/error-handler'
 import authRoutes from '../../routes/auth'
+import taskRoutes from '../../routes/tasks'
 
 import { createMockPrisma } from './mock-prisma'
 import type { MockPrisma } from './mock-prisma'
@@ -50,7 +51,37 @@ export async function buildAuthTestApp(overridePrisma?: MockPrisma) {
  */
 export function signTestToken(
   app: Awaited<ReturnType<typeof buildAuthTestApp>>['app'],
-  payload: { sub: string; email: string; organizationId: string }
+  payload: { sub: string; email: string; organizationId: string; roles?: string[] }
 ) {
   return app.jwt.sign(payload)
+}
+
+/**
+ * Builds a minimal Fastify instance for testing task routes.
+ *
+ * - Registers cookie + JWT + rate-limit plugins (required by routes).
+ * - Decorates fastify.prisma with a mock — no real DB connection.
+ * - Mounts task routes at /api/v1/tasks, matching production layout.
+ *
+ * Returns both the app (for inject() calls) and the prisma mock (for
+ * setting up return values and asserting calls).
+ */
+export async function buildTaskTestApp(overridePrisma?: MockPrisma) {
+  const prisma = overridePrisma ?? createMockPrisma()
+
+  const app = Fastify({ logger: false })
+
+  await app.register(cookie)
+  await app.register(jwt, { secret: process.env['JWT_SECRET']! })
+  await app.register(rateLimit, { max: 1000, timeWindow: '1 minute' })
+
+  // Cast required: MockPrisma is a partial of PrismaClient
+  app.decorate('prisma', prisma as unknown as PrismaClient)
+
+  app.setErrorHandler(errorHandler)
+
+  await app.register(taskRoutes, { prefix: '/api/v1/tasks' })
+  await app.ready()
+
+  return { app, prisma }
 }

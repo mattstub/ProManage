@@ -17,11 +17,8 @@ const cookieOptions = {
   maxAge: 7 * 24 * 60 * 60, // 7 days in seconds
 }
 
-// Stricter rate limits for auth endpoints to prevent brute-force attacks
-
 const authRoutes: FastifyPluginAsync = async (fastify) => {
   // Create rate limit preHandlers using fastify's rateLimit decorator
-  const authRateLimiter = fastify.rateLimit(AUTH_RATE_LIMIT)
   const writeRateLimiter = fastify.rateLimit(RATE_LIMITS.WRITE)
   const readRateLimiter = fastify.rateLimit(RATE_LIMITS.READ)
 

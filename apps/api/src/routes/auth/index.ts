@@ -18,7 +18,6 @@ const cookieOptions = {
 }
 
 // Stricter rate limits for auth endpoints to prevent brute-force attacks
-const AUTH_RATE_LIMIT = { max: 10, timeWindow: '1 minute' }
 
 const authRoutes: FastifyPluginAsync = async (fastify) => {
   // Create rate limit preHandlers using fastify's rateLimit decorator
@@ -29,7 +28,11 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
   // POST /auth/register
   fastify.post(
     '/register',
-    { preHandler: authRateLimiter },
+    {
+      config: {
+        rateLimit: RATE_LIMITS.WRITE,
+      },
+    },
     async (request, reply) => {
       const input = registerSchema.parse(request.body)
       const result = await authService.register(fastify, input)
@@ -46,7 +49,11 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
   // POST /auth/login
   fastify.post(
     '/login',
-    { preHandler: authRateLimiter },
+    {
+      config: {
+        rateLimit: RATE_LIMITS.WRITE,
+      },
+    },
     async (request, reply) => {
       const input = loginSchema.parse(request.body)
       const result = await authService.login(fastify, input)

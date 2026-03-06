@@ -21,7 +21,6 @@ const cookieOptions = {
 
 const authRoutes: FastifyPluginAsync = async (fastify) => {
   // Create rate limit preHandlers using fastify's rateLimit decorator
-  const authRateLimiter = fastify.rateLimit(AUTH_RATE_LIMIT)
   const writeRateLimiter = fastify.rateLimit(RATE_LIMITS.WRITE)
   const readRateLimiter = fastify.rateLimit(RATE_LIMITS.READ)
 
@@ -50,6 +49,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.post(
     '/login',
     {
+      preHandler: writeRateLimiter,
       config: {
         rateLimit: RATE_LIMITS.WRITE,
       },

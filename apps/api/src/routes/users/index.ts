@@ -3,21 +3,20 @@ import { updateUserSchema } from '@promanage/core'
 import { authenticate } from '../../middleware/authenticate'
 import { requireRole } from '../../middleware/authorize'
 import { success, paginated, noContent } from '../../lib/response'
-import { routeRateLimit } from '../../lib/rate-limit'
+import { RATE_LIMITS } from '../../lib/rate-limit'
 import * as userService from '../../services/user.service'
 
 import type { FastifyPluginAsync } from 'fastify'
 
 const userRoutes: FastifyPluginAsync = async (fastify) => {
-  // All user routes require authentication
-  fastify.addHook('preHandler', authenticate)
-
   // GET /users
   fastify.get(
     '/',
     {
-      preHandler: [requireRole('Admin', 'ProjectManager', 'OfficeAdmin')],
-      ...routeRateLimit('READ'),
+      preHandler: [authenticate, requireRole('Admin', 'ProjectManager', 'OfficeAdmin')],
+      config: {
+        rateLimit: RATE_LIMITS.READ,
+      },
     },
     async (request, reply) => {
       const query = request.query as { page?: string; perPage?: string }
@@ -33,7 +32,12 @@ const userRoutes: FastifyPluginAsync = async (fastify) => {
   // GET /users/:id
   fastify.get(
     '/:id',
-    routeRateLimit('READ'),
+    {
+      preHandler: [authenticate],
+      config: {
+        rateLimit: RATE_LIMITS.READ,
+      },
+    },
     async (request, reply) => {
       const { id } = request.params as { id: string }
       const user = await userService.getUser(
@@ -48,7 +52,12 @@ const userRoutes: FastifyPluginAsync = async (fastify) => {
   // PATCH /users/:id
   fastify.patch(
     '/:id',
-    routeRateLimit('WRITE'),
+    {
+      preHandler: [authenticate],
+      config: {
+        rateLimit: RATE_LIMITS.WRITE,
+      },
+    },
     async (request, reply) => {
       const { id } = request.params as { id: string }
       const input = updateUserSchema.parse(request.body)
@@ -72,8 +81,10 @@ const userRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.delete(
     '/:id',
     {
-      preHandler: [requireRole('Admin')],
-      ...routeRateLimit('SENSITIVE'),
+      preHandler: [authenticate, requireRole('Admin')],
+      config: {
+        rateLimit: RATE_LIMITS.SENSITIVE,
+      },
     },
     async (request, reply) => {
       const { id } = request.params as { id: string }

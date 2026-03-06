@@ -1,6 +1,7 @@
 import Fastify from 'fastify'
 import cookie from '@fastify/cookie'
 import jwt from '@fastify/jwt'
+import rateLimit from '@fastify/rate-limit'
 
 import type { PrismaClient } from '@prisma/client'
 
@@ -13,7 +14,7 @@ import type { MockPrisma } from './mock-prisma'
 /**
  * Builds a minimal Fastify instance for testing auth routes.
  *
- * - Registers cookie + JWT plugins (required by authenticate middleware).
+ * - Registers cookie + JWT + rate-limit plugins (required by routes).
  * - Decorates fastify.prisma with a mock — no real DB connection.
  * - Mounts auth routes at /api/v1/auth, matching production layout.
  *
@@ -30,6 +31,7 @@ export async function buildAuthTestApp(overridePrisma?: MockPrisma) {
 
   await app.register(cookie)
   await app.register(jwt, { secret: process.env['JWT_SECRET']! })
+  await app.register(rateLimit, { max: 1000, timeWindow: '1 minute' })
 
   // Cast required: MockPrisma is a partial of PrismaClient
   app.decorate('prisma', prisma as unknown as PrismaClient)

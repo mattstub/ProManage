@@ -9,15 +9,13 @@ import * as orgService from '../../services/organization.service'
 import type { FastifyPluginAsync } from 'fastify'
 
 const organizationRoutes: FastifyPluginAsync = async (fastify) => {
+  const readRateLimiter = fastify.rateLimit(RATE_LIMITS.READ)
+  const sensitiveRateLimiter = fastify.rateLimit(RATE_LIMITS.SENSITIVE)
+
   // GET /organizations/current
   fastify.get(
     '/current',
-    {
-      preHandler: [authenticate],
-      config: {
-        rateLimit: RATE_LIMITS.READ,
-      },
-    },
+    { preHandler: [readRateLimiter, authenticate] },
     async (request, reply) => {
       const org = await orgService.getOrganization(
         fastify,
@@ -30,12 +28,7 @@ const organizationRoutes: FastifyPluginAsync = async (fastify) => {
   // PATCH /organizations/current
   fastify.patch(
     '/current',
-    {
-      preHandler: [authenticate, requireRole('Admin')],
-      config: {
-        rateLimit: RATE_LIMITS.SENSITIVE,
-      },
-    },
+    { preHandler: [sensitiveRateLimiter, authenticate, requireRole('Admin')] },
     async (request, reply) => {
       const input = updateOrganizationSchema.parse(request.body)
       const org = await orgService.updateOrganization(

@@ -6,15 +6,12 @@ import * as dashboardService from '../../services/dashboard.service'
 import type { FastifyPluginAsync } from 'fastify'
 
 const dashboardRoutes: FastifyPluginAsync = async (fastify) => {
+  const readRateLimiter = fastify.rateLimit(RATE_LIMITS.READ)
+
   // GET /dashboard/stats
   fastify.get(
     '/stats',
-    {
-      preHandler: [authenticate],
-      config: {
-        rateLimit: RATE_LIMITS.READ,
-      },
-    },
+    { preHandler: [readRateLimiter, authenticate] },
     async (request, reply) => {
       const stats = await dashboardService.getDashboardStats(
         fastify,

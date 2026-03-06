@@ -21,14 +21,15 @@ const cookieOptions = {
 const AUTH_RATE_LIMIT = { max: 10, timeWindow: '1 minute' }
 
 const authRoutes: FastifyPluginAsync = async (fastify) => {
+  // Create rate limit preHandlers using fastify's rateLimit decorator
+  const authRateLimiter = fastify.rateLimit(AUTH_RATE_LIMIT)
+  const writeRateLimiter = fastify.rateLimit(RATE_LIMITS.WRITE)
+  const readRateLimiter = fastify.rateLimit(RATE_LIMITS.READ)
+
   // POST /auth/register
   fastify.post(
     '/register',
-    {
-      config: {
-        rateLimit: AUTH_RATE_LIMIT,
-      },
-    },
+    { preHandler: authRateLimiter },
     async (request, reply) => {
       const input = registerSchema.parse(request.body)
       const result = await authService.register(fastify, input)
@@ -45,11 +46,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
   // POST /auth/login
   fastify.post(
     '/login',
-    {
-      config: {
-        rateLimit: AUTH_RATE_LIMIT,
-      },
-    },
+    { preHandler: authRateLimiter },
     async (request, reply) => {
       const input = loginSchema.parse(request.body)
       const result = await authService.login(fastify, input)
@@ -66,11 +63,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
   // POST /auth/refresh
   fastify.post(
     '/refresh',
-    {
-      config: {
-        rateLimit: RATE_LIMITS.WRITE,
-      },
-    },
+    { preHandler: writeRateLimiter },
     async (request, reply) => {
       const token = (request.cookies as Record<string, string>)[REFRESH_COOKIE]
 
@@ -95,11 +88,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
   // expired/revoked cookie that the Next.js middleware still trusts.
   fastify.post(
     '/logout',
-    {
-      config: {
-        rateLimit: RATE_LIMITS.WRITE,
-      },
-    },
+    { preHandler: writeRateLimiter },
     async (request, reply) => {
       const token = (request.cookies as Record<string, string>)[REFRESH_COOKIE]
 
@@ -116,12 +105,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
   // GET /auth/me
   fastify.get(
     '/me',
-    {
-      preHandler: [authenticate],
-      config: {
-        rateLimit: RATE_LIMITS.READ,
-      },
-    },
+    { preHandler: [readRateLimiter, authenticate] },
     async (request, reply) => {
       const result = await authService.getMe(fastify, request.user.id)
       return success(reply, result)

@@ -9,15 +9,14 @@ import * as userService from '../../services/user.service'
 import type { FastifyPluginAsync } from 'fastify'
 
 const userRoutes: FastifyPluginAsync = async (fastify) => {
+  const readRateLimiter = fastify.rateLimit(RATE_LIMITS.READ)
+  const writeRateLimiter = fastify.rateLimit(RATE_LIMITS.WRITE)
+  const sensitiveRateLimiter = fastify.rateLimit(RATE_LIMITS.SENSITIVE)
+
   // GET /users
   fastify.get(
     '/',
-    {
-      preHandler: [authenticate, requireRole('Admin', 'ProjectManager', 'OfficeAdmin')],
-      config: {
-        rateLimit: RATE_LIMITS.READ,
-      },
-    },
+    { preHandler: [readRateLimiter, authenticate, requireRole('Admin', 'ProjectManager', 'OfficeAdmin')] },
     async (request, reply) => {
       const query = request.query as { page?: string; perPage?: string }
       const result = await userService.listUsers(
@@ -32,12 +31,7 @@ const userRoutes: FastifyPluginAsync = async (fastify) => {
   // GET /users/:id
   fastify.get(
     '/:id',
-    {
-      preHandler: [authenticate],
-      config: {
-        rateLimit: RATE_LIMITS.READ,
-      },
-    },
+    { preHandler: [readRateLimiter, authenticate] },
     async (request, reply) => {
       const { id } = request.params as { id: string }
       const user = await userService.getUser(
@@ -52,12 +46,7 @@ const userRoutes: FastifyPluginAsync = async (fastify) => {
   // PATCH /users/:id
   fastify.patch(
     '/:id',
-    {
-      preHandler: [authenticate],
-      config: {
-        rateLimit: RATE_LIMITS.WRITE,
-      },
-    },
+    { preHandler: [writeRateLimiter, authenticate] },
     async (request, reply) => {
       const { id } = request.params as { id: string }
       const input = updateUserSchema.parse(request.body)
@@ -80,12 +69,7 @@ const userRoutes: FastifyPluginAsync = async (fastify) => {
   // DELETE /users/:id
   fastify.delete(
     '/:id',
-    {
-      preHandler: [authenticate, requireRole('Admin')],
-      config: {
-        rateLimit: RATE_LIMITS.SENSITIVE,
-      },
-    },
+    { preHandler: [sensitiveRateLimiter, authenticate, requireRole('Admin')] },
     async (request, reply) => {
       const { id } = request.params as { id: string }
       await userService.deactivateUser(

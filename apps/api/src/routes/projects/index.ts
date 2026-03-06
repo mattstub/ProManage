@@ -10,15 +10,14 @@ import type { ProjectStatus } from '@promanage/core'
 import type { FastifyPluginAsync } from 'fastify'
 
 const projectRoutes: FastifyPluginAsync = async (fastify) => {
+  const readRateLimiter = fastify.rateLimit(RATE_LIMITS.READ)
+  const writeRateLimiter = fastify.rateLimit(RATE_LIMITS.WRITE)
+  const sensitiveRateLimiter = fastify.rateLimit(RATE_LIMITS.SENSITIVE)
+
   // GET /projects
   fastify.get(
     '/',
-    {
-      preHandler: [authenticate],
-      config: {
-        rateLimit: RATE_LIMITS.READ,
-      },
-    },
+    { preHandler: [readRateLimiter, authenticate] },
     async (request, reply) => {
       const query = request.query as {
         page?: string
@@ -37,12 +36,7 @@ const projectRoutes: FastifyPluginAsync = async (fastify) => {
   // GET /projects/:id
   fastify.get(
     '/:id',
-    {
-      preHandler: [authenticate],
-      config: {
-        rateLimit: RATE_LIMITS.READ,
-      },
-    },
+    { preHandler: [readRateLimiter, authenticate] },
     async (request, reply) => {
       const { id } = request.params as { id: string }
       const project = await projectService.getProject(
@@ -57,12 +51,7 @@ const projectRoutes: FastifyPluginAsync = async (fastify) => {
   // POST /projects — Admin, ProjectManager only
   fastify.post(
     '/',
-    {
-      preHandler: [authenticate, requireRole('Admin', 'ProjectManager')],
-      config: {
-        rateLimit: RATE_LIMITS.WRITE,
-      },
-    },
+    { preHandler: [writeRateLimiter, authenticate, requireRole('Admin', 'ProjectManager')] },
     async (request, reply) => {
       const input = createProjectSchema.parse(request.body)
       const project = await projectService.createProject(
@@ -77,12 +66,7 @@ const projectRoutes: FastifyPluginAsync = async (fastify) => {
   // PATCH /projects/:id — Admin, ProjectManager only
   fastify.patch(
     '/:id',
-    {
-      preHandler: [authenticate, requireRole('Admin', 'ProjectManager')],
-      config: {
-        rateLimit: RATE_LIMITS.WRITE,
-      },
-    },
+    { preHandler: [writeRateLimiter, authenticate, requireRole('Admin', 'ProjectManager')] },
     async (request, reply) => {
       const { id } = request.params as { id: string }
       const input = updateProjectSchema.parse(request.body)
@@ -99,12 +83,7 @@ const projectRoutes: FastifyPluginAsync = async (fastify) => {
   // DELETE /projects/:id — Admin only (archives)
   fastify.delete(
     '/:id',
-    {
-      preHandler: [authenticate, requireRole('Admin')],
-      config: {
-        rateLimit: RATE_LIMITS.SENSITIVE,
-      },
-    },
+    { preHandler: [sensitiveRateLimiter, authenticate, requireRole('Admin')] },
     async (request, reply) => {
       const { id } = request.params as { id: string }
       await projectService.archiveProject(fastify, id, request.user.organizationId)

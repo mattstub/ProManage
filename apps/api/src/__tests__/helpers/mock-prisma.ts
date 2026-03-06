@@ -13,6 +13,7 @@ export function createMockPrisma() {
   return {
     user: {
       findUnique: vi.fn(),
+      findFirst: vi.fn(),
       create: vi.fn(),
       update: vi.fn(),
     },
@@ -25,6 +26,7 @@ export function createMockPrisma() {
     },
     userRole: {
       create: vi.fn(),
+      findMany: vi.fn(),
     },
     refreshToken: {
       create: vi.fn(),
@@ -35,8 +37,18 @@ export function createMockPrisma() {
     project: {
       findMany: vi.fn(),
       findUnique: vi.fn(),
+      findFirst: vi.fn(),
       create: vi.fn(),
       update: vi.fn(),
+      count: vi.fn(),
+    },
+    task: {
+      findMany: vi.fn(),
+      findUnique: vi.fn(),
+      findFirst: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
       count: vi.fn(),
     },
     // $transaction can be called with either an array (batch) or a callback

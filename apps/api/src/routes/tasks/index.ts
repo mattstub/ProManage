@@ -35,17 +35,18 @@ const taskRoutes: FastifyPluginAsync = async (fastify) => {
     }
   })
 
+  // Create rate limiter functions for explicit preHandler usage
+  const readRateLimiter = fastify.rateLimit(RATE_LIMITS.READ)
+  const writeRateLimiter = fastify.rateLimit(RATE_LIMITS.WRITE)
+  const sensitiveRateLimiter = fastify.rateLimit(RATE_LIMITS.SENSITIVE)
+
   // Authenticate hook applied globally
   fastify.addHook('preHandler', authenticate)
 
   // GET /tasks - List tasks (all authenticated users)
   fastify.get(
     '/',
-    {
-      config: {
-        rateLimit: RATE_LIMITS.READ,
-      },
-    },
+    { preHandler: [readRateLimiter, authenticate] },
     async (request, reply) => {
       const query = request.query as {
         page?: string
@@ -66,11 +67,7 @@ const taskRoutes: FastifyPluginAsync = async (fastify) => {
   // GET /tasks/:id - Get single task (all authenticated users)
   fastify.get(
     '/:id',
-    {
-      config: {
-        rateLimit: RATE_LIMITS.READ,
-      },
-    },
+    { preHandler: [readRateLimiter, authenticate] },
     async (request, reply) => {
       const { id } = request.params as { id: string }
       const task = await taskService.getTask(
@@ -86,10 +83,7 @@ const taskRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.post(
     '/',
     {
-      preHandler: [requireRole('Admin', 'ProjectManager', 'OfficeAdmin')],
-      config: {
-        rateLimit: RATE_LIMITS.WRITE,
-      },
+      preHandler: [writeRateLimiter, requireRole('Admin', 'ProjectManager', 'OfficeAdmin')],
     },
     async (request, reply) => {
       const input = createTaskSchema.parse(request.body)
@@ -106,11 +100,7 @@ const taskRoutes: FastifyPluginAsync = async (fastify) => {
   // PATCH /tasks/:id - Update task (Admin, ProjectManager, OfficeAdmin, or assignee)
   fastify.patch(
     '/:id',
-    {
-      config: {
-        rateLimit: RATE_LIMITS.WRITE,
-      },
-    },
+    { preHandler: [writeRateLimiter, authenticate] },
     async (request, reply) => {
       const { id } = request.params as { id: string }
       const input = updateTaskSchema.parse(request.body)
@@ -129,13 +119,7 @@ const taskRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.delete(
     '/:id',
     {
-      preHandler: [requireRole('Admin')],
-      config: {
-        rateLimit: {
-          max: 10,
-          timeWindow: '1 minute',
-        },
-      },
+      preHandler: [sensitiveRateLimiter, requireRole('Admin')],
     },
     async (request, reply) => {
       const { id } = request.params as { id: string }

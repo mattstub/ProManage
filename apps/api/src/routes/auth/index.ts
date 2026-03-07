@@ -26,6 +26,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.post(
     '/register',
     {
+      preHandler: writeRateLimiter,
       config: {
         rateLimit: RATE_LIMITS.WRITE,
       },

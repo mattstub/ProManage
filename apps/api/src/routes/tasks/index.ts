@@ -5,6 +5,7 @@ import { createTaskSchema, updateTaskSchema } from '@promanage/core'
 import { authenticate } from '../../middleware/authenticate'
 import { requireRole } from '../../middleware/authorize'
 import { created, noContent, paginated, success } from '../../lib/response'
+import { RATE_LIMITS } from '../../lib/rate-limit'
 import * as taskService from '../../services/task.service'
 
 import type { TaskStatus } from '@promanage/core'
@@ -42,10 +43,7 @@ const taskRoutes: FastifyPluginAsync = async (fastify) => {
     '/',
     {
       config: {
-        rateLimit: {
-          max: 100,
-          timeWindow: '1 minute',
-        },
+        rateLimit: RATE_LIMITS.READ,
       },
     },
     async (request, reply) => {
@@ -70,10 +68,7 @@ const taskRoutes: FastifyPluginAsync = async (fastify) => {
     '/:id',
     {
       config: {
-        rateLimit: {
-          max: 200,
-          timeWindow: '1 minute',
-        },
+        rateLimit: RATE_LIMITS.READ,
       },
     },
     async (request, reply) => {
@@ -93,10 +88,7 @@ const taskRoutes: FastifyPluginAsync = async (fastify) => {
     {
       preHandler: [requireRole('Admin', 'ProjectManager', 'OfficeAdmin')],
       config: {
-        rateLimit: {
-          max: 30,
-          timeWindow: '1 minute',
-        },
+        rateLimit: RATE_LIMITS.WRITE,
       },
     },
     async (request, reply) => {
@@ -116,10 +108,7 @@ const taskRoutes: FastifyPluginAsync = async (fastify) => {
     '/:id',
     {
       config: {
-        rateLimit: {
-          max: 50,
-          timeWindow: '1 minute',
-        },
+        rateLimit: RATE_LIMITS.WRITE,
       },
     },
     async (request, reply) => {

@@ -126,6 +126,15 @@ Root tooling:          COMPLETE (Sub-phase A)
 
 ---
 
+## Branch Protection (as of Session 10)
+
+**`main` is branch-protected on GitHub** — direct pushes are blocked.
+
+- Run `/new-branch` at the start of every session before any coding begins
+- All work ships via PR; never commit directly to `main`
+
+---
+
 ## Claude Code Workflow Commands
 
 Three slash commands live in `.claude/commands/` — invoke them in any Claude Code session:

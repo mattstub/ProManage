@@ -8,10 +8,10 @@ Monorepo: `pnpm workspaces` + `Turborepo`. Author: Matt Stubenhofer.
 
 ## CRITICAL: WSL Constraints
 
-- **All bash commands** must use: `wsl -d Ubuntu -e bash -c "..."`
-- **Read/Glob/Grep tools** fail with `/home/mattstub/ProManage` paths — use Bash instead
+- **Claude Code runs inside WSL** — do NOT prefix commands with `wsl -d Ubuntu -e bash -c`; run Bash commands directly
+- **Read/Glob/Grep tools** work fine with `/home/mattstub/ProManage` absolute paths
 - **nvm must be sourced** every shell: `source ~/.nvm/nvm.sh && nvm use 20`
-- **`git push` hangs** in bash -c context — tell the user to push from their own terminal
+- **`git push` hangs** in Bash tool context — always tell the user to push from their own terminal
 - **WSL background processes** don't persist across shell invocations — chain commands in one bash -c
 
 ---
@@ -148,6 +148,16 @@ pnpm --filter @promanage/api test              # API service + route tests only
 - Middleware uses inverted whitelist — protects everything except `/login` and `/register`
 - `useAuthStore` (Zustand): `user`, `accessToken`, `isAuthenticated`, `isLoading`
 - `@promanage/ui-components` requires `tailwind.config.ts` to scan `../../packages/ui-components/src/**`
+
+---
+
+## Branch Protection
+
+**`main` is branch-protected** — direct pushes are rejected by GitHub.
+
+- **Always run `/new-branch` before starting any work** to create a feature branch
+- All work must go through a PR; never commit directly to `main`
+- `git push` to `main` will be rejected — push the feature branch and open a PR
 
 ---
 

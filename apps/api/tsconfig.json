@@ -5,8 +5,14 @@
     "rootDir": "./src",
     "module": "CommonJS",
     "moduleResolution": "node",
-    "types": ["node"]
+    "types": ["node"],
+    "paths": {
+      "@promanage/core": ["../../packages/core/dist"],
+      "@promanage/core/*": ["../../packages/core/dist/*"],
+      "@promanage/api-client": ["../../packages/api-client/dist"],
+      "@promanage/api-client/*": ["../../packages/api-client/dist/*"]
+    }
   },
-  "include": ["src/**/*", "prisma/seed.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "src/**/__tests__/**", "src/**/*.test.ts"]
 }

@@ -5,11 +5,13 @@ export { DashboardResource } from './resources/dashboard'
 export { HealthResource } from './resources/health'
 export { OrganizationsResource } from './resources/organizations'
 export { ProjectsResource } from './resources/projects'
+export { TasksResource } from './resources/tasks'
 export { UsersResource } from './resources/users'
 
 export type { ClientConfig, PaginatedResult, PaginationParams, RequestOptions } from './types'
 export type { HealthResponse } from './resources/health'
 export type { ListProjectsParams } from './resources/projects'
+export type { ListTasksParams } from './resources/tasks'
 
 import { ProManageClient } from './client'
 import { AuthResource } from './resources/auth'
@@ -17,6 +19,7 @@ import { DashboardResource } from './resources/dashboard'
 import { HealthResource } from './resources/health'
 import { OrganizationsResource } from './resources/organizations'
 import { ProjectsResource } from './resources/projects'
+import { TasksResource } from './resources/tasks'
 import { UsersResource } from './resources/users'
 
 import type { ClientConfig } from './types'
@@ -43,6 +46,7 @@ export interface ApiClient {
   health: HealthResource
   organizations: OrganizationsResource
   projects: ProjectsResource
+  tasks: TasksResource
   users: UsersResource
 }
 
@@ -61,6 +65,7 @@ export function createApiClient(config: ClientConfig): ApiClient {
     health: new HealthResource(core),
     organizations: new OrganizationsResource(core),
     projects: new ProjectsResource(core),
+    tasks: new TasksResource(core),
     users: new UsersResource(core),
   }
 }

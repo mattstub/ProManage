@@ -43,3 +43,12 @@ export type {
   CreateProjectInput,
   UpdateProjectInput,
 } from './project'
+
+export type {
+  TaskStatus,
+  TaskPriority,
+  Task,
+  TaskWithRelations,
+  CreateTaskInput,
+  UpdateTaskInput,
+} from './task'

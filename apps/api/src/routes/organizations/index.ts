@@ -3,26 +3,32 @@ import { updateOrganizationSchema } from '@promanage/core'
 import { authenticate } from '../../middleware/authenticate'
 import { requireRole } from '../../middleware/authorize'
 import { success } from '../../lib/response'
+import { RATE_LIMITS } from '../../lib/rate-limit'
 import * as orgService from '../../services/organization.service'
 
 import type { FastifyPluginAsync } from 'fastify'
 
 const organizationRoutes: FastifyPluginAsync = async (fastify) => {
-  fastify.addHook('preHandler', authenticate)
+  const readRateLimiter = fastify.rateLimit(RATE_LIMITS.READ)
+  const sensitiveRateLimiter = fastify.rateLimit(RATE_LIMITS.SENSITIVE)
 
   // GET /organizations/current
-  fastify.get('/current', async (request, reply) => {
-    const org = await orgService.getOrganization(
-      fastify,
-      request.user.organizationId
-    )
-    return success(reply, org)
-  })
+  fastify.get(
+    '/current',
+    { preHandler: [readRateLimiter, authenticate] },
+    async (request, reply) => {
+      const org = await orgService.getOrganization(
+        fastify,
+        request.user.organizationId
+      )
+      return success(reply, org)
+    }
+  )
 
   // PATCH /organizations/current
   fastify.patch(
     '/current',
-    { preHandler: [requireRole('Admin')] },
+    { preHandler: [sensitiveRateLimiter, authenticate, requireRole('Admin')] },
     async (request, reply) => {
       const input = updateOrganizationSchema.parse(request.body)
       const org = await orgService.updateOrganization(

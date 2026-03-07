@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-03 (Session 7)
+**Last Updated**: 2026-03-06 (Session 9)
 
 ---
 
@@ -59,38 +59,40 @@
 
 ```
 ProManage/
-apps/api/              COMPLETE (Sub-phases C+D)
-  prisma/schema.prisma   8 models, multi-tenant
+apps/api/              COMPLETE (Sub-phases C+D + Phase 2.5)
+  prisma/schema.prisma   9 models (added Task), multi-tenant
   prisma/seed.ts         demo org, 6 roles, 64 perms, 3 users, 2 projects
   src/config/            Zod env validation
-  src/lib/               errors, response helpers, pino logger
+  src/lib/               errors, response helpers, pino logger, rate-limit
   src/middleware/        authenticate, authorize, error-handler
   src/plugins/           prisma, swagger
-  src/routes/            health, auth, users, organizations
-  src/services/          auth, user, org, token, password
+  src/routes/            health, auth, users, organizations, projects, dashboard, tasks
+  src/services/          auth, user, org, token, password, project, dashboard, task
   src/types/             fastify.d.ts augmentation
   src/app.ts             Fastify builder
   src/server.ts          entry point
-apps/web/              COMPLETE Phase 2.1 (Session 7)
-  src/app/               App Router: /, /login, /register, /dashboard, /projects
+  src/__tests__/         80 tests (auth + task services/routes)
+apps/web/              COMPLETE Phase 2.1 + 2.5 (Session 9)
+  src/app/               App Router: /, /login, /register, /dashboard, /projects, /tasks
   src/middleware.ts      Inverted-whitelist route guard
   src/stores/            Zustand auth store
   src/providers/         AuthProvider, QueryProvider
   src/components/        auth forms, layout (sidebar+icons+role-nav, header, nav-item), dashboard (stats-card, project-summary-list)
-  src/hooks/             use-auth, use-dashboard-stats, use-organization, use-projects
+  src/hooks/             use-auth, use-dashboard-stats, use-organization, use-projects, use-tasks, use-users
   src/lib/               api-client singleton, query-client
 apps/mobile/           DEFERRED
 
-packages/core/         COMPLETE (Sub-phase B - 24 files)
-  src/types/             api, auth, user, role, org, project
-  src/schemas/           auth, user, org, project (Zod)
-  src/constants/         roles, permissions, project-status, api
+packages/core/         COMPLETE (Sub-phase B + Phase 2.5)
+  src/types/             api, auth, user, role, org, project, task, dashboard
+  src/schemas/           auth, user, org, project, task (Zod)
+  src/constants/         roles, permissions, project-status, task-status, api
   src/utils/             pagination, format-date, format-currency
-packages/api-client/   COMPLETE (Sub-phase E - 10 files)
+  src/__tests__/         66 tests (schemas + utils)
+packages/api-client/   COMPLETE (Sub-phase E + Phase 2.5)
   src/client.ts          ProManageClient (fetch wrapper, auto-refresh on 401)
   src/errors.ts          ApiClientError class
   src/types.ts           ClientConfig, RequestOptions, PaginatedResult
-  src/resources/         auth, users, organizations, health
+  src/resources/         auth, users, organizations, health, projects, dashboard, tasks
   src/index.ts           createApiClient() factory + all exports
 packages/ui-components/ COMPLETE (Sub-phase F - 30 files)
   src/utils/cn.ts        clsx + tailwind-merge utility
@@ -103,15 +105,16 @@ Root tooling:          COMPLETE (Sub-phase A)
 
 ---
 
-## Current State (2026-03-03)
+## Current State (2026-03-06)
 
 - **Phase 1, Sub-phases A-G**: COMPLETE (~150 source files)
 - **Phase 2.1 Dashboard**: COMPLETE — real data, projects list, stats widgets, role-aware sidebar
-- **API**: Runs on http://localhost:3001 | Routes: /auth, /dashboard/stats, /organizations, /projects (CRUD), /users
-- **DB**: PostgreSQL in Docker, seeded
-- **api-client**: Built — now includes ProjectsResource + DashboardResource
+- **Phase 2.5 Task Management**: COMPLETE — full CRUD with RBAC, 146 tests passing
+- **API**: Runs on http://localhost:3001 | Routes: /auth, /dashboard/stats, /organizations, /projects, /tasks, /users
+- **DB**: PostgreSQL in Docker, seeded (Task model added — run `prisma db push` to apply)
+- **api-client**: Built — includes ProjectsResource, DashboardResource, TasksResource
 - **ui-components**: Built (tsc --build, zero errors), 26 Radix+Tailwind components
-- **Next**: Phase 2.2–2.6 — Notifications, Messaging, Calendar, Tasks, Procedures
+- **Next**: Phase 2.2–2.4, 2.6 — Notifications, Messaging, Calendar, Procedures
 
 ### Seed Credentials
 
@@ -120,6 +123,15 @@ Root tooling:          COMPLETE (Sub-phase A)
 | admin@demo.com | password123 | Admin |
 | pm@demo.com | password123 | ProjectManager |
 | field@demo.com | password123 | FieldUser |
+
+---
+
+## Branch Protection (as of Session 10)
+
+**`main` is branch-protected on GitHub** — direct pushes are blocked.
+
+- Run `/new-branch` at the start of every session before any coding begins
+- All work ships via PR; never commit directly to `main`
 
 ---
 
@@ -189,6 +201,27 @@ DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-d
 - TypeScript project references wired (composite + tsc --build on both packages)
 - Removed .claude/settings.local.json from git tracking
 - PR merged by user
+
+### Session 9 - 2026-03-06
+- CodeQL rate-limiting findings FIXED: refactored to use fastify.rateLimit() preHandler pattern
+- Rate limit pattern: local plugin registration with `global: false`, explicit config per route
+- **Phase 2.5 Task Management COMPLETE** — multi-agent build:
+  - Task model added to Prisma schema (status, priority, assignee, project relations)
+  - packages/core: TaskStatus, TaskPriority types, Zod schemas, constants (31 tests)
+  - apps/api: task.service.ts + routes/tasks with full RBAC (55 tests)
+  - packages/api-client: TasksResource
+  - apps/web: /tasks page, use-tasks + use-users hooks
+- Security: org scoping, role-based update permissions (Admin/PM/OfficeAdmin or assignee)
+- **146 total tests passing** (66 core + 80 API)
+- Commit: `09a89ed feat(tasks): add Phase 2.5 Task Management module`
+- TODO: run `prisma db push` to apply Task model to database
+
+### Session 8 - 2026-03-04
+- Auth redirect loop bug fixed: logout route made unauthenticated; onAuthError calls logout before redirect
+- Vitest testing infrastructure added: packages/core (35 tests) + apps/api (25 tests) = 60 total, all passing
+- Pre-existing build issues fixed: API tsconfig paths, authenticate.ts jwtVerify typing, error-handler unused param
+- scripts/dev.sh rewritten (docker compose v2, WSL-aware); scripts/status.sh added
+- CLAUDE.md updated with Testing section and mocking conventions
 
 ### Session 7 - 2026-03-03
 - Phase 2.1 Dashboard module COMPLETE — multi-agent build (Project Manager, API Builder, API Client Builder, Frontend Builder, Code Review, 2× Security Analyst, Testing)

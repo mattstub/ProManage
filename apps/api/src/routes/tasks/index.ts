@@ -40,8 +40,7 @@ const taskRoutes: FastifyPluginAsync = async (fastify) => {
   const writeRateLimiter = fastify.rateLimit(RATE_LIMITS.WRITE)
   const sensitiveRateLimiter = fastify.rateLimit(RATE_LIMITS.SENSITIVE)
 
-  // Authenticate hook applied globally
-  fastify.addHook('preHandler', authenticate)
+  // No global authenticate hook - each route specifies authentication explicitly
 
   // GET /tasks - List tasks (all authenticated users)
   fastify.get(
@@ -83,7 +82,7 @@ const taskRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.post(
     '/',
     {
-      preHandler: [writeRateLimiter, requireRole('Admin', 'ProjectManager', 'OfficeAdmin')],
+      preHandler: [writeRateLimiter, authenticate, requireRole('Admin', 'ProjectManager', 'OfficeAdmin')],
     },
     async (request, reply) => {
       const input = createTaskSchema.parse(request.body)
@@ -119,7 +118,7 @@ const taskRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.delete(
     '/:id',
     {
-      preHandler: [sensitiveRateLimiter, requireRole('Admin')],
+      preHandler: [sensitiveRateLimiter, authenticate, requireRole('Admin')],
     },
     async (request, reply) => {
       const { id } = request.params as { id: string }

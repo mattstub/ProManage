@@ -22,12 +22,12 @@ Confirm:
 
 ## 2. Verify Infrastructure
 
-Run these WSL commands to start infrastructure:
+Run these commands to start infrastructure:
 
 ```bash
 source ~/.nvm/nvm.sh && nvm use 20
-docker-compose up -d
-docker ps
+docker compose up -d
+docker compose ps
 ```
 
 Expected: `promanage-postgres` and `promanage-minio` both `healthy`.

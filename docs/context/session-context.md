@@ -151,7 +151,7 @@ Three slash commands live in `.claude/commands/` — invoke them in any Claude C
 
 ```bash
 source ~/.nvm/nvm.sh && nvm use 20
-docker-compose up -d
+docker compose up -d
 cd apps/api && pnpm dev
 # Build packages if dist/ is missing (must clean tsbuildinfo first):
 pnpm --filter @promanage/core build

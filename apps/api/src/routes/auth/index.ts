@@ -27,9 +27,6 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
     '/register',
     {
       preHandler: writeRateLimiter,
-      config: {
-        rateLimit: RATE_LIMITS.WRITE,
-      },
     },
     async (request, reply) => {
       const input = registerSchema.parse(request.body)
@@ -49,9 +46,6 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
     '/login',
     {
       preHandler: writeRateLimiter,
-      config: {
-        rateLimit: RATE_LIMITS.WRITE,
-      },
     },
     async (request, reply) => {
       const input = loginSchema.parse(request.body)

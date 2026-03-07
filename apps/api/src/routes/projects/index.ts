@@ -15,7 +15,10 @@ const projectRoutes: FastifyPluginAsync = async (fastify) => {
   })
 
   // Apply a generic rate limit to all requests in this plugin before authentication
-  fastify.addHook('onRequest', fastify.rateLimit())
+  fastify.addHook('onRequest', fastify.rateLimit({
+    max: 100,
+    timeWindow: '1 minute',
+  }))
 
   fastify.addHook('preHandler', authenticate)
 

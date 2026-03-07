@@ -12,11 +12,16 @@ import type { FastifyPluginAsync } from 'fastify'
 
 const taskRoutes: FastifyPluginAsync = async (fastify) => {
   await fastify.register(rateLimit, {
-    global: false,
+    // Enable a global rate limit so that all requests, including those
+    // passing through the authenticate preHandler, are protected.
+    global: true,
+    max: 100,
+    timeWindow: '1 minute',
   })
 
   // Apply a default rate limit to all routes in this plugin unless they
-  // explicitly define their own `config.rateLimit`
+  // explicitly define their own `config.rateLimit`. This keeps per-route
+  // configuration explicit without changing the effective limits.
   fastify.addHook('onRoute', (routeOptions) => {
     if (!routeOptions.config) {
       routeOptions.config = {}

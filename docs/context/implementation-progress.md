@@ -158,12 +158,35 @@ Key files: package.json (React 19), middleware.ts, auth.store.ts, providers/auth
 
 **Security reviews**: API PASS (6/6), Frontend PASS (6/6)
 
-### Phase 2.2–2.6 — Notifications, Messaging, Calendar, Tasks, Procedures
+### Phase 2.5 — Task Management ✅ COMPLETE (Session 9, 2026-03-06)
+
+Full CRUD with RBAC (146 tests passing). See session-context.md Session 9 log.
+
+### Phase 2.6 — General Procedures ✅ COMPLETE (Session 10, 2026-03-07)
+
+**New files**:
+- `packages/core/src/types/procedure.ts` — `ProcedureStatus`, `ProcedureCategory`, `Procedure`, `ProcedureWithRelations`, input types
+- `packages/core/src/schemas/procedure.ts` — `createProcedureSchema`, `updateProcedureSchema`
+- `packages/core/src/constants/procedure-status.ts` — `PROCEDURE_STATUSES`, `PROCEDURE_CATEGORIES`, list constants
+- `apps/api/src/services/procedure.service.ts` — listProcedures, getProcedure, createProcedure, updateProcedure, deleteProcedure
+- `apps/api/src/routes/procedures/index.ts` — CRUD with RBAC (GET: all auth; POST/PATCH: Admin/PM/OfficeAdmin; DELETE: Admin)
+- `packages/api-client/src/resources/procedures.ts` — ProceduresResource (list, get, create, update, delete)
+- `apps/web/src/hooks/use-procedures.ts` — TanStack Query hooks
+- `apps/web/src/app/(dashboard)/procedures/page.tsx` — Table + view/create/edit/delete dialogs, status+category filters
+
+**Modified files**:
+- `apps/api/prisma/schema.prisma` — Procedure model (10 models total)
+- `packages/core/src/types/index.ts` — procedure type exports
+- `packages/core/src/schemas/index.ts` — procedure schema exports
+- `packages/core/src/constants/index.ts` — procedure-status exports
+- `apps/api/src/routes/index.ts` — registered /procedures route
+- `packages/api-client/src/index.ts` — ProceduresResource in ApiClient + createApiClient()
+- `apps/web/src/components/layout/sidebar.tsx` — added Tasks + Procedures nav items
+
+### Phase 2.2–2.4 — Notifications, Messaging, Calendar
 - [ ] 2.2 Notifications (WebSocket required)
 - [ ] 2.3 Internal Communication (Socket.io required)
 - [ ] 2.4 Company Calendar (calendar library required)
-- [ ] 2.5 Task Management (DB model + CRUD + UI)
-- [ ] 2.6 General Procedures (rich text editor required)
 
 ---
 

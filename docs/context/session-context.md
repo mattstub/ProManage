@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-06 (Session 9)
+**Last Updated**: 2026-03-07 (Session 10)
 
 ---
 
@@ -60,25 +60,25 @@
 ```
 ProManage/
 apps/api/              COMPLETE (Sub-phases C+D + Phase 2.5)
-  prisma/schema.prisma   9 models (added Task), multi-tenant
+  prisma/schema.prisma   10 models (added Task + Procedure), multi-tenant
   prisma/seed.ts         demo org, 6 roles, 64 perms, 3 users, 2 projects
   src/config/            Zod env validation
   src/lib/               errors, response helpers, pino logger, rate-limit
   src/middleware/        authenticate, authorize, error-handler
   src/plugins/           prisma, swagger
-  src/routes/            health, auth, users, organizations, projects, dashboard, tasks
-  src/services/          auth, user, org, token, password, project, dashboard, task
+  src/routes/            health, auth, users, organizations, projects, dashboard, tasks, procedures
+  src/services/          auth, user, org, token, password, project, dashboard, task, procedure
   src/types/             fastify.d.ts augmentation
   src/app.ts             Fastify builder
   src/server.ts          entry point
   src/__tests__/         80 tests (auth + task services/routes)
 apps/web/              COMPLETE Phase 2.1 + 2.5 (Session 9)
-  src/app/               App Router: /, /login, /register, /dashboard, /projects, /tasks
+  src/app/               App Router: /, /login, /register, /dashboard, /projects, /tasks, /procedures
   src/middleware.ts      Inverted-whitelist route guard
   src/stores/            Zustand auth store
   src/providers/         AuthProvider, QueryProvider
   src/components/        auth forms, layout (sidebar+icons+role-nav, header, nav-item), dashboard (stats-card, project-summary-list)
-  src/hooks/             use-auth, use-dashboard-stats, use-organization, use-projects, use-tasks, use-users
+  src/hooks/             use-auth, use-dashboard-stats, use-organization, use-procedures, use-projects, use-tasks, use-users
   src/lib/               api-client singleton, query-client
 apps/mobile/           DEFERRED
 
@@ -105,16 +105,18 @@ Root tooling:          COMPLETE (Sub-phase A)
 
 ---
 
-## Current State (2026-03-06)
+## Current State (2026-03-07)
 
 - **Phase 1, Sub-phases A-G**: COMPLETE (~150 source files)
 - **Phase 2.1 Dashboard**: COMPLETE — real data, projects list, stats widgets, role-aware sidebar
 - **Phase 2.5 Task Management**: COMPLETE — full CRUD with RBAC, 146 tests passing
-- **API**: Runs on http://localhost:3001 | Routes: /auth, /dashboard/stats, /organizations, /projects, /tasks, /users
-- **DB**: PostgreSQL in Docker, seeded (Task model added — run `prisma db push` to apply)
-- **api-client**: Built — includes ProjectsResource, DashboardResource, TasksResource
+- **Phase 2.6 Procedures**: COMPLETE — full CRUD with RBAC, sidebar nav, view/edit/delete dialogs
+- **API**: Runs on http://localhost:3001 | Routes: /auth, /dashboard/stats, /organizations, /procedures, /projects, /tasks, /users
+- **DB**: PostgreSQL in Docker, seeded. Procedure + Task models in sync (`prisma db push` applied)
+- **api-client**: Built — includes ProjectsResource, DashboardResource, TasksResource, ProceduresResource
 - **ui-components**: Built (tsc --build, zero errors), 26 Radix+Tailwind components
-- **Next**: Phase 2.2–2.4, 2.6 — Notifications, Messaging, Calendar, Procedures
+- **Sidebar**: Tasks + Procedures nav items now visible to all roles
+- **Next**: Phase 2.2–2.4 — Notifications (WebSocket), Messaging (Socket.io), Calendar
 
 ### Seed Credentials
 
@@ -201,6 +203,18 @@ DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-d
 - TypeScript project references wired (composite + tsc --build on both packages)
 - Removed .claude/settings.local.json from git tracking
 - PR merged by user
+
+### Session 10 - 2026-03-07
+- **Phase 2.6 Procedures COMPLETE** — full CRUD with RBAC across all layers:
+  - Prisma: `Procedure` model (10 models total), relations on Organization/User/Project
+  - packages/core: `ProcedureStatus`, `ProcedureCategory` types, Zod schemas, `procedure-status` constants
+  - apps/api: `procedure.service.ts` + `routes/procedures` with rate limiting + RBAC (Admin/PM/OfficeAdmin)
+  - packages/api-client: `ProceduresResource`, wired into `createApiClient()` + `ApiClient` interface
+  - apps/web: `/procedures` page (table + view/create/edit/delete dialogs), `use-procedures` hook
+  - sidebar: Added **Tasks** and **Procedures** nav items (Tasks was missing from sidebar)
+  - `prisma db push` applied — DB in sync
+- All 146 existing tests still passing (66 core + 80 API)
+- Branch: `feat/phase2-subphase-6-procedures`
 
 ### Session 9 - 2026-03-06
 - CodeQL rate-limiting findings FIXED: refactored to use fastify.rateLimit() preHandler pattern

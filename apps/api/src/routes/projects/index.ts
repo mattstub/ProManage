@@ -20,13 +20,11 @@ const projectRoutes: FastifyPluginAsync = async (fastify) => {
   const writeRateLimiter = fastify.rateLimit(RATE_LIMITS.WRITE)
   const sensitiveRateLimiter = fastify.rateLimit(RATE_LIMITS.SENSITIVE)
 
-  fastify.addHook('preHandler', authenticate)
-
   // GET /projects
   fastify.get(
     '/',
     {
-      preHandler: readRateLimiter,
+      preHandler: [readRateLimiter, authenticate],
     },
     async (request, reply) => {
       const query = request.query as {
@@ -47,7 +45,7 @@ const projectRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.get(
     '/:id',
     {
-      preHandler: readRateLimiter,
+      preHandler: [readRateLimiter, authenticate],
     },
     async (request, reply) => {
       const { id } = request.params as { id: string }
@@ -64,7 +62,7 @@ const projectRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.post(
     '/',
     {
-      preHandler: [writeRateLimiter, requireRole('Admin', 'ProjectManager')],
+      preHandler: [writeRateLimiter, authenticate, requireRole('Admin', 'ProjectManager')],
     },
     async (request, reply) => {
       const input = createProjectSchema.parse(request.body)
@@ -81,7 +79,7 @@ const projectRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.patch(
     '/:id',
     {
-      preHandler: [writeRateLimiter, requireRole('Admin', 'ProjectManager')],
+      preHandler: [writeRateLimiter, authenticate, requireRole('Admin', 'ProjectManager')],
     },
     async (request, reply) => {
       const { id } = request.params as { id: string }
@@ -100,7 +98,7 @@ const projectRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.delete(
     '/:id',
     {
-      preHandler: [sensitiveRateLimiter, requireRole('Admin')],
+      preHandler: [sensitiveRateLimiter, authenticate, requireRole('Admin')],
     },
     async (request, reply) => {
       const { id } = request.params as { id: string }

@@ -19,14 +19,14 @@ const cookieOptions = {
 
 const authRoutes: FastifyPluginAsync = async (fastify) => {
   // Create rate limit preHandlers using fastify's rateLimit decorator
-  const writeRateLimiter = fastify.rateLimit(RATE_LIMITS.WRITE)
   const readRateLimiter = fastify.rateLimit(RATE_LIMITS.READ)
+  const sensitiveRateLimiter = fastify.rateLimit(RATE_LIMITS.SENSITIVE)
 
   // POST /auth/register
   fastify.post(
     '/register',
     {
-      preHandler: writeRateLimiter,
+      preHandler: sensitiveRateLimiter,
     },
     async (request, reply) => {
       const input = registerSchema.parse(request.body)
@@ -45,7 +45,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.post(
     '/login',
     {
-      preHandler: writeRateLimiter,
+      preHandler: sensitiveRateLimiter,
     },
     async (request, reply) => {
       const input = loginSchema.parse(request.body)
@@ -63,7 +63,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
   // POST /auth/refresh
   fastify.post(
     '/refresh',
-    { preHandler: writeRateLimiter },
+    { preHandler: sensitiveRateLimiter },
     async (request, reply) => {
       const token = (request.cookies as Record<string, string>)[REFRESH_COOKIE]
 
@@ -88,7 +88,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
   // expired/revoked cookie that the Next.js middleware still trusts.
   fastify.post(
     '/logout',
-    { preHandler: writeRateLimiter },
+    { preHandler: sensitiveRateLimiter },
     async (request, reply) => {
       const token = (request.cookies as Record<string, string>)[REFRESH_COOKIE]
 

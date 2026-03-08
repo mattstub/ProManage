@@ -32,3 +32,10 @@ export {
   type CreateTaskSchemaInput,
   type UpdateTaskSchemaInput,
 } from './task'
+
+export {
+  createProcedureSchema,
+  updateProcedureSchema,
+  type CreateProcedureSchemaInput,
+  type UpdateProcedureSchemaInput,
+} from './procedure'

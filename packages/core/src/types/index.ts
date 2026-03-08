@@ -52,3 +52,12 @@ export type {
   CreateTaskInput,
   UpdateTaskInput,
 } from './task'
+
+export type {
+  ProcedureStatus,
+  ProcedureCategory,
+  Procedure,
+  ProcedureWithRelations,
+  CreateProcedureInput,
+  UpdateProcedureInput,
+} from './procedure'

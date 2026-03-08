@@ -2,7 +2,9 @@
 
 import {
   BuildingOffice2Icon,
+  ClipboardDocumentListIcon,
   Cog6ToothIcon,
+  DocumentTextIcon,
   FolderOpenIcon,
   HomeIcon,
 } from '@heroicons/react/24/outline'
@@ -32,6 +34,16 @@ const NAV_ITEMS: NavItemConfig[] = [
     href: '/projects',
     label: 'Projects',
     icon: <FolderOpenIcon className="h-5 w-5" />,
+  },
+  {
+    href: '/tasks',
+    label: 'Tasks',
+    icon: <ClipboardDocumentListIcon className="h-5 w-5" />,
+  },
+  {
+    href: '/procedures',
+    label: 'Procedures',
+    icon: <DocumentTextIcon className="h-5 w-5" />,
   },
   {
     href: '/organization',

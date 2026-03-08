@@ -23,4 +23,11 @@ export {
   TASK_PRIORITY_LIST,
 } from './task-status'
 
+export {
+  PROCEDURE_STATUSES,
+  PROCEDURE_CATEGORIES,
+  PROCEDURE_STATUS_LIST,
+  PROCEDURE_CATEGORY_LIST,
+} from './procedure-status'
+
 export { ERROR_CODES, HTTP_STATUS, type ErrorCode } from './api'

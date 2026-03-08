@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - Phase 2.6 Procedures Module (Session 10, 2026-03-07)
+
+**Phase 2.6 — General Procedures (full CRUD + RBAC)**
+
+*apps/api/prisma*
+- `schema.prisma`: `Procedure` model with title, content, category, status (DRAFT/PUBLISHED/ARCHIVED), org scoping, optional project link, createdBy user relation — 10 models total
+- `prisma db push` applied — DB in sync
+
+*packages/core*
+- `types/procedure.ts`: `ProcedureStatus`, `ProcedureCategory`, `Procedure`, `ProcedureWithRelations`, `CreateProcedureInput`, `UpdateProcedureInput`
+- `schemas/procedure.ts`: `createProcedureSchema`, `updateProcedureSchema` (Zod, with content max 50k)
+- `constants/procedure-status.ts`: `PROCEDURE_STATUSES`, `PROCEDURE_CATEGORIES`, list constants
+
+*apps/api*
+- `services/procedure.service.ts`: `listProcedures` (paginated, status/category/project filters), `getProcedure`, `createProcedure`, `updateProcedure`, `deleteProcedure`
+- `routes/procedures/index.ts`: GET /, GET /:id (all auth), POST / + PATCH /:id (Admin/PM/OfficeAdmin), DELETE /:id (Admin); rate limiting via fastify.rateLimit()
+- `routes/index.ts`: registered `/procedures` prefix
+
+*packages/api-client*
+- `resources/procedures.ts`: `ProceduresResource` — `list`, `get`, `create`, `update`, `delete` with typed params/responses
+- `index.ts`: `ApiClient` interface + `createApiClient()` updated with `procedures` namespace
+
+*apps/web*
+- `hooks/use-procedures.ts`: `useProcedures`, `useProcedure`, `useCreateProcedure`, `useUpdateProcedure`, `useDeleteProcedure` (TanStack Query)
+- `app/(dashboard)/procedures/page.tsx`: full table UI with status+category filters, view/create/edit/delete dialogs, skeleton loading, role-aware actions
+- `components/layout/sidebar.tsx`: added **Tasks** and **Procedures** nav items (Tasks was previously missing)
+
+**Verified**: packages/core + api-client build clean, API + web type-check zero errors, 146 tests passing (66 core + 80 API)
+
 ### Added - Phase 2 Dashboard Module (Session 7, 2026-03-03)
 
 **Phase 2.1 — Dashboard & Hub (multi-agent build)**

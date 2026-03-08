@@ -14,11 +14,16 @@ export function Header() {
   async function handleLogout() {
     try {
       await getApiClient().auth.logout()
-    } finally {
-      resetApiClient()
-      clearAuth()
-      router.push('/login')
+    } catch {
+      // Best-effort — token revocation may fail if API is unreachable or rate-limited.
     }
+    // Clear the httpOnly cookie via a Next.js route handler (same-origin).
+    // This ensures the middleware stops redirecting to /dashboard even when
+    // the Fastify API is unreachable and couldn't clear the cookie itself.
+    await fetch('/api/auth/logout', { method: 'POST' })
+    resetApiClient()
+    clearAuth()
+    router.push('/login')
   }
 
   const initials = user

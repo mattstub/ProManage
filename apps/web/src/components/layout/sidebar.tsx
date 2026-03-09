@@ -2,6 +2,7 @@
 
 import {
   BuildingOffice2Icon,
+  CalendarDaysIcon,
   ClipboardDocumentListIcon,
   Cog6ToothIcon,
   DocumentTextIcon,
@@ -44,6 +45,11 @@ const NAV_ITEMS: NavItemConfig[] = [
     href: '/procedures',
     label: 'Procedures',
     icon: <DocumentTextIcon className="h-5 w-5" />,
+  },
+  {
+    href: '/calendar',
+    label: 'Calendar',
+    icon: <CalendarDaysIcon className="h-5 w-5" />,
   },
   {
     href: '/organization',

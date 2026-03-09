@@ -39,3 +39,10 @@ export {
   type CreateProcedureSchemaInput,
   type UpdateProcedureSchemaInput,
 } from './procedure'
+
+export {
+  createCalendarEventSchema,
+  updateCalendarEventSchema,
+  type CreateCalendarEventSchemaInput,
+  type UpdateCalendarEventSchemaInput,
+} from './calendar-event'

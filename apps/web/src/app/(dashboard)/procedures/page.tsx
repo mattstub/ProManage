@@ -43,13 +43,13 @@ import type {
 import type { BadgeProps } from '@promanage/ui-components'
 
 import { useAuth } from '@/hooks/use-auth'
-import { useProjects } from '@/hooks/use-projects'
 import {
   useCreateProcedure,
   useDeleteProcedure,
   useProcedures,
   useUpdateProcedure,
 } from '@/hooks/use-procedures'
+import { useProjects } from '@/hooks/use-projects'
 
 const STATUS_VARIANT: Record<ProcedureStatus, BadgeProps['variant']> = {
   DRAFT: 'warning',

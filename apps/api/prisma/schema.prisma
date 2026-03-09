@@ -23,11 +23,12 @@ model Organization {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  users      User[]
-  roles      Role[]
-  projects   Project[]
-  tasks      Task[]
-  procedures Procedure[]
+  users          User[]
+  roles          Role[]
+  projects       Project[]
+  tasks          Task[]
+  procedures     Procedure[]
+  calendarEvents CalendarEvent[]
 
   @@map("organizations")
 }
@@ -55,9 +56,10 @@ model User {
   userRoles     UserRole[]
   refreshTokens RefreshToken[]
 
-  tasksAssigned      Task[]      @relation("TaskAssignee")
-  tasksCreated       Task[]      @relation("TaskCreator")
-  proceduresCreated  Procedure[] @relation("ProcedureCreator")
+  tasksAssigned          Task[]          @relation("TaskAssignee")
+  tasksCreated           Task[]          @relation("TaskCreator")
+  proceduresCreated      Procedure[]     @relation("ProcedureCreator")
+  calendarEventsCreated  CalendarEvent[] @relation("CalendarEventCreator")
 
   @@index([organizationId])
   @@index([email])
@@ -165,8 +167,9 @@ model Project {
   organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId String       @map("organization_id")
 
-  tasks      Task[]
-  procedures Procedure[]
+  tasks          Task[]
+  procedures     Procedure[]
+  calendarEvents CalendarEvent[]
 
   @@unique([number, organizationId])
   @@index([organizationId])
@@ -206,6 +209,38 @@ model Task {
   @@index([status])
   @@index([priority])
   @@map("tasks")
+}
+
+// ===========================================
+// CALENDAR EVENT (Phase 2.4)
+// ===========================================
+
+model CalendarEvent {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  startDate   DateTime @map("start_date")
+  endDate     DateTime @map("end_date")
+  allDay      Boolean  @default(false) @map("all_day")
+  eventType   String   @default("OTHER") @map("event_type")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String       @map("organization_id")
+
+  project   Project? @relation(fields: [projectId], references: [id])
+  projectId String?  @map("project_id")
+
+  createdBy   User   @relation("CalendarEventCreator", fields: [createdById], references: [id])
+  createdById String @map("created_by_id")
+
+  @@index([organizationId])
+  @@index([projectId])
+  @@index([createdById])
+  @@index([startDate])
+  @@index([endDate])
+  @@map("calendar_events")
 }
 
 // ===========================================

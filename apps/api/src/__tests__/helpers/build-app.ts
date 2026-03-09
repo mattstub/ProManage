@@ -7,6 +7,7 @@ import type { PrismaClient } from '@prisma/client'
 
 import { errorHandler } from '../../middleware/error-handler'
 import authRoutes from '../../routes/auth'
+import calendarEventRoutes from '../../routes/calendar-events'
 import taskRoutes from '../../routes/tasks'
 
 import { createMockPrisma } from './mock-prisma'
@@ -81,6 +82,29 @@ export async function buildTaskTestApp(overridePrisma?: MockPrisma) {
   app.setErrorHandler(errorHandler)
 
   await app.register(taskRoutes, { prefix: '/api/v1/tasks' })
+  await app.ready()
+
+  return { app, prisma }
+}
+
+/**
+ * Builds a minimal Fastify instance for testing calendar event routes.
+ */
+export async function buildCalendarEventTestApp(overridePrisma?: MockPrisma) {
+  const prisma = overridePrisma ?? createMockPrisma()
+
+  const app = Fastify({ logger: false })
+
+  await app.register(cookie)
+  await app.register(jwt, { secret: process.env['JWT_SECRET']! })
+  await app.register(rateLimit, { max: 1000, timeWindow: '1 minute' })
+
+  // Cast required: MockPrisma is a partial of PrismaClient
+  app.decorate('prisma', prisma as unknown as PrismaClient)
+
+  app.setErrorHandler(errorHandler)
+
+  await app.register(calendarEventRoutes, { prefix: '/api/v1/calendar-events' })
   await app.ready()
 
   return { app, prisma }

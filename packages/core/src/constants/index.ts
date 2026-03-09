@@ -32,4 +32,6 @@ export {
 
 export { EVENT_TYPES, EVENT_TYPE_LIST } from './event-type'
 
+export { NOTIFICATION_TYPES, NOTIFICATION_TYPE_LIST } from './notification-type'
+
 export { ERROR_CODES, HTTP_STATUS, type ErrorCode } from './api'

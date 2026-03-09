@@ -3,6 +3,7 @@ export { ApiClientError } from './errors'
 export { AuthResource } from './resources/auth'
 export { CalendarEventsResource } from './resources/calendar-events'
 export { DashboardResource } from './resources/dashboard'
+export { NotificationsResource } from './resources/notifications'
 export { HealthResource } from './resources/health'
 export { OrganizationsResource } from './resources/organizations'
 export { ProceduresResource } from './resources/procedures'
@@ -13,6 +14,7 @@ export { UsersResource } from './resources/users'
 export type { ClientConfig, PaginatedResult, PaginationParams, RequestOptions } from './types'
 export type { ListCalendarEventsParams } from './resources/calendar-events'
 export type { HealthResponse } from './resources/health'
+export type { ListNotificationsParams } from './resources/notifications'
 export type { ListProceduresParams } from './resources/procedures'
 export type { ListProjectsParams } from './resources/projects'
 export type { ListTasksParams } from './resources/tasks'
@@ -22,6 +24,7 @@ import { AuthResource } from './resources/auth'
 import { CalendarEventsResource } from './resources/calendar-events'
 import { DashboardResource } from './resources/dashboard'
 import { HealthResource } from './resources/health'
+import { NotificationsResource } from './resources/notifications'
 import { OrganizationsResource } from './resources/organizations'
 import { ProceduresResource } from './resources/procedures'
 import { ProjectsResource } from './resources/projects'
@@ -51,6 +54,7 @@ export interface ApiClient {
   calendarEvents: CalendarEventsResource
   dashboard: DashboardResource
   health: HealthResource
+  notifications: NotificationsResource
   organizations: OrganizationsResource
   procedures: ProceduresResource
   projects: ProjectsResource
@@ -72,6 +76,7 @@ export function createApiClient(config: ClientConfig): ApiClient {
     calendarEvents: new CalendarEventsResource(core),
     dashboard: new DashboardResource(core),
     health: new HealthResource(core),
+    notifications: new NotificationsResource(core),
     organizations: new OrganizationsResource(core),
     procedures: new ProceduresResource(core),
     projects: new ProjectsResource(core),

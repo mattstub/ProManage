@@ -69,3 +69,9 @@ export type {
   CreateCalendarEventInput,
   UpdateCalendarEventInput,
 } from './calendar-event'
+
+export type {
+  NotificationType,
+  Notification,
+  CreateNotificationInput,
+} from './notification'

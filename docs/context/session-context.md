@@ -112,12 +112,14 @@ Root tooling:          COMPLETE (Sub-phase A)
 - **Phase 2.5 Task Management**: COMPLETE — full CRUD with RBAC, 146 tests passing
 - **Phase 2.6 Procedures**: COMPLETE — full CRUD with RBAC, sidebar nav, view/edit/delete dialogs
 - **Phase 2.4 Calendar**: COMPLETE — custom month-view calendar, full CRUD with RBAC, 205 tests passing
-- **API**: Runs on http://localhost:3001 | Routes: /auth, /calendar-events, /dashboard/stats, /organizations, /procedures, /projects, /tasks, /users
-- **DB**: PostgreSQL in Docker, seeded. CalendarEvent + Procedure + Task models in sync (`prisma db push` applied)
-- **api-client**: Built — includes CalendarEventsResource, ProjectsResource, DashboardResource, TasksResource, ProceduresResource
+- **Phase 2.2 Notifications**: COMPLETE — SSE real-time push, bell component, auto-notify on task assignment, 230 tests passing
+- **API**: Runs on http://localhost:3001 | Routes: /auth, /calendar-events, /dashboard/stats, /notifications, /organizations, /procedures, /projects, /tasks, /users
+- **DB**: PostgreSQL in Docker, seeded. Notification + CalendarEvent + Procedure + Task models in sync (`prisma db push` applied)
+- **api-client**: Built — includes NotificationsResource, CalendarEventsResource, ProjectsResource, DashboardResource, TasksResource, ProceduresResource
 - **ui-components**: Built (tsc --build, zero errors), 26 Radix+Tailwind components
 - **Sidebar**: Dashboard, Projects, Tasks, Procedures, Calendar, Organization, Settings nav items
-- **Next**: Phase 2.2 Notifications (WebSocket), Phase 2.3 Messaging (Socket.io)
+- **Header**: NotificationBell with live badge + dropdown panel (SSE-powered)
+- **Next**: Phase 2.3 Messaging (Socket.io)
 
 ### Seed Credentials
 
@@ -210,14 +212,21 @@ DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-d
 - **Phase 2.4 Calendar COMPLETE** — custom month-view calendar, no external library deps:
   - Prisma: `CalendarEvent` model (11 models total), relations on Organization/User/Project
   - packages/core: `EventType` type, Zod schemas (create + update), `EVENT_TYPES`/`EVENT_TYPE_LIST` constants
-  - apps/api: `calendar-event.service.ts` + `routes/calendar-events` with rate limiting + RBAC (POST: Admin/PM/OfficeAdmin/Superintendent; PATCH/DELETE: role or creator)
-  - packages/api-client: `CalendarEventsResource`, wired into `createApiClient()` + `ApiClient` interface
+  - apps/api: `calendar-event.service.ts` + `routes/calendar-events` with rate limiting + RBAC
+  - packages/api-client: `CalendarEventsResource`
   - apps/web: `/calendar` page (custom month grid), `use-calendar-events` hook, Calendar nav in sidebar
-  - Fixed pre-existing import order lint error in procedures page
   - `prisma db push` applied — DB in sync
-- **205 total tests passing** (97 core + 108 API), web build clean (12 routes)
-- Branch: `feat/phase2-subphase-4-calendar` — commit staged, push pending
-- **Next**: Phase 2.2 Notifications (WebSocket) or Phase 2.3 Messaging (Socket.io)
+- **Phase 2.2 Notifications COMPLETE** — SSE real-time push, no Redis needed:
+  - Prisma: `Notification` model (12 models total)
+  - API infra: `plugins/sse.ts` (SSE client map), `lib/sse.ts` (`emitToUser()`)
+  - apps/api: `notification.service.ts` + `routes/notifications` (REST + SSE stream, token-in-query-param auth)
+  - task.service: auto-creates `TASK_ASSIGNED` notification on task create/reassign
+  - packages/api-client: `NotificationsResource` with `getStreamUrl()` helper
+  - apps/web: `NotificationBell` component (live badge + dropdown), `useSSENotifications` hook (EventSource)
+  - `prisma db push` applied — DB in sync
+- **230 total tests passing** (97 core + 133 API), web build clean (12 routes)
+- Branches: `feat/phase2-subphase-4-calendar` (merged), `feat/phase2-subphase-2-notifications` (PR pending)
+- **Next**: Phase 2.3 Messaging (Socket.io)
 
 ### Session 10 - 2026-03-08
 - **Phase 2.6 Procedures COMPLETE** — full CRUD with RBAC across all layers:

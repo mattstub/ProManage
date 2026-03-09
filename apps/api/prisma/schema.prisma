@@ -29,6 +29,7 @@ model Organization {
   tasks          Task[]
   procedures     Procedure[]
   calendarEvents CalendarEvent[]
+  notifications  Notification[]
 
   @@map("organizations")
 }
@@ -60,6 +61,7 @@ model User {
   tasksCreated           Task[]          @relation("TaskCreator")
   proceduresCreated      Procedure[]     @relation("ProcedureCreator")
   calendarEventsCreated  CalendarEvent[] @relation("CalendarEventCreator")
+  notifications          Notification[]
 
   @@index([organizationId])
   @@index([email])
@@ -209,6 +211,32 @@ model Task {
   @@index([status])
   @@index([priority])
   @@map("tasks")
+}
+
+// ===========================================
+// NOTIFICATION (Phase 2.2)
+// ===========================================
+
+model Notification {
+  id         String   @id @default(cuid())
+  title      String
+  message    String
+  type       String   @default("INFO")
+  read       Boolean  @default(false)
+  entityId   String?  @map("entity_id")
+  entityType String?  @map("entity_type")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @map("user_id")
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String       @map("organization_id")
+
+  @@index([userId])
+  @@index([organizationId])
+  @@index([read])
+  @@map("notifications")
 }
 
 // ===========================================

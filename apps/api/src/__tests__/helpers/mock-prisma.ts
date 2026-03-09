@@ -59,6 +59,15 @@ export function createMockPrisma() {
       delete: vi.fn(),
       count: vi.fn(),
     },
+    notification: {
+      findMany: vi.fn(),
+      findFirst: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      updateMany: vi.fn(),
+      delete: vi.fn(),
+      count: vi.fn(),
+    },
     // $transaction can be called with either an array (batch) or a callback
     // (interactive). Tests should override the implementation per scenario.
     $transaction: vi.fn(),

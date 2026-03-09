@@ -1,10 +1,12 @@
 import 'fastify'
 
+import type { ServerResponse } from 'http'
 import type { PrismaClient } from '@prisma/client'
 
 declare module 'fastify' {
   interface FastifyInstance {
     prisma: PrismaClient
+    sseClients: Map<string, Set<ServerResponse>>
   }
 
   interface FastifyRequest {

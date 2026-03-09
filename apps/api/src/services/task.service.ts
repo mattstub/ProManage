@@ -1,4 +1,5 @@
 import { ForbiddenError, NotFoundError } from '../lib/errors'
+import { createNotification } from './notification.service'
 import { buildPaginationMeta, parsePagination } from '@promanage/core'
 
 import type { CreateTaskSchemaInput, TaskStatus, UpdateTaskSchemaInput } from '@promanage/core'
@@ -134,6 +135,19 @@ export async function createTask(
     select: TASK_SELECT,
   })
 
+  // Notify the assignee (non-critical — never fails the task creation)
+  if (task.assigneeId && task.assigneeId !== creatorId) {
+    createNotification(fastify, {
+      userId: task.assigneeId,
+      organizationId,
+      title: 'Task Assigned',
+      message: `You have been assigned to "${task.title}"`,
+      type: 'TASK_ASSIGNED',
+      entityId: task.id,
+      entityType: 'task',
+    }).catch(() => {})
+  }
+
   return task
 }
 
@@ -187,11 +201,30 @@ export async function updateTask(
     }
   }
 
+  const previousAssigneeId = task.assigneeId
+
   const updatedTask = await fastify.prisma.task.update({
     where: { id: taskId },
     data: input,
     select: TASK_SELECT,
   })
+
+  // Notify new assignee when the assignee changes (non-critical)
+  if (
+    updatedTask.assigneeId &&
+    updatedTask.assigneeId !== previousAssigneeId &&
+    updatedTask.assigneeId !== userId
+  ) {
+    createNotification(fastify, {
+      userId: updatedTask.assigneeId,
+      organizationId,
+      title: 'Task Assigned',
+      message: `You have been assigned to "${updatedTask.title}"`,
+      type: 'TASK_ASSIGNED',
+      entityId: updatedTask.id,
+      entityType: 'task',
+    }).catch(() => {})
+  }
 
   return updatedTask
 }

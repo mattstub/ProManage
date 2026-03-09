@@ -61,3 +61,11 @@ export type {
   CreateProcedureInput,
   UpdateProcedureInput,
 } from './procedure'
+
+export type {
+  EventType,
+  CalendarEvent,
+  CalendarEventWithRelations,
+  CreateCalendarEventInput,
+  UpdateCalendarEventInput,
+} from './calendar-event'

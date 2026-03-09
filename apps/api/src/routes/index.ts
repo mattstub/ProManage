@@ -1,4 +1,5 @@
 import authRoutes from './auth'
+import calendarEventRoutes from './calendar-events'
 import dashboardRoutes from './dashboard'
 import organizationRoutes from './organizations'
 import procedureRoutes from './procedures'
@@ -10,6 +11,7 @@ import type { FastifyPluginAsync } from 'fastify'
 
 const routes: FastifyPluginAsync = async (fastify) => {
   fastify.register(authRoutes, { prefix: '/auth' })
+  fastify.register(calendarEventRoutes, { prefix: '/calendar-events' })
   fastify.register(dashboardRoutes, { prefix: '/dashboard' })
   fastify.register(organizationRoutes, { prefix: '/organizations' })
   fastify.register(procedureRoutes, { prefix: '/procedures' })

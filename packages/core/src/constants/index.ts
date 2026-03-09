@@ -30,4 +30,6 @@ export {
   PROCEDURE_CATEGORY_LIST,
 } from './procedure-status'
 
+export { EVENT_TYPES, EVENT_TYPE_LIST } from './event-type'
+
 export { ERROR_CODES, HTTP_STATUS, type ErrorCode } from './api'

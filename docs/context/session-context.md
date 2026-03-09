@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-07 (Session 10)
+**Last Updated**: 2026-03-08 (Session 10)
 
 ---
 
@@ -105,18 +105,19 @@ Root tooling:          COMPLETE (Sub-phase A)
 
 ---
 
-## Current State (2026-03-07)
+## Current State (2026-03-08)
 
 - **Phase 1, Sub-phases A-G**: COMPLETE (~150 source files)
 - **Phase 2.1 Dashboard**: COMPLETE — real data, projects list, stats widgets, role-aware sidebar
 - **Phase 2.5 Task Management**: COMPLETE — full CRUD with RBAC, 146 tests passing
 - **Phase 2.6 Procedures**: COMPLETE — full CRUD with RBAC, sidebar nav, view/edit/delete dialogs
-- **API**: Runs on http://localhost:3001 | Routes: /auth, /dashboard/stats, /organizations, /procedures, /projects, /tasks, /users
-- **DB**: PostgreSQL in Docker, seeded. Procedure + Task models in sync (`prisma db push` applied)
-- **api-client**: Built — includes ProjectsResource, DashboardResource, TasksResource, ProceduresResource
+- **Phase 2.4 Calendar**: COMPLETE — custom month-view calendar, full CRUD with RBAC, 205 tests passing
+- **API**: Runs on http://localhost:3001 | Routes: /auth, /calendar-events, /dashboard/stats, /organizations, /procedures, /projects, /tasks, /users
+- **DB**: PostgreSQL in Docker, seeded. CalendarEvent + Procedure + Task models in sync (`prisma db push` applied)
+- **api-client**: Built — includes CalendarEventsResource, ProjectsResource, DashboardResource, TasksResource, ProceduresResource
 - **ui-components**: Built (tsc --build, zero errors), 26 Radix+Tailwind components
-- **Sidebar**: Tasks + Procedures nav items now visible to all roles
-- **Next**: Phase 2.2–2.4 — Notifications (WebSocket), Messaging (Socket.io), Calendar
+- **Sidebar**: Dashboard, Projects, Tasks, Procedures, Calendar, Organization, Settings nav items
+- **Next**: Phase 2.2 Notifications (WebSocket), Phase 2.3 Messaging (Socket.io)
 
 ### Seed Credentials
 
@@ -204,7 +205,21 @@ DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-d
 - Removed .claude/settings.local.json from git tracking
 - PR merged by user
 
-### Session 10 - 2026-03-07
+### Session 11 - 2026-03-08
+
+- **Phase 2.4 Calendar COMPLETE** — custom month-view calendar, no external library deps:
+  - Prisma: `CalendarEvent` model (11 models total), relations on Organization/User/Project
+  - packages/core: `EventType` type, Zod schemas (create + update), `EVENT_TYPES`/`EVENT_TYPE_LIST` constants
+  - apps/api: `calendar-event.service.ts` + `routes/calendar-events` with rate limiting + RBAC (POST: Admin/PM/OfficeAdmin/Superintendent; PATCH/DELETE: role or creator)
+  - packages/api-client: `CalendarEventsResource`, wired into `createApiClient()` + `ApiClient` interface
+  - apps/web: `/calendar` page (custom month grid), `use-calendar-events` hook, Calendar nav in sidebar
+  - Fixed pre-existing import order lint error in procedures page
+  - `prisma db push` applied — DB in sync
+- **205 total tests passing** (97 core + 108 API), web build clean (12 routes)
+- Branch: `feat/phase2-subphase-4-calendar` — commit staged, push pending
+- **Next**: Phase 2.2 Notifications (WebSocket) or Phase 2.3 Messaging (Socket.io)
+
+### Session 10 - 2026-03-08
 - **Phase 2.6 Procedures COMPLETE** — full CRUD with RBAC across all layers:
   - Prisma: `Procedure` model (10 models total), relations on Organization/User/Project
   - packages/core: `ProcedureStatus`, `ProcedureCategory` types, Zod schemas, `procedure-status` constants
@@ -214,7 +229,9 @@ DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-d
   - sidebar: Added **Tasks** and **Procedures** nav items (Tasks was missing from sidebar)
   - `prisma db push` applied — DB in sync
 - All 146 existing tests still passing (66 core + 80 API)
-- Branch: `feat/phase2-subphase-6-procedures`
+- Branch: `feat/phase2-subphase-6-procedures` — 2 commits staged, push pending
+- Logout bug fixed: `POST /api/auth/logout` Next.js route handler clears cookie same-origin; header.tsx catches API errors gracefully
+- **TODO next session**: push branch + open PR, then start Phase 2.2 (Notifications) or 2.4 (Calendar)
 
 ### Session 9 - 2026-03-06
 - CodeQL rate-limiting findings FIXED: refactored to use fastify.rateLimit() preHandler pattern

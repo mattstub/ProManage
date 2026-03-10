@@ -46,3 +46,12 @@ export {
   type CreateCalendarEventSchemaInput,
   type UpdateCalendarEventSchemaInput,
 } from './calendar-event'
+
+export {
+  sendDirectMessageSchema,
+  createAnnouncementSchema,
+  updateAnnouncementSchema,
+  type SendDirectMessageSchemaInput,
+  type CreateAnnouncementSchemaInput,
+  type UpdateAnnouncementSchemaInput,
+} from './messaging'

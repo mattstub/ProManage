@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - Phase 2.3A Async Messaging Module (Session 12, 2026-03-10)
+
+**Phase 2.3A — Async Messaging (DMs + Announcements)**
+
+*apps/api/prisma*
+- `schema.prisma`: 4 new models — `Conversation` (canonical participant ordering), `DirectMessage`, `Announcement` (targetRole, scheduledAt, sentAt), `AnnouncementRead` — 16 models total
+- `prisma db push` applied — DB in sync
+
+*packages/core*
+- `types/messaging.ts`: Conversation, ConversationWithRelations, DirectMessage, DirectMessageWithSender, Announcement, AnnouncementWithRelations, AnnouncementRead, UnreadCount + input types
+- `schemas/messaging.ts`: `sendDirectMessageSchema`, `createAnnouncementSchema`, `updateAnnouncementSchema` (Zod)
+- `tsconfig.json`: Changed to CommonJS output — fixes `ERR_UNSUPPORTED_DIR_IMPORT` when running seed via ts-node
+
+*apps/api*
+- `services/messaging.service.ts`: `listConversations`, `getOrCreateConversation`, `getConversationMessages`, `sendDirectMessage`, `listAnnouncements`, `listDraftAnnouncements`, `getAnnouncement`, `createAnnouncement`, `updateAnnouncement`, `deleteAnnouncement`, `markAnnouncementRead`, `getUnreadCount`
+- `routes/messages/index.ts`: Full REST API with RBAC (DMs: all auth; Announcements create/update/delete: Admin/PM/OfficeAdmin)
+- `routes/index.ts`: registered `/messages` prefix
+- `middleware/error-handler.ts`: Fixed ZodError duck-type check (`error.name === 'ZodError'`) — resolved 10 pre-existing test failures
+
+*packages/api-client*
+- `resources/messaging.ts`: `MessagingResource` — getUnreadCount, listConversations, startConversation, listMessages, sendMessage, listAnnouncements, listDrafts, getAnnouncement, createAnnouncement, updateAnnouncement, deleteAnnouncement, markAnnouncementRead
+- `index.ts`: `ApiClient` interface + `createApiClient()` updated with `messaging` namespace
+
+*apps/web*
+- `hooks/use-messaging.ts`: useUnreadCount, useConversations, useConversationMessages, useStartConversation, useSendMessage, useAnnouncements, useDraftAnnouncements, useCreateAnnouncement, useUpdateAnnouncement, useDeleteAnnouncement, useMarkAnnouncementRead
+- `app/(dashboard)/messages/page.tsx`: Split-panel inbox — DMs tab (conversation list + thread view, send on Enter), Announcements tab (list + detail, mark-read), Drafts tab (managers only, delete draft)
+- `components/layout/sidebar.tsx`: Added Messages nav item (ChatBubbleLeftRightIcon)
+
+*tests*
+- `__tests__/services/messaging.service.test.ts`: 18 tests (listConversations, getOrCreateConversation, sendDirectMessage, createAnnouncement, updateAnnouncement, deleteAnnouncement, getUnreadCount)
+- `__tests__/routes/messaging.routes.test.ts`: 11 tests (HTTP contract, RBAC, 400/401/403/204 status codes)
+- `__tests__/helpers/mock-prisma.ts`: Added conversation, directMessage, announcement, announcementRead mocks
+- `__tests__/helpers/build-app.ts`: Added `buildMessagingTestApp()`
+- **259 total tests passing** (97 core + 162 API), web type-check clean
+
 ### Added - Phase 2.6 Procedures Module (Session 10, 2026-03-07)
 
 **Phase 2.6 — General Procedures (full CRUD + RBAC)**

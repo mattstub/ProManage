@@ -92,13 +92,21 @@ The central landing page where managers access all tools, view reports, and comm
 - [ ] Real-time notification delivery (WebSocket)
 - [ ] Task-generated notifications (new assignments, approvals needed, deadlines)
 
-### 2.3 Internal Communication
-- [ ] Slack/Discord-style messaging
+### 2.3A Internal Communication — Async Messaging ✅ COMPLETE (Session 12)
+- [x] Direct messages between users (thread/conversation model, 1:1)
+- [x] Conversation history (paginated, oldest-first thread view)
+- [x] Announcements — one-way broadcast to all users or by role (Admin/PM/OfficeAdmin)
+- [x] Scheduled announcements (scheduledAt field, draft state)
+- [x] Unread count badge (DMs + announcements)
+- [x] Inbox UI — split-panel conversations list + thread view + announcements list
+
+### 2.3B Channel Chat — Discord/Slack Style (Future Session)
 - [ ] Channels (customizable by end user — per project, per topic, general)
-- [ ] Direct messages between users
-- [ ] Message threading
-- [ ] File/image sharing in messages
+- [ ] Channel permission model (per-channel read/write/manage per role)
 - [ ] Real-time delivery via Socket.io
+- [ ] File/image sharing (PDF, photo, video via MinIO)
+- [ ] Message threading (reply to message)
+- [ ] Template projects: standardized channels created with project (future feature)
 
 ### 2.4 Company Calendar
 - [ ] Calendar view (month, week, day)

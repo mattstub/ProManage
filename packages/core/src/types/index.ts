@@ -75,3 +75,17 @@ export type {
   Notification,
   CreateNotificationInput,
 } from './notification'
+
+export type {
+  Conversation,
+  ConversationWithRelations,
+  DirectMessage,
+  DirectMessageWithSender,
+  Announcement,
+  AnnouncementWithRelations,
+  AnnouncementRead,
+  SendDirectMessageInput,
+  CreateAnnouncementInput,
+  UpdateAnnouncementInput,
+  UnreadCount,
+} from './messaging'

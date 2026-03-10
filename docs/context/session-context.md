@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-08 (Session 10)
+**Last Updated**: 2026-03-10 (Session 12)
 
 ---
 
@@ -105,21 +105,23 @@ Root tooling:          COMPLETE (Sub-phase A)
 
 ---
 
-## Current State (2026-03-08)
+## Current State (2026-03-09)
 
 - **Phase 1, Sub-phases A-G**: COMPLETE (~150 source files)
 - **Phase 2.1 Dashboard**: COMPLETE — real data, projects list, stats widgets, role-aware sidebar
+- **Phase 2.2 Notifications**: COMPLETE — SSE real-time push, bell component, auto-notify on task assignment, 230 tests passing
+- **Phase 2.3A Async Messaging**: COMPLETE — DMs (thread model) + Announcements (role-targeted, scheduled), 259 tests passing
+- **Phase 2.4 Calendar**: COMPLETE — custom month-view calendar, full CRUD with RBAC, 205 tests passing
 - **Phase 2.5 Task Management**: COMPLETE — full CRUD with RBAC, 146 tests passing
 - **Phase 2.6 Procedures**: COMPLETE — full CRUD with RBAC, sidebar nav, view/edit/delete dialogs
-- **Phase 2.4 Calendar**: COMPLETE — custom month-view calendar, full CRUD with RBAC, 205 tests passing
-- **Phase 2.2 Notifications**: COMPLETE — SSE real-time push, bell component, auto-notify on task assignment, 230 tests passing
-- **API**: Runs on http://localhost:3001 | Routes: /auth, /calendar-events, /dashboard/stats, /notifications, /organizations, /procedures, /projects, /tasks, /users
-- **DB**: PostgreSQL in Docker, seeded. Notification + CalendarEvent + Procedure + Task models in sync (`prisma db push` applied)
-- **api-client**: Built — includes NotificationsResource, CalendarEventsResource, ProjectsResource, DashboardResource, TasksResource, ProceduresResource
+- **API**: Runs on http://localhost:3001 | Routes: /auth, /calendar-events, /dashboard/stats, /messages, /notifications, /organizations, /procedures, /projects, /tasks, /users
+- **DB**: PostgreSQL in Docker, seeded. 16 models in sync (`prisma db push` applied — Conversation, DirectMessage, Announcement, AnnouncementRead added)
+- **api-client**: Built — includes MessagingResource, NotificationsResource, CalendarEventsResource, ProjectsResource, DashboardResource, TasksResource, ProceduresResource
 - **ui-components**: Built (tsc --build, zero errors), 26 Radix+Tailwind components
-- **Sidebar**: Dashboard, Projects, Tasks, Procedures, Calendar, Organization, Settings nav items
+- **Sidebar**: Dashboard, Projects, Tasks, Procedures, Calendar, Messages, Organization, Settings nav items
 - **Header**: NotificationBell with live badge + dropdown panel (SSE-powered)
-- **Next**: Phase 2.3 Messaging (Socket.io)
+- **packages/core**: Now compiles to CommonJS (fixed ESM seed issue; web/bundler still works fine)
+- **Next**: Phase 2.3B — Channel Chat (Socket.io, Discord-style channels with per-channel permissions)
 
 ### Seed Credentials
 
@@ -206,6 +208,22 @@ DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-d
 - TypeScript project references wired (composite + tsc --build on both packages)
 - Removed .claude/settings.local.json from git tracking
 - PR merged by user
+
+### Session 12 - 2026-03-10
+
+- **Phase 2.3A Async Messaging COMPLETE** — DMs + Announcements, no Socket.io needed:
+  - Prisma: `Conversation`, `DirectMessage`, `Announcement`, `AnnouncementRead` models (16 models total)
+  - Canonical participant ordering (participantA < participantB lexicographically) enforced in service layer
+  - packages/core: `messaging.ts` types + `messaging.ts` Zod schemas (sendDirectMessage, createAnnouncement, updateAnnouncement)
+  - apps/api: `messaging.service.ts` (listConversations, getOrCreateConversation, getConversationMessages, sendDirectMessage, listAnnouncements, createAnnouncement, updateAnnouncement, deleteAnnouncement, markAnnouncementRead, getUnreadCount)
+  - apps/api: `routes/messages/index.ts` — full CRUD with RBAC (Announcement create: Admin/PM/OfficeAdmin)
+  - packages/api-client: `MessagingResource` with all methods
+  - apps/web: `/messages` page — split-panel layout, two tabs (DMs + Announcements), compose dialogs, drafts tab for managers
+  - **Bug fixed**: `ZodError instanceof` check in error-handler failing in test env — changed to duck-type check (`error.name === 'ZodError'`) — resolved 10 pre-existing test failures
+  - **Build fix**: packages/core tsconfig changed to CommonJS output — fixes `ERR_UNSUPPORTED_DIR_IMPORT` when running seed via ts-node
+  - **259 total tests passing** (97 core + 162 API), web type-check clean (13 routes)
+- **Phase 2.3B Channel Chat** scoped and documented in ROADMAP.md (Socket.io, per-channel permissions, file uploads, template projects noted as future feature)
+- Branch: `feat/phase2-subphase-3-messaging` — push pending
 
 ### Session 11 - 2026-03-08
 

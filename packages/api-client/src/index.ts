@@ -3,6 +3,7 @@ export { ApiClientError } from './errors'
 export { AuthResource } from './resources/auth'
 export { CalendarEventsResource } from './resources/calendar-events'
 export { DashboardResource } from './resources/dashboard'
+export { MessagingResource } from './resources/messaging'
 export { NotificationsResource } from './resources/notifications'
 export { HealthResource } from './resources/health'
 export { OrganizationsResource } from './resources/organizations'
@@ -14,6 +15,11 @@ export { UsersResource } from './resources/users'
 export type { ClientConfig, PaginatedResult, PaginationParams, RequestOptions } from './types'
 export type { ListCalendarEventsParams } from './resources/calendar-events'
 export type { HealthResponse } from './resources/health'
+export type {
+  ListAnnouncementsParams,
+  ListConversationsParams,
+  ListMessagesParams,
+} from './resources/messaging'
 export type { ListNotificationsParams } from './resources/notifications'
 export type { ListProceduresParams } from './resources/procedures'
 export type { ListProjectsParams } from './resources/projects'
@@ -23,6 +29,7 @@ import { ProManageClient } from './client'
 import { AuthResource } from './resources/auth'
 import { CalendarEventsResource } from './resources/calendar-events'
 import { DashboardResource } from './resources/dashboard'
+import { MessagingResource } from './resources/messaging'
 import { HealthResource } from './resources/health'
 import { NotificationsResource } from './resources/notifications'
 import { OrganizationsResource } from './resources/organizations'
@@ -54,6 +61,7 @@ export interface ApiClient {
   calendarEvents: CalendarEventsResource
   dashboard: DashboardResource
   health: HealthResource
+  messaging: MessagingResource
   notifications: NotificationsResource
   organizations: OrganizationsResource
   procedures: ProceduresResource
@@ -76,6 +84,7 @@ export function createApiClient(config: ClientConfig): ApiClient {
     calendarEvents: new CalendarEventsResource(core),
     dashboard: new DashboardResource(core),
     health: new HealthResource(core),
+    messaging: new MessagingResource(core),
     notifications: new NotificationsResource(core),
     organizations: new OrganizationsResource(core),
     procedures: new ProceduresResource(core),

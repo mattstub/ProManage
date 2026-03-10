@@ -3,6 +3,7 @@
 import {
   BuildingOffice2Icon,
   CalendarDaysIcon,
+  ChatBubbleLeftRightIcon,
   ClipboardDocumentListIcon,
   Cog6ToothIcon,
   DocumentTextIcon,
@@ -50,6 +51,11 @@ const NAV_ITEMS: NavItemConfig[] = [
     href: '/calendar',
     label: 'Calendar',
     icon: <CalendarDaysIcon className="h-5 w-5" />,
+  },
+  {
+    href: '/messages',
+    label: 'Messages',
+    icon: <ChatBubbleLeftRightIcon className="h-5 w-5" />,
   },
   {
     href: '/organization',

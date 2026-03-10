@@ -23,9 +23,10 @@ export function errorHandler(
     })
   }
 
-  // Zod validation errors
-  if (error instanceof ZodError) {
-    const details = error.errors.map((e) => ({
+  // Zod validation errors — use duck typing to handle multiple zod module copies
+  if (error instanceof ZodError || error.name === 'ZodError') {
+    const zodError = error as ZodError
+    const details = zodError.errors.map((e) => ({
       field: e.path.join('.'),
       message: e.message,
     }))

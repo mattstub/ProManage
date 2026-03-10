@@ -183,10 +183,37 @@ Full CRUD with RBAC (146 tests passing). See session-context.md Session 9 log.
 - `packages/api-client/src/index.ts` — ProceduresResource in ApiClient + createApiClient()
 - `apps/web/src/components/layout/sidebar.tsx` — added Tasks + Procedures nav items
 
-### Phase 2.2–2.4 — Notifications, Messaging, Calendar
-- [ ] 2.2 Notifications (WebSocket required)
-- [ ] 2.3 Internal Communication (Socket.io required)
-- [ ] 2.4 Company Calendar (calendar library required)
+### Phase 2.3A — Async Messaging ✅ COMPLETE (Session 12, 2026-03-09)
+
+**New files**:
+- `packages/core/src/types/messaging.ts` — Conversation, DirectMessage, Announcement, AnnouncementRead types + input types
+- `packages/core/src/schemas/messaging.ts` — sendDirectMessageSchema, createAnnouncementSchema, updateAnnouncementSchema
+- `apps/api/src/services/messaging.service.ts` — full conversation + announcement service
+- `apps/api/src/routes/messages/index.ts` — CRUD with RBAC
+- `packages/api-client/src/resources/messaging.ts` — MessagingResource
+- `apps/web/src/hooks/use-messaging.ts` — TanStack Query hooks (conversations, messages, announcements, unread count)
+- `apps/web/src/app/(dashboard)/messages/page.tsx` — split-panel inbox UI (DMs + Announcements + Drafts tabs)
+
+**Modified files**:
+- `apps/api/prisma/schema.prisma` — 4 new models (16 total)
+- `apps/api/src/routes/index.ts` — registered /messages route
+- `apps/api/src/middleware/error-handler.ts` — fixed ZodError duck-type check
+- `packages/core/tsconfig.json` — changed to CommonJS output (fixed seed ESM issue)
+- `packages/core/src/types/index.ts` — messaging type exports
+- `packages/core/src/schemas/index.ts` — messaging schema exports
+- `packages/api-client/src/index.ts` — MessagingResource in ApiClient + createApiClient()
+- `apps/web/src/components/layout/sidebar.tsx` — added Messages nav item
+- `apps/api/src/__tests__/helpers/mock-prisma.ts` — Conversation, DirectMessage, Announcement, AnnouncementRead mocks
+- `apps/api/src/__tests__/helpers/build-app.ts` — buildMessagingTestApp()
+
+### Phase 2.3B — Channel Chat (Next Session)
+- [ ] Socket.io integration with Fastify
+- [ ] Channel + ChannelPermission + ChannelMember + ChatMessage + MessageAttachment models
+- [ ] Per-channel role-based permissions (read/write/manage)
+- [ ] File uploads (PDF, image, video) via MinIO
+- [ ] Real-time message delivery
+
+### Phase 2.2–2.4 — Notifications, Calendar (see session 11)
 
 ---
 

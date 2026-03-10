@@ -6,34 +6,36 @@ ProManage is a free, open-source platform designed to help small construction co
 
 ## Current Status
 
-> **Phase 1 (Foundation) — In Progress**
+> **Phase 2 (Dashboard & Hub) — In Progress**
 >
-> Sub-phases A–F complete (~120 source files). The API server and shared packages are fully built. The web application shell (Sub-phase G) is next.
+> Phase 1 (Foundation) is complete. Active development is on Phase 2 modules.
 >
-> | Sub-phase | Component | Status |
-> |---|---|---|
-> | A | Root Tooling (monorepo, tsconfig, ESLint, Prettier, Docker) | ✅ Complete |
-> | B | packages/core (types, schemas, constants, utils) | ✅ Complete |
-> | C | Database (Prisma schema, Docker PostgreSQL, seed data) | ✅ Complete |
-> | D | apps/api (Fastify API server, auth, RBAC, Swagger) | ✅ Complete |
-> | E | packages/api-client (typed fetch wrapper, auto-refresh) | ✅ Complete |
-> | F | packages/ui-components (Radix + Tailwind, 26 components) | ✅ Complete |
-> | G | apps/web (Next.js 14 App Router shell) | ⏳ Not Started |
+> | Module | Status |
+> |---|---|
+> | Phase 1 — Foundation (monorepo, API, auth, packages) | ✅ Complete |
+> | Phase 2.1 — Dashboard (stats, project list) | ✅ Complete |
+> | Phase 2.2 — Notifications (SSE real-time push) | ✅ Complete |
+> | Phase 2.3A — Async Messaging (DMs + Announcements) | ✅ Complete |
+> | Phase 2.4 — Company Calendar | ✅ Complete |
+> | Phase 2.5 — Task Management | ✅ Complete |
+> | Phase 2.6 — General Procedures | ✅ Complete |
+> | Phase 2.3B — Channel Chat (Discord-style, Socket.io) | 🔜 Next |
 
 ## Features
 
-- **Project Management** — Organize jobs, tasks, and timelines
-- **Request for Information (RFI)** — Track and manage RFIs
-- **Change Proposal Requests (CPR)** — Handle change orders efficiently
-- **Permit & Inspection Management** — Track permits and inspections
-- **Submittal Tools** — Manage submittals and product specifications
-- **Daily Reports & Time Tracking** — Field-to-office workflow
-- **Scheduling & Equipment** — Resource and equipment management
+- **Dashboard** — Stats overview, project summaries, role-aware navigation
+- **Projects** — Create and track construction projects with status and type
+- **Task Management** — Assign tasks with priority, due dates, and RBAC
+- **Messaging** — Direct messages between users + role-targeted announcements
+- **Notifications** — Real-time SSE push notifications (task assignments, etc.)
+- **Company Calendar** — Custom month-view calendar with event CRUD
+- **Procedures** — Document workflows, safety protocols, and SOPs
+- **6 Roles** — Admin, ProjectManager, Superintendent, Foreman, FieldUser, OfficeAdmin
 
 ## Architecture
 
 - **Desktop-First**: Primary interface optimized for office personnel (90% of usage)
-- **Mobile Companion**: React Native app for field workers (status updates, photos)
+- **Mobile Companion**: React Native app for field workers (deferred to Phase 3+)
 - **API-First**: Clean backend separation enables future integrations
 - **Multi-Tenant**: All data scoped by organization
 
@@ -41,7 +43,7 @@ ProManage is a free, open-source platform designed to help small construction co
 
 | Layer | Technology |
 |---|---|
-| Web Frontend | Next.js 14, React 18, TailwindCSS, Radix UI, Zustand, TanStack Query |
+| Web Frontend | Next.js 14, React 19, TailwindCSS, Radix UI, Zustand, TanStack Query |
 | API Server | Node.js 20, Fastify, TypeScript, Prisma |
 | Database | PostgreSQL 15 |
 | File Storage | MinIO (local) / AWS S3 (production) |
@@ -49,43 +51,92 @@ ProManage is a free, open-source platform designed to help small construction co
 | Monorepo | pnpm workspaces + Turborepo |
 | Mobile | React Native + Expo (deferred) |
 
+---
+
 ## Quick Start
 
 ### Prerequisites
 
 - **Node.js 20+** — use [nvm](https://github.com/nvm-sh/nvm): `nvm install 20 && nvm use 20`
 - **pnpm 8+** — `npm install -g pnpm`
-- **Docker & Docker Compose** — for local PostgreSQL and MinIO
+- **Docker** (v2) — for local PostgreSQL and MinIO
 
-### Installation
+### 1. Install dependencies
 
 ```bash
-# Clone the repository
 git clone https://github.com/mattstub/ProManage.git
 cd ProManage
-
-# Install dependencies
 pnpm install
-
-# Start local services (PostgreSQL + MinIO)
-docker-compose up -d
-
-# Configure the API environment
-cp apps/api/.env.example apps/api/.env
-# Edit apps/api/.env with your database credentials
-
-# Seed the database
-cd apps/api && npx ts-node prisma/seed.ts && cd ../..
-
-# Start the API server
-pnpm --filter api dev
 ```
 
-Once running, visit:
-- API health check: http://localhost:3001/health
-- Swagger docs: http://localhost:3001/docs
+### 2. Configure environment
 
-### Demo Credentials (after seeding)
+```bash
+# API environment (copy and edit)
+cp apps/api/.env.example apps/api/.env
+
+# Web environment
+echo "NEXT_PUBLIC_API_URL=http://localhost:3001" > apps/web/.env.local
+```
+
+The default `apps/api/.env` values work out of the box with the Docker services below.
+
+### 3. Start infrastructure
+
+```bash
+docker compose up -d
+```
+
+Expected: both `promanage-postgres` and `promanage-minio` show as **healthy**.
+
+### 4. Build shared packages
+
+Packages must be built in order — `core` first, then the others in parallel:
+
+```bash
+pnpm --filter @promanage/core build
+pnpm --filter @promanage/api-client build
+pnpm --filter @promanage/ui-components build
+```
+
+### 5. Set up the database
+
+```bash
+cd apps/api
+npx prisma db push
+npx ts-node prisma/seed.ts
+cd ../..
+```
+
+### 6. Launch dev servers
+
+Open two terminals:
+
+**Terminal 1 — API server**
+```bash
+source ~/.nvm/nvm.sh && nvm use 20
+cd apps/api && pnpm dev
+```
+
+**Terminal 2 — Web app**
+```bash
+source ~/.nvm/nvm.sh && nvm use 20
+pnpm --filter @promanage/web dev
+```
+
+| Service | URL |
+|---|---|
+| Web app | http://localhost:3000 |
+| API server | http://localhost:3001 |
+| API health check | http://localhost:3001/health |
+| Swagger docs | http://localhost:3001/docs |
+| MinIO console | http://localhost:9001 |
+
+---
+
+## Demo Credentials
+
+Seeded automatically by `prisma/seed.ts`:
 
 | Email | Password | Role |
 |---|---|---|
@@ -93,32 +144,79 @@ Once running, visit:
 | pm@demo.com | password123 | ProjectManager |
 | field@demo.com | password123 | FieldUser |
 
+---
+
+## Common Dev Tasks
+
+### Reset the database
+
+```bash
+cd apps/api
+npx prisma db push --force-reset
+npx ts-node prisma/seed.ts
+```
+
+> Always use `prisma db push --force-reset` for dev resets — `prisma migrate dev` requires interactive confirmation.
+
+### Run tests
+
+```bash
+pnpm test                              # all packages via Turborepo
+pnpm --filter @promanage/core test     # core unit tests only (97 tests)
+pnpm --filter @promanage/api test      # API service + route tests (162 tests)
+```
+
+### Type-check the web app
+
+```bash
+pnpm --filter @promanage/web type-check
+```
+
+### Rebuild a stale package
+
+If a package build seems stuck or wrong (stale `.tsbuildinfo`):
+
+```bash
+rm -rf packages/core/dist packages/core/tsconfig.tsbuildinfo
+pnpm --filter @promanage/core build
+```
+
+---
+
 ## Project Structure
 
 ```
 ProManage/
 ├── apps/
 │   ├── api/                # Fastify API server (TypeScript, Prisma, JWT auth)
-│   ├── web/                # Next.js web application (desktop-first)
-│   └── mobile/             # React Native mobile app (deferred)
+│   │   ├── prisma/         # Schema (16 models), seed script
+│   │   └── src/
+│   │       ├── routes/     # auth, calendar-events, dashboard, messages,
+│   │       │               # notifications, organizations, procedures,
+│   │       │               # projects, tasks, users
+│   │       ├── services/   # Business logic (one file per domain)
+│   │       └── middleware/ # authenticate, authorize, error-handler
+│   └── web/                # Next.js 14 App Router (desktop-first)
+│       └── src/
+│           ├── app/        # Pages: dashboard, projects, tasks, procedures,
+│           │               # calendar, messages, organization, settings
+│           ├── components/ # layout (sidebar, header, nav), dashboard, auth
+│           └── hooks/      # TanStack Query hooks (one file per domain)
 ├── packages/
 │   ├── core/               # Shared types, Zod schemas, constants, utils
-│   ├── ui-components/      # Radix UI + Tailwind component library
-│   ├── api-client/         # Typed fetch wrapper with auto-refresh
-│   ├── mobile-components/  # Mobile UI components (deferred)
-│   └── real-time/          # WebSocket/SSE client (deferred)
-├── docs/                   # Documentation
+│   ├── api-client/         # Typed fetch wrapper with auto-refresh on 401
+│   └── ui-components/      # Radix UI + Tailwind component library (26 components)
+├── docs/                   # Architecture, roadmap, context files
 └── scripts/                # Development scripts
 ```
+
+---
 
 ## Documentation
 
 - [Architecture](docs/ARCHITECTURE.md) — System architecture overview
 - [Roadmap](docs/ROADMAP.md) — Development phases and milestones
-- [Technology Stack](docs/context/technology-stack.md) — Stack decisions and rationale
-- [Design System](docs/context/design-system.md) — Component and style guidelines
-- [Contributing](CONTRIBUTING.md) — How to contribute
-- [Changelog](CHANGELOG.md) — Version history
+- [Changelog](CHANGELOG.md) — Session-by-session change log
 
 ## Contributing
 
@@ -126,8 +224,8 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes following [conventional commits](https://www.conventionalcommits.org/) format
-4. Push to the branch and open a Pull Request
+3. Commit using [conventional commits](https://www.conventionalcommits.org/) format
+4. Push the branch and open a Pull Request
 
 ## Community
 
@@ -139,13 +237,6 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 AGPL-3.0 — see [LICENSE](LICENSE) for details.
 
 We chose AGPL-3.0 to ensure that all improvements to ProManage remain open source, even when deployed as a SaaS application. This protects the community and prevents proprietary forks that don't give back.
-
-## Support
-
-- 📖 [Documentation](docs/)
-- 🐛 [Report a Bug](https://github.com/mattstub/ProManage/issues/new?template=bug_report.md)
-- 💡 [Request a Feature](https://github.com/mattstub/ProManage/issues/new?template=feature_request.md)
-- ❓ [Ask a Question](https://github.com/mattstub/ProManage/issues/new?template=question.md)
 
 ---
 

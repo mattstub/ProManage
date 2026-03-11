@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   Badge,
@@ -24,7 +24,7 @@ import {
   Textarea,
 } from '@promanage/ui-components'
 
-import type { ChannelWithRelations, RoleName } from '@promanage/core'
+import type { ChannelPermission, ChannelWithRelations, RoleName } from '@promanage/core'
 import { CHANNEL_MANAGE_ROLES } from '@promanage/core'
 
 import {
@@ -85,6 +85,15 @@ export function ChannelSettingsPanel({
     canWrite: true,
     canManage: false,
   })
+
+  useEffect(() => {
+    const saved = permissions?.find((p: ChannelPermission) => p.roleName === permRole)
+    if (saved) {
+      setPermValues({ canRead: saved.canRead, canWrite: saved.canWrite, canManage: saved.canManage })
+    } else {
+      setPermValues({ canRead: true, canWrite: true, canManage: false })
+    }
+  }, [permRole, permissions])
 
   const handleSaveGeneral = async (e: React.FormEvent) => {
     e.preventDefault()

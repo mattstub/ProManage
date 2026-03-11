@@ -61,16 +61,18 @@ export function ChannelSettingsPanel({
   onDeleted,
   onLeft,
 }: ChannelSettingsPanelProps) {
-  const canManage = currentUserRoles.some((r) =>
-    (CHANNEL_MANAGE_ROLES as readonly string[]).includes(r)
-  )
-
   const updateChannel = useUpdateChannel(channel.id)
   const deleteChannel = useDeleteChannel()
   const leaveChannel = useLeaveChannel()
   const updatePermission = useUpdateChannelPermission(channel.id)
   const { data: permissions } = useChannelPermissions(channel.id)
 
+  const canManage =
+    currentUserRoles.some((r) =>
+      (CHANNEL_MANAGE_ROLES as readonly string[]).includes(r)
+    ) ||
+    (permissions?.some((p: any) => currentUserRoles.includes(p.role) && p.canManage) ??
+      false)
   const [form, setForm] = useState({
     name: channel.name,
     description: channel.description ?? '',

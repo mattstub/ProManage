@@ -260,7 +260,7 @@ export async function updateChannel(
     channelId,
     name: updated.name,
     description: updated.description,
-    updatedAt: updated.updatedAt,
+    updatedAt: updated.updatedAt.toISOString(),
   })
 
   return updated

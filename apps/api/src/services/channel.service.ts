@@ -449,17 +449,24 @@ export async function listMessages(
     fastify.prisma.chatMessage.count({ where }),
   ])
 
-  // Replace soft-deleted message content with placeholder
+  // Replace soft-deleted message content with placeholder,
+  // but keep sender and always expose replyCount for UI consistency
   const normalized = messages.map((m) => {
+    const base = {
+      ...m,
+      replyCount: m._count.replies,
+      _count: undefined as unknown as undefined,
+    }
+
     if (m.deletedAt) {
       return {
-        ...m,
+        ...base,
         body: '[deleted]',
-        sender: null,
         attachments: [],
       }
     }
-    return { ...m, replyCount: m._count.replies, _count: undefined }
+
+    return base
   })
 
   return { messages: normalized, meta: buildPaginationMeta(total, page, perPage) }

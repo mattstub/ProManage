@@ -7,6 +7,8 @@ import jwt from '@fastify/jwt'
 
 import prismaPlugin from './plugins/prisma'
 import ssePlugin from './plugins/sse'
+import minioPlugin from './plugins/minio'
+import socketIoPlugin from './plugins/socket-io'
 import swaggerPlugin from './plugins/swagger'
 import { errorHandler } from './middleware/error-handler'
 import healthRoutes from './routes/health'
@@ -54,6 +56,8 @@ export async function buildApp() {
   // Plugins
   await app.register(prismaPlugin)
   await app.register(ssePlugin)
+  await app.register(minioPlugin)
+  await app.register(socketIoPlugin)
   await app.register(swaggerPlugin)
 
   // Error handler

@@ -35,3 +35,10 @@ export { EVENT_TYPES, EVENT_TYPE_LIST } from './event-type'
 export { NOTIFICATION_TYPES, NOTIFICATION_TYPE_LIST } from './notification-type'
 
 export { ERROR_CODES, HTTP_STATUS, type ErrorCode } from './api'
+
+export {
+  CHANNEL_MANAGE_ROLES,
+  ALLOWED_ATTACHMENT_MIME_TYPES,
+  MAX_ATTACHMENT_SIZE_BYTES,
+  MINIO_BUCKET_NAME,
+} from './channel'

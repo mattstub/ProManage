@@ -120,9 +120,28 @@ Title: feat(web): Sub-phase G — apps/web Next.js shell
 
 ---
 
+## Documentation Updates (required before final commit)
+
+Every PR must include documentation updates in the same commit. Check all four:
+
+| File | What to update |
+|---|---|
+| `CHANGELOG.md` | Add entry under `[Unreleased]` — packages changed, new files, bug fixes |
+| `docs/ROADMAP.md` | Check off completed items (`- [ ]` → `- [x]`), update "Last Updated" + "Status" footer |
+| `docs/context/session-context.md` | Update "Last Updated", current state section, directory map, session log |
+| `CLAUDE.md` | Update Phase Status section only if a phase completes |
+
+> `docs/context/implementation-progress.md` is deprecated — session-context.md is now authoritative.
+
+Quick check before committing:
+```bash
+# Confirm docs are staged alongside code
+git diff --staged --name-only | grep -E "CHANGELOG|ROADMAP|session-context|CLAUDE"
+```
+
+---
+
 ## After PR is Merged
 
-1. Update `docs/context/session-context.md` — mark sub-phase complete in session log
-2. Update `docs/context/implementation-progress.md` — check off the sub-phase
-3. Checkout `main` and pull: `git checkout main && git pull origin main`
-4. Begin next sub-phase using `/new-branch`
+1. Checkout `main` and pull: `git checkout main && git pull origin main`
+2. Begin next sub-phase using `/new-branch`

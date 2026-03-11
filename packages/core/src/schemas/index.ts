@@ -55,3 +55,14 @@ export {
   type CreateAnnouncementSchemaInput,
   type UpdateAnnouncementSchemaInput,
 } from './messaging'
+
+export {
+  createChannelSchema,
+  updateChannelSchema,
+  sendChatMessageSchema,
+  updateChannelPermissionSchema,
+  type CreateChannelSchemaInput,
+  type UpdateChannelSchemaInput,
+  type SendChatMessageSchemaInput,
+  type UpdateChannelPermissionSchemaInput,
+} from './channel'

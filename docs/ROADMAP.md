@@ -60,14 +60,14 @@ Establish the monorepo, database, authentication, and API framework that everyth
 - [x] OpenAPI/Swagger documentation generation (at /docs)
 - [x] Health check endpoint
 
-### 1.5 Web Application Shell ⏳ IN PROGRESS (Sub-phase G)
-- [ ] Next.js 14+ with App Router
-- [ ] TailwindCSS + Radix UI setup
-- [ ] Layout system (sidebar navigation, top bar, content area)
-- [ ] Auth pages (login, register)
-- [ ] Protected route middleware
-- [ ] TanStack Query provider
-- [ ] Zustand store setup
+### 1.5 Web Application Shell ✅ COMPLETE
+- [x] Next.js 14+ with App Router
+- [x] TailwindCSS + Radix UI setup
+- [x] Layout system (sidebar navigation, top bar, content area)
+- [x] Auth pages (login, register)
+- [x] Protected route middleware
+- [x] TanStack Query provider
+- [x] Zustand store setup
 
 ### 1.6 Shared Packages ✅ COMPLETE
 - [x] `packages/core` — shared types, Zod schemas, constants, utils (24 files)
@@ -81,16 +81,16 @@ Establish the monorepo, database, authentication, and API framework that everyth
 The central landing page where managers access all tools, view reports, and communicate with teams.
 
 ### 2.1 Dashboard Layout
-- [ ] Main dashboard page with widget/card grid
-- [ ] Module navigation sidebar (dynamic based on enabled modules)
-- [ ] Settings to toggle modules on/off per organization
-- [ ] User profile and preferences
+- [x] Main dashboard page with widget/card grid
+- [x] Module navigation sidebar (dynamic based on enabled modules)
+- [x] Settings to toggle modules on/off per organization
+- [x] User profile and preferences
 
 ### 2.2 Notifications
-- [ ] Notification system (in-app)
-- [ ] Notification preferences per user
-- [ ] Real-time notification delivery (WebSocket)
-- [ ] Task-generated notifications (new assignments, approvals needed, deadlines)
+- [x] Notification system (in-app)
+- [x] Notification preferences per user
+- [x] Real-time notification delivery (WebSocket)
+- [x] Task-generated notifications (new assignments, approvals needed, deadlines)
 
 ### 2.3A Internal Communication — Async Messaging ✅ COMPLETE (Session 12)
 - [x] Direct messages between users (thread/conversation model, 1:1)
@@ -100,32 +100,32 @@ The central landing page where managers access all tools, view reports, and comm
 - [x] Unread count badge (DMs + announcements)
 - [x] Inbox UI — split-panel conversations list + thread view + announcements list
 
-### 2.3B Channel Chat — Discord/Slack Style (Future Session)
-- [ ] Channels (customizable by end user — per project, per topic, general)
-- [ ] Channel permission model (per-channel read/write/manage per role)
-- [ ] Real-time delivery via Socket.io
-- [ ] File/image sharing (PDF, photo, video via MinIO)
-- [ ] Message threading (reply to message)
-- [ ] Template projects: standardized channels created with project (future feature)
+### 2.3B Channel Chat — Discord/Slack Style ✅ COMPLETE (Sessions 13-14, 2026-03-11)
+- [x] Channels (per project, per topic, general — name/slug/isPrivate/description)
+- [x] Channel permission model (per-channel canRead/canWrite/canManage per role, upsert)
+- [x] Real-time delivery via Socket.io (JWT auth in handshake, org/user rooms)
+- [x] File/image sharing (PDF, photo, video via MinIO presigned PUT/GET URLs)
+- [x] Message threading (parentId reply model, thread panel UI)
+- [ ] Template projects: standardized channels created with project (deferred to Phase 4)
 
 ### 2.4 Company Calendar
-- [ ] Calendar view (month, week, day)
-- [ ] Event creation with notifications
-- [ ] Permission-scoped visibility (field users see their relevant items, management sees all)
-- [ ] Meeting scheduling with attendee notifications
-- [ ] Export/publish capability (iCal, public link)
+- [x] Calendar view (month, week, day)
+- [x] Event creation with notifications
+- [x] Permission-scoped visibility (field users see their relevant items, management sees all)
+- [x] Meeting scheduling with attendee notifications
+- [x] Export/publish capability (iCal, public link)
 
 ### 2.5 Task Management
-- [ ] Company-wide task list
-- [ ] Task assignment to users
-- [ ] Due dates and priority levels
-- [ ] Task notifications on creation and approaching deadlines
-- [ ] Task status tracking (open, in progress, complete)
+- [x] Company-wide task list
+- [x] Task assignment to users
+- [x] Due dates and priority levels
+- [x] Task notifications on creation and approaching deadlines
+- [x] Task status tracking (open, in progress, complete)
 
 ### 2.6 General Procedures
-- [ ] Section for end users to document their own workflows and requirements
-- [ ] Rich text editor for procedure creation
-- [ ] Organizational knowledge base
+- [x] Section for end users to document their own workflows and requirements
+- [x] Rich text editor for procedure creation
+- [x] Organizational knowledge base
 
 ---
 
@@ -453,6 +453,6 @@ Each module follows a consistent pattern from the canvas:
 
 ---
 
-**Last Updated**: 2026-02-28
-**Status**: Active — Phase 1 in progress
+**Last Updated**: 2026-03-11
+**Status**: Active — Phase 2 in progress (2.3B complete, moving to Phase 3)
 **Source**: `notes/ProManage Suite.canvas`

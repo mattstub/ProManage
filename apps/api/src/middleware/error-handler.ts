@@ -23,10 +23,13 @@ export function errorHandler(
     })
   }
 
-  // Zod validation errors — use duck typing to handle multiple zod module copies
+  // Zod validation errors — use duck typing to handle multiple zod module copies.
+  // Zod 4 uses .issues (Zod 3 used .errors); handle both via any-cast.
   if (error instanceof ZodError || error.name === 'ZodError') {
     const zodError = error as ZodError
-    const details = zodError.errors.map((e) => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const issues: { path: (string | number)[]; message: string }[] = (zodError as any).issues ?? (zodError as any).errors ?? []
+    const details = issues.map((e) => ({
       field: e.path.join('.'),
       message: e.message,
     }))

@@ -89,3 +89,27 @@ export type {
   UpdateAnnouncementInput,
   UnreadCount,
 } from './messaging'
+
+export type {
+  UserSummary,
+  Channel,
+  ChannelWithRelations,
+  ChannelPermission,
+  ChannelMember,
+  ChatMessage,
+  ChatMessageWithRelations,
+  MessageAttachment,
+  CreateChannelInput,
+  UpdateChannelInput,
+  SendChatMessageInput,
+  UpdateChannelPermissionInput,
+} from './channel'
+
+export type {
+  ChannelMessageEvent,
+  ChannelMessageEditedEvent,
+  ChannelMessageDeletedEvent,
+  ChannelMemberJoinedEvent,
+  ChannelMemberLeftEvent,
+  ChannelSocketEvent,
+} from './socket-events'

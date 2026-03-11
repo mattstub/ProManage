@@ -33,21 +33,6 @@ Related to #
 ## Technical Details (if applicable)
 <!-- Provide technical context about the implementation -->
 
-**Architecture Changes:**
-<!-- Describe any architectural changes -->
-
-**Database Changes:**
-<!-- List any database migrations or schema changes -->
-
-**API Changes:**
-<!-- List any API endpoint changes or new endpoints -->
-
-**Breaking Changes:**
-<!-- Detail any breaking changes and migration path -->
-
-## Testing
-<!-- Describe the tests you've added or run -->
-
 ### Manual Testing
 
 - [ ] Tested on development environment
@@ -63,21 +48,6 @@ Related to #
 - [ ] E2E tests added/updated
 - [ ] All tests passing locally
 - [ ] Test coverage maintained or improved
-
-**Test Coverage:**
-<!-- Include coverage percentage if applicable -->
-
-## Screenshots/Videos (if applicable)
-<!-- Add screenshots or videos demonstrating the changes -->
-
-**Before:**
-<!-- Screenshot/video of before the changes -->
-
-**After:**
-<!-- Screenshot/video of after the changes -->
-
-## Checklist
-<!-- Mark completed items with an 'x' -->
 
 ### Code Quality
 
@@ -154,12 +124,6 @@ NEW_VAR=value
 
 ## Reviewer Notes
 <!-- Any specific areas you'd like reviewers to focus on -->
-
-## Post-Merge Tasks
-<!-- List any tasks that need to be done after merging -->
-
-- [ ] Task 1
-- [ ] Task 2
 
 ---
 

@@ -644,13 +644,51 @@ export async function confirmAttachment(
     throw new ForbiddenError('Only the message sender can attach files')
   }
 
+  const { filename, mimeType, sizeBytes, storageKey } = data
+
+  // Re-validate MIME type against allowed list
+  if (!(ALLOWED_ATTACHMENT_MIME_TYPES as readonly string[]).includes(mimeType)) {
+    throw new ValidationError(`Unsupported file type: ${mimeType}`)
+  }
+
+  // Re-validate file size
+  if (sizeBytes > MAX_ATTACHMENT_SIZE_BYTES) {
+    throw new ValidationError(`File exceeds maximum size of ${MAX_ATTACHMENT_SIZE_BYTES} bytes`)
+  }
+  if (sizeBytes <= 0) {
+    throw new ValidationError('File must not be empty')
+  }
+
+  // Enforce storage key prefix and prevent path traversal
+  const expectedPrefix = `attachments/${organizationId}/${channelId}/`
+  const normalizedKey = path.posix.normalize(storageKey)
+  if (
+    !storageKey.startsWith(expectedPrefix) ||
+    normalizedKey !== storageKey ||
+    !normalizedKey.startsWith(expectedPrefix) ||
+    storageKey.length <= expectedPrefix.length
+  ) {
+    throw new ValidationError('Invalid storage key')
+  }
+
+  // Verify that the object exists in the storage bucket
+  try {
+    await fastify.minio.statObject(MINIO_BUCKET_NAME, storageKey)
+  } catch (err: any) {
+    const code = err && (err.code || err.name)
+    if (code === 'NotFound' || code === 'NoSuchKey' || code === 'NoSuchObject') {
+      throw new ValidationError('Attachment object not found in storage')
+    }
+    throw err
+  }
+
   return fastify.prisma.messageAttachment.create({
     data: {
       messageId,
-      filename: data.filename,
-      mimeType: data.mimeType,
-      sizeBytes: data.sizeBytes,
-      storageKey: data.storageKey,
+      filename,
+      mimeType,
+      sizeBytes,
+      storageKey,
     },
     select: ATTACHMENT_SELECT,
   })

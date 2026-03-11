@@ -2,13 +2,16 @@ import { updateUserSchema } from '@promanage/core'
 
 import { authenticate } from '../../middleware/authenticate'
 import { requireRole } from '../../middleware/authorize'
-import { success, paginated, noContent } from '../../lib/response'
 import { RATE_LIMITS } from '../../lib/rate-limit'
+import { setupRateLimit } from '../../lib/rate-limit-setup'
+import { success, paginated, noContent } from '../../lib/response'
 import * as userService from '../../services/user.service'
 
 import type { FastifyPluginAsync } from 'fastify'
 
 const userRoutes: FastifyPluginAsync = async (fastify) => {
+  await setupRateLimit(fastify)
+
   const readRateLimiter = fastify.rateLimit(RATE_LIMITS.READ)
   const writeRateLimiter = fastify.rateLimit(RATE_LIMITS.WRITE)
   const sensitiveRateLimiter = fastify.rateLimit(RATE_LIMITS.SENSITIVE)

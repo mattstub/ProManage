@@ -1,19 +1,16 @@
-import rateLimit from '@fastify/rate-limit'
-
 import { createCalendarEventSchema, updateCalendarEventSchema } from '@promanage/core'
 
 import { authenticate } from '../../middleware/authenticate'
 import { requireRole } from '../../middleware/authorize'
-import { created, noContent, paginated, success } from '../../lib/response'
 import { RATE_LIMITS } from '../../lib/rate-limit'
+import { setupRateLimit } from '../../lib/rate-limit-setup'
+import { created, noContent, paginated, success } from '../../lib/response'
 import * as calendarEventService from '../../services/calendar-event.service'
 
 import type { FastifyPluginAsync } from 'fastify'
 
 const calendarEventRoutes: FastifyPluginAsync = async (fastify) => {
-  await fastify.register(rateLimit, {
-    global: false,
-  })
+  await setupRateLimit(fastify)
 
   const readRateLimiter = fastify.rateLimit(RATE_LIMITS.READ)
   const writeRateLimiter = fastify.rateLimit(RATE_LIMITS.WRITE)

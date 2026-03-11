@@ -18,7 +18,7 @@ export const updateChannelSchema = z.object({
     .string()
     .min(1)
     .max(80)
-    .regex(/^[a-z0-9-]+$/)
+    .regex(/^[a-z0-9-]+$/, 'Slug must be lowercase alphanumeric with hyphens only')
     .optional(),
   description: z.string().max(500).optional(),
   isPrivate: z.boolean().optional(),
@@ -28,6 +28,10 @@ export const updateChannelSchema = z.object({
 export const sendChatMessageSchema = z.object({
   body: z.string().min(1).max(5000),
   parentId: z.string().optional(),
+})
+
+export const editChatMessageSchema = z.object({
+  body: z.string().min(1).max(5000),
 })
 
 export const updateChannelPermissionSchema = z.object({
@@ -47,4 +51,5 @@ export const updateChannelPermissionSchema = z.object({
 export type CreateChannelSchemaInput = z.infer<typeof createChannelSchema>
 export type UpdateChannelSchemaInput = z.infer<typeof updateChannelSchema>
 export type SendChatMessageSchemaInput = z.infer<typeof sendChatMessageSchema>
+export type EditChatMessageSchemaInput = z.infer<typeof editChatMessageSchema>
 export type UpdateChannelPermissionSchemaInput = z.infer<typeof updateChannelPermissionSchema>

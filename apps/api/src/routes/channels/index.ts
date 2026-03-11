@@ -2,6 +2,7 @@ import {
   createChannelSchema,
   updateChannelSchema,
   sendChatMessageSchema,
+  editChatMessageSchema,
   updateChannelPermissionSchema,
 } from '@promanage/core'
 
@@ -128,11 +129,13 @@ const channelRoutes: FastifyPluginAsync = async (fastify) => {
     { preHandler: [readRateLimiter, authenticate] },
     async (request, reply) => {
       const { channelId } = request.params as { channelId: string }
-      const { organizationId } = request.user
+      const { id: userId, organizationId } = request.user
+      const userRoles = await getUserRoles(fastify, userId, organizationId)
       const permissions = await channelService.listChannelPermissions(
         fastify,
         channelId,
-        organizationId
+        organizationId,
+        userRoles
       )
       return success(reply, permissions)
     }
@@ -237,7 +240,7 @@ const channelRoutes: FastifyPluginAsync = async (fastify) => {
         channelId: string
         messageId: string
       }
-      const { body } = request.body as { body: string }
+      const { body } = editChatMessageSchema.parse(request.body)
       const { id: userId, organizationId } = request.user
       const message = await channelService.editMessage(
         fastify,

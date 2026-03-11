@@ -162,7 +162,12 @@ export async function getChannel(
     throw new ForbiddenError('Access denied')
   }
 
-  return channel
+  const { _count, ...channelWithoutCount } = channel
+
+  return {
+    ...channelWithoutCount,
+    messageCount: _count?.messages ?? 0,
+  }
 }
 
 export async function createChannel(
@@ -296,13 +301,23 @@ export async function deleteChannel(
 export async function listChannelPermissions(
   fastify: FastifyInstance,
   channelId: string,
-  organizationId: string
+  organizationId: string,
+  userRoles: string[]
 ) {
   const channel = await fastify.prisma.channel.findFirst({
     where: { id: channelId, organizationId },
   })
   if (!channel) {
     throw new NotFoundError('Channel not found')
+  }
+
+  const { canRead, canManage: canManageChannel } = await getChannelPermissionForUser(
+    fastify,
+    channelId,
+    userRoles
+  )
+  if (!isManageRole(userRoles) && !canManageChannel && !canRead) {
+    throw new ForbiddenError('Access denied')
   }
 
   return fastify.prisma.channelPermission.findMany({

@@ -38,6 +38,7 @@ function createMockMinio() {
     presignedGetObject: vi.fn().mockResolvedValue('https://minio.local/presigned-get'),
     bucketExists: vi.fn().mockResolvedValue(true),
     putObject: vi.fn().mockResolvedValue(undefined),
+    statObject: vi.fn().mockResolvedValue({}),
   } as unknown as MinioClient
 }
 

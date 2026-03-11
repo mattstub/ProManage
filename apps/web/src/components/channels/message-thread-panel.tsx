@@ -59,12 +59,12 @@ export function MessageThreadPanel({
       {/* Parent message */}
       <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
         <div className="flex items-start gap-2">
-          <div className="h-7 w-7 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-xs shrink-0">
-            {parentMessage.sender.firstName[0]}{parentMessage.sender.lastName[0]}
+          <div className={`h-7 w-7 rounded-full flex items-center justify-center font-semibold text-xs shrink-0 ${parentMessage.sender ? 'bg-blue-100 text-blue-700' : 'bg-gray-200 text-gray-400'}`}>
+            {parentMessage.sender ? `${parentMessage.sender.firstName[0]}${parentMessage.sender.lastName[0]}` : '?'}
           </div>
           <div>
             <p className="text-xs font-medium text-gray-900">
-              {parentMessage.sender.firstName} {parentMessage.sender.lastName}
+              {parentMessage.sender ? `${parentMessage.sender.firstName} ${parentMessage.sender.lastName}` : 'Deleted user'}
             </p>
             <p className="text-sm text-gray-700 whitespace-pre-wrap mt-0.5">{parentMessage.body}</p>
           </div>

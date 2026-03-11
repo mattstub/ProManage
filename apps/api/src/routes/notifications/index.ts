@@ -1,9 +1,8 @@
-import rateLimit from '@fastify/rate-limit'
-
 import { UnauthorizedError } from '../../lib/errors'
 import { authenticate } from '../../middleware/authenticate'
-import { noContent, paginated, success } from '../../lib/response'
 import { RATE_LIMITS } from '../../lib/rate-limit'
+import { setupRateLimit } from '../../lib/rate-limit-setup'
+import { noContent, paginated, success } from '../../lib/response'
 import * as notificationService from '../../services/notification.service'
 
 import type { FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify'
@@ -34,7 +33,7 @@ async function authenticateSSE(request: FastifyRequest, _reply: FastifyReply) {
 }
 
 const notificationRoutes: FastifyPluginAsync = async (fastify) => {
-  await fastify.register(rateLimit, { global: false })
+  await setupRateLimit(fastify)
 
   const readRateLimiter = fastify.rateLimit(RATE_LIMITS.READ)
   const writeRateLimiter = fastify.rateLimit(RATE_LIMITS.WRITE)

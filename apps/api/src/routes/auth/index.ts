@@ -1,8 +1,9 @@
 import { loginSchema, registerSchema } from '@promanage/core'
 
 import { authenticate } from '../../middleware/authenticate'
-import { success } from '../../lib/response'
 import { RATE_LIMITS } from '../../lib/rate-limit'
+import { setupRateLimit } from '../../lib/rate-limit-setup'
+import { success } from '../../lib/response'
 import * as authService from '../../services/auth.service'
 
 import type { FastifyPluginAsync } from 'fastify'
@@ -18,6 +19,8 @@ const cookieOptions = {
 }
 
 const authRoutes: FastifyPluginAsync = async (fastify) => {
+  await setupRateLimit(fastify)
+
   // Create rate limit preHandlers using fastify's rateLimit decorator
   const readRateLimiter = fastify.rateLimit(RATE_LIMITS.READ)
   const sensitiveRateLimiter = fastify.rateLimit(RATE_LIMITS.SENSITIVE)

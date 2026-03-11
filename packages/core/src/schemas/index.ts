@@ -60,9 +60,11 @@ export {
   createChannelSchema,
   updateChannelSchema,
   sendChatMessageSchema,
+  editChatMessageSchema,
   updateChannelPermissionSchema,
   type CreateChannelSchemaInput,
   type UpdateChannelSchemaInput,
   type SendChatMessageSchemaInput,
+  type EditChatMessageSchemaInput,
   type UpdateChannelPermissionSchemaInput,
 } from './channel'

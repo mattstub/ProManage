@@ -35,10 +35,12 @@ export function AttachmentUploader({ channelId, messageId }: AttachmentUploaderP
     setError(null)
 
     if (!ALLOWED_ATTACHMENT_MIME_TYPES.includes(file.type as typeof ALLOWED_ATTACHMENT_MIME_TYPES[number])) {
+      setStatus('error')
       setError('File type not allowed.')
       return
     }
     if (file.size > MAX_ATTACHMENT_SIZE_BYTES) {
+      setStatus('error')
       setError('File exceeds the 50 MB limit.')
       return
     }

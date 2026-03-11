@@ -62,7 +62,7 @@ export interface ChatMessage {
 }
 
 export interface ChatMessageWithRelations extends ChatMessage {
-  sender: UserSummary
+  sender: UserSummary | null
   attachments: MessageAttachment[]
   replyCount?: number
 }

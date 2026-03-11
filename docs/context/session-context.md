@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-10 (Session 12)
+**Last Updated**: 2026-03-11 (Session 14)
 
 ---
 
@@ -59,45 +59,43 @@
 
 ```
 ProManage/
-apps/api/              COMPLETE (Sub-phases C+D + Phase 2.5)
-  prisma/schema.prisma   10 models (added Task + Procedure), multi-tenant
-  prisma/seed.ts         demo org, 6 roles, 64 perms, 3 users, 2 projects
+apps/api/              COMPLETE through Phase 2.3B
+  prisma/schema.prisma   21 models (+ Channel, ChannelPermission, ChannelMember, ChatMessage, MessageAttachment)
+  prisma/seed.ts         demo org, 6 roles, 64 perms, 3 users, 2 projects, 2 channels
   src/config/            Zod env validation
-  src/lib/               errors, response helpers, pino logger, rate-limit
+  src/lib/               errors, response helpers, pino logger, rate-limit, sse
   src/middleware/        authenticate, authorize, error-handler
-  src/plugins/           prisma, swagger
-  src/routes/            health, auth, users, organizations, projects, dashboard, tasks, procedures
-  src/services/          auth, user, org, token, password, project, dashboard, task, procedure
-  src/types/             fastify.d.ts augmentation
-  src/app.ts             Fastify builder
-  src/server.ts          entry point
-  src/__tests__/         80 tests (auth + task services/routes)
-apps/web/              COMPLETE Phase 2.1 + 2.5 (Session 9)
-  src/app/               App Router: /, /login, /register, /dashboard, /projects, /tasks, /procedures
-  src/middleware.ts      Inverted-whitelist route guard
-  src/stores/            Zustand auth store
-  src/providers/         AuthProvider, QueryProvider
-  src/components/        auth forms, layout (sidebar+icons+role-nav, header, nav-item), dashboard (stats-card, project-summary-list)
-  src/hooks/             use-auth, use-dashboard-stats, use-organization, use-procedures, use-projects, use-tasks, use-users
-  src/lib/               api-client singleton, query-client
+  src/plugins/           prisma, swagger, sse, minio, socket-io
+  src/routes/            health, auth, users, organizations, projects, dashboard, tasks, procedures,
+                         notifications, messages, calendar-events, channels
+  src/services/          auth, user, org, token, password, project, dashboard, task, procedure,
+                         notification, messaging, calendar-event, channel
+  src/types/             fastify.d.ts (augmented with io, minio, sseClients)
+  src/__tests__/         162 tests passing
+apps/web/              COMPLETE through Phase 2.3B
+  src/app/               App Router: dashboard, projects, tasks, procedures, calendar, messages, channels
+  src/components/        layout (sidebar, header, nav-item, notification-bell),
+                         dashboard (stats-card, project-summary-list),
+                         channels (chat-panel, thread-panel, attachment-uploader, create-dialog, settings-panel)
+  src/hooks/             use-auth, use-dashboard-stats, use-organization, use-procedures, use-projects,
+                         use-tasks, use-users, use-notifications, use-messaging, use-calendar-events,
+                         use-channels, use-socket
+  src/lib/               api-client singleton (with resetSocket on auth error), query-client
 apps/mobile/           DEFERRED
 
-packages/core/         COMPLETE (Sub-phase B + Phase 2.5)
-  src/types/             api, auth, user, role, org, project, task, dashboard
-  src/schemas/           auth, user, org, project, task (Zod)
-  src/constants/         roles, permissions, project-status, task-status, api
+packages/core/         COMPLETE through Phase 2.3B
+  src/types/             api, auth, user, role, org, project, task, dashboard, procedure,
+                         notification, messaging, calendar-event, channel, socket-events
+  src/schemas/           auth, user, org, project, task, procedure, messaging, calendar-event, channel
+  src/constants/         roles, permissions, project-status, task-status, api, procedure-status,
+                         notification, calendar-event, channel
   src/utils/             pagination, format-date, format-currency
-  src/__tests__/         66 tests (schemas + utils)
-packages/api-client/   COMPLETE (Sub-phase E + Phase 2.5)
-  src/client.ts          ProManageClient (fetch wrapper, auto-refresh on 401)
-  src/errors.ts          ApiClientError class
-  src/types.ts           ClientConfig, RequestOptions, PaginatedResult
-  src/resources/         auth, users, organizations, health, projects, dashboard, tasks
-  src/index.ts           createApiClient() factory + all exports
-packages/ui-components/ COMPLETE (Sub-phase F - 30 files)
-  src/utils/cn.ts        clsx + tailwind-merge utility
-  src/components/        26 components (Button, Input, Card, Table, Dialog, Toast, etc.)
-  src/index.ts           barrel exports + type re-exports
+  src/__tests__/         97 tests
+packages/api-client/   COMPLETE through Phase 2.3B
+  src/resources/         auth, users, organizations, health, projects, dashboard, tasks,
+                         procedures, notifications, messaging, calendar-events, channels
+  src/index.ts           createApiClient() factory + all exports (channels resource added)
+packages/ui-components/ COMPLETE (Sub-phase F - 30 files, 26 components)
 
 Root tooling:          COMPLETE (Sub-phase A)
   tsconfig.base.json, .eslintrc.json, .prettierrc, docker-compose.yml
@@ -105,23 +103,25 @@ Root tooling:          COMPLETE (Sub-phase A)
 
 ---
 
-## Current State (2026-03-09)
+## Current State (2026-03-11)
 
 - **Phase 1, Sub-phases A-G**: COMPLETE (~150 source files)
 - **Phase 2.1 Dashboard**: COMPLETE — real data, projects list, stats widgets, role-aware sidebar
-- **Phase 2.2 Notifications**: COMPLETE — SSE real-time push, bell component, auto-notify on task assignment, 230 tests passing
-- **Phase 2.3A Async Messaging**: COMPLETE — DMs (thread model) + Announcements (role-targeted, scheduled), 259 tests passing
-- **Phase 2.4 Calendar**: COMPLETE — custom month-view calendar, full CRUD with RBAC, 205 tests passing
-- **Phase 2.5 Task Management**: COMPLETE — full CRUD with RBAC, 146 tests passing
-- **Phase 2.6 Procedures**: COMPLETE — full CRUD with RBAC, sidebar nav, view/edit/delete dialogs
-- **API**: Runs on http://localhost:3001 | Routes: /auth, /calendar-events, /dashboard/stats, /messages, /notifications, /organizations, /procedures, /projects, /tasks, /users
-- **DB**: PostgreSQL in Docker, seeded. 16 models in sync (`prisma db push` applied — Conversation, DirectMessage, Announcement, AnnouncementRead added)
-- **api-client**: Built — includes MessagingResource, NotificationsResource, CalendarEventsResource, ProjectsResource, DashboardResource, TasksResource, ProceduresResource
+- **Phase 2.2 Notifications**: COMPLETE — SSE real-time push, bell component, auto-notify on task assignment
+- **Phase 2.3A Async Messaging**: COMPLETE — DMs (thread model) + Announcements (role-targeted, scheduled)
+- **Phase 2.3B Channel Chat**: COMPLETE — Socket.io channels, per-role permissions, file uploads via MinIO, message threading, real-time delivery
+- **Phase 2.4 Calendar**: COMPLETE — custom month-view calendar, full CRUD with RBAC
+- **Phase 2.5 Task Management**: COMPLETE — full CRUD with RBAC
+- **Phase 2.6 Procedures**: COMPLETE — full CRUD with RBAC
+- **API**: Runs on http://localhost:3001 | Routes: /auth, /calendar-events, /channels, /dashboard, /messages, /notifications, /organizations, /procedures, /projects, /tasks, /users
+- **DB**: PostgreSQL in Docker. 21 models. Channels + members + permissions + messages + attachments added. `prisma db push` applied.
+- **api-client**: Built — all resource namespaces including ChannelsResource
 - **ui-components**: Built (tsc --build, zero errors), 26 Radix+Tailwind components
-- **Sidebar**: Dashboard, Projects, Tasks, Procedures, Calendar, Messages, Organization, Settings nav items
-- **Header**: NotificationBell with live badge + dropdown panel (SSE-powered)
-- **packages/core**: Now compiles to CommonJS (fixed ESM seed issue; web/bundler still works fine)
-- **Next**: Phase 2.3B — Channel Chat (Socket.io, Discord-style channels with per-channel permissions)
+- **Sidebar**: Dashboard, Projects, Tasks, Procedures, Calendar, Channels, Messages, Organization, Settings
+- **Header**: NotificationBell with live badge + dropdown (SSE-powered)
+- **packages/core**: CommonJS output (fixed ESM seed issue; web/bundler still works fine)
+- **Tests**: 162 API tests passing, web type-check clean
+- **Next**: Phase 3 — Contacts & Company Setup (Contact Management, Licensing, Safety)
 
 ### Seed Credentials
 
@@ -208,6 +208,27 @@ DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-d
 - TypeScript project references wired (composite + tsc --build on both packages)
 - Removed .claude/settings.local.json from git tracking
 - PR merged by user
+
+### Session 14 - 2026-03-11
+
+- **Phase 2.3B Channel Chat COMPLETE** (Layer 4 + Layer 5):
+  - Layer 4: `packages/api-client/src/resources/channels.ts` — ChannelsResource (14 methods); added `PUT` to RequestOptions method union; index.ts updated and rebuilt
+  - Layer 5: `apps/web` — `hooks/use-socket.ts` (Socket.io singleton, JWT in handshake.auth), `hooks/use-channels.ts` (14 hooks + `useChannelSocketEvents` for real-time cache invalidation), `/channels/page.tsx`, ChannelChatPanel, MessageThreadPanel, AttachmentUploader (3-step presigned upload), CreateChannelDialog, ChannelSettingsPanel (4 tabs), sidebar Channels nav item, `api-client.ts` calls `resetSocket()` on auth error
+  - `socket.io-client ^4.8.3` added to apps/web
+  - **162 API tests passing**, web type-check clean
+- **Documentation updated**: CHANGELOG, ROADMAP, session-context, implementation-progress, CLAUDE.md all brought current; `implementation-progress.md` deprecated (content migrated here)
+- Branch: `feat/phase2-subphase-3b-channel-chat` — push pending
+
+### Session 13 - 2026-03-11
+
+- **Phase 2.3B Channel Chat** (Layers 1-3):
+  - Layer 1: 5 new Prisma models (Channel, ChannelPermission, ChannelMember, ChatMessage, MessageAttachment) — 21 models total; `prisma db push` applied; seed updated with 2 demo channels
+  - Layer 2: packages/core — channel types, socket-event types, channel schemas, channel constants; rebuilt
+  - Layer 3a: `plugins/minio.ts` (MinIO client, bucket auto-create), `plugins/socket-io.ts` (JWT auth in handshake.auth.token, org/user rooms), `fastify.d.ts` updated, `app.ts` updated
+  - Layer 3b: `mock-prisma.ts` + `build-app.ts` updated with 5 new model mocks + `buildChannelTestApp()` (with `createMockIo()` + `createMockMinio()`)
+  - Layer 3c: `channel.service.ts` (15 functions), `routes/channels/index.ts` (15 routes), registered in routes/index.ts
+  - **Dependency incident**: `pnpm add` accidentally upgraded Fastify 4→5, Prisma 5→7, Zod 3→4. Pinned back Fastify + Prisma. Zod 4 kept — required two targeted fixes (`.issues` rename, `.default(false)`)
+  - **162 tests passing** after Zod 4 compatibility fixes
 
 ### Session 12 - 2026-03-10
 

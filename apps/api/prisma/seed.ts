@@ -137,7 +137,7 @@ async function main() {
 
   // 5. Create demo projects
   console.log('Creating demo projects...')
-  await prisma.project.upsert({
+  const project1 = await prisma.project.upsert({
     where: {
       number_organizationId: { number: 'PRJ-2026-001', organizationId: org.id },
     },
@@ -169,6 +169,77 @@ async function main() {
       address: '789 Emergency Way, Suburb Town, TX 75050',
       organizationId: org.id,
     },
+  })
+
+  // 6. Create demo channels
+  console.log('Creating demo channels...')
+
+  const channelPermissionDefaults = [
+    { roleName: 'Admin', canRead: true, canWrite: true, canManage: true },
+    { roleName: 'ProjectManager', canRead: true, canWrite: true, canManage: false },
+    { roleName: 'Superintendent', canRead: true, canWrite: true, canManage: false },
+    { roleName: 'Foreman', canRead: true, canWrite: true, canManage: false },
+    { roleName: 'FieldUser', canRead: true, canWrite: false, canManage: false },
+    { roleName: 'OfficeAdmin', canRead: true, canWrite: true, canManage: false },
+  ]
+
+  const generalChannel = await prisma.channel.upsert({
+    where: { organizationId_slug: { organizationId: org.id, slug: 'general' } },
+    update: {},
+    create: {
+      name: 'General',
+      slug: 'general',
+      description: 'Company-wide announcements and general discussion.',
+      isPrivate: false,
+      organizationId: org.id,
+    },
+  })
+
+  for (const perm of channelPermissionDefaults) {
+    await prisma.channelPermission.upsert({
+      where: { channelId_roleName: { channelId: generalChannel.id, roleName: perm.roleName } },
+      update: {},
+      create: { channelId: generalChannel.id, ...perm },
+    })
+  }
+
+  await prisma.channelMember.createMany({
+    data: [
+      { channelId: generalChannel.id, userId: adminUser.id },
+      { channelId: generalChannel.id, userId: pmUser.id },
+      { channelId: generalChannel.id, userId: fieldUser.id },
+    ],
+    skipDuplicates: true,
+  })
+
+  const projectChannel = await prisma.channel.upsert({
+    where: { organizationId_slug: { organizationId: org.id, slug: 'project-alpha' } },
+    update: {},
+    create: {
+      name: 'Project Alpha',
+      slug: 'project-alpha',
+      description: 'Discussion for Downtown Office Renovation.',
+      isPrivate: false,
+      organizationId: org.id,
+      projectId: project1.id,
+    },
+  })
+
+  for (const perm of channelPermissionDefaults) {
+    await prisma.channelPermission.upsert({
+      where: { channelId_roleName: { channelId: projectChannel.id, roleName: perm.roleName } },
+      update: {},
+      create: { channelId: projectChannel.id, ...perm },
+    })
+  }
+
+  await prisma.channelMember.createMany({
+    data: [
+      { channelId: projectChannel.id, userId: adminUser.id },
+      { channelId: projectChannel.id, userId: pmUser.id },
+      { channelId: projectChannel.id, userId: fieldUser.id },
+    ],
+    skipDuplicates: true,
   })
 
   console.log('Seed completed successfully!')

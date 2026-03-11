@@ -32,7 +32,7 @@ export const envSchema = z.object({
   LOG_PRETTY: z
     .string()
     .transform((v) => v === 'true')
-    .default('false'),
+    .default(false),
 })
 
 export type Env = z.infer<typeof envSchema>

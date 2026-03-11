@@ -26,7 +26,7 @@ export interface ClientConfig {
 }
 
 export interface RequestOptions {
-  method?: 'GET' | 'POST' | 'PATCH' | 'DELETE'
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   body?: unknown
   /** Query params appended to the URL. Undefined values are omitted. */
   params?: Record<string, string | number | boolean | undefined>

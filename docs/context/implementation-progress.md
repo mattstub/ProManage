@@ -1,6 +1,8 @@
 # Implementation Progress — ProManage
 
-**Last Updated**: 2026-02-28 (Session 3)
+**Last Updated**: 2026-03-11 (Session 14)
+
+> **Note**: The granular per-file checklists in this document served their purpose through Phase 1. From Phase 2 onward, `session-context.md` is the authoritative progress reference. This file is retained for Phase 1 historical detail only — do not add new sub-phase checklists here.
 
 ---
 
@@ -206,12 +208,10 @@ Full CRUD with RBAC (146 tests passing). See session-context.md Session 9 log.
 - `apps/api/src/__tests__/helpers/mock-prisma.ts` — Conversation, DirectMessage, Announcement, AnnouncementRead mocks
 - `apps/api/src/__tests__/helpers/build-app.ts` — buildMessagingTestApp()
 
-### Phase 2.3B — Channel Chat (Next Session)
-- [ ] Socket.io integration with Fastify
-- [ ] Channel + ChannelPermission + ChannelMember + ChatMessage + MessageAttachment models
-- [ ] Per-channel role-based permissions (read/write/manage)
-- [ ] File uploads (PDF, image, video) via MinIO
-- [ ] Real-time message delivery
+### Phase 2.3B — Channel Chat ✅ COMPLETE (Sessions 13-14, 2026-03-11)
+
+See `session-context.md` Sessions 13-14 for full details. All items complete:
+- Socket.io + MinIO plugins, channel models, per-role permissions, file uploads, real-time delivery, web UI
 
 ### Phase 2.2–2.4 — Notifications, Calendar (see session 11)
 
@@ -260,4 +260,5 @@ Full roadmap: docs/ROADMAP.md
 | Session 1 | 2026-02-02 | 42 foundation files — docs, config, scripts |
 | Session 2 | 2026-02-03 | DD-011 (PostgreSQL only), updated tech docs |
 | Session 3 | 2026-02-28 | Phase 1 A-D complete — ~80 source files, API running |
+| Sessions 4-14 | 2026-03-01 to 2026-03-11 | Phase 1 E-G + Phase 2 complete — see session-context.md |
 

@@ -3,6 +3,7 @@
 import { createApiClient } from '@promanage/api-client'
 
 import { useAuthStore } from '@/stores/auth.store'
+import { resetSocket } from '@/hooks/use-socket'
 
 let _client: ReturnType<typeof createApiClient> | null = null
 
@@ -18,6 +19,7 @@ export function getApiClient() {
       onAuthError: () => {
         useAuthStore.getState().clearAuth()
         resetApiClient()
+        resetSocket()
 
         if (typeof window !== 'undefined') {
           const publicPaths = ['/login', '/register']

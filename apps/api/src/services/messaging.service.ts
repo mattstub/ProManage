@@ -296,7 +296,7 @@ export async function listAnnouncements(
 export async function listDraftAnnouncements(
   fastify: FastifyInstance,
   organizationId: string,
-  authorId: string
+  _authorId: string
 ) {
   // Drafts and scheduled — only visible to author or admins
   const announcements = await fastify.prisma.announcement.findMany({

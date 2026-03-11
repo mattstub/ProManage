@@ -1,19 +1,45 @@
+import { vi } from 'vitest'
 import Fastify from 'fastify'
 import cookie from '@fastify/cookie'
 import jwt from '@fastify/jwt'
 import rateLimit from '@fastify/rate-limit'
 
 import type { PrismaClient } from '@prisma/client'
+import type { Server as SocketIoServer } from 'socket.io'
+import type { Client as MinioClient } from 'minio'
 
 import { errorHandler } from '../../middleware/error-handler'
 import authRoutes from '../../routes/auth'
 import calendarEventRoutes from '../../routes/calendar-events'
+import channelRoutes from '../../routes/channels'
 import messageRoutes from '../../routes/messages'
 import notificationRoutes from '../../routes/notifications'
 import taskRoutes from '../../routes/tasks'
 
 import { createMockPrisma } from './mock-prisma'
 import type { MockPrisma } from './mock-prisma'
+
+/**
+ * Creates a mock Socket.io server for use in test apps.
+ * Tests can assert emit calls via the returned mock.
+ */
+function createMockIo() {
+  const emit = vi.fn()
+  const to = vi.fn().mockReturnValue({ emit })
+  return { to, emit } as unknown as SocketIoServer
+}
+
+/**
+ * Creates a mock MinIO client for use in test apps.
+ */
+function createMockMinio() {
+  return {
+    presignedPutObject: vi.fn().mockResolvedValue('https://minio.local/presigned-put'),
+    presignedGetObject: vi.fn().mockResolvedValue('https://minio.local/presigned-get'),
+    bucketExists: vi.fn().mockResolvedValue(true),
+    putObject: vi.fn().mockResolvedValue(undefined),
+  } as unknown as MinioClient
+}
 
 /**
  * Builds a minimal Fastify instance for testing auth routes.
@@ -132,6 +158,38 @@ export async function buildMessagingTestApp(overridePrisma?: MockPrisma) {
   await app.ready()
 
   return { app, prisma }
+}
+
+/**
+ * Builds a minimal Fastify instance for testing channel routes.
+ *
+ * Decorates fastify.io with a mock Socket.io server and fastify.minio
+ * with a mock MinIO client so tests can assert real-time event emission
+ * and attachment URL generation without live connections.
+ */
+export async function buildChannelTestApp(overridePrisma?: MockPrisma) {
+  const prisma = overridePrisma ?? createMockPrisma()
+  const io = createMockIo()
+  const minio = createMockMinio()
+
+  const app = Fastify({ logger: false })
+
+  await app.register(cookie)
+  await app.register(jwt, { secret: process.env['JWT_SECRET']! })
+  await app.register(rateLimit, { max: 1000, timeWindow: '1 minute' })
+
+  app.decorate('prisma', prisma as unknown as PrismaClient)
+  app.decorate('io', io)
+  app.decorate('minio', minio)
+  // SSE clients decorator required by authenticate middleware
+  app.decorate('sseClients', new Map())
+
+  app.setErrorHandler(errorHandler)
+
+  await app.register(channelRoutes, { prefix: '/api/v1/channels' })
+  await app.ready()
+
+  return { app, prisma, io, minio }
 }
 
 /**

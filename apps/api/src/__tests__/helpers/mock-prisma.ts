@@ -93,6 +93,38 @@ export function createMockPrisma() {
     announcementRead: {
       upsert: vi.fn(),
     },
+    channel: {
+      findMany: vi.fn(),
+      findFirst: vi.fn(),
+      findUnique: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+      count: vi.fn(),
+    },
+    channelPermission: {
+      findMany: vi.fn(),
+      findFirst: vi.fn(),
+      upsert: vi.fn(),
+      createMany: vi.fn(),
+    },
+    channelMember: {
+      findFirst: vi.fn(),
+      upsert: vi.fn(),
+      delete: vi.fn(),
+      count: vi.fn(),
+    },
+    chatMessage: {
+      findMany: vi.fn(),
+      findFirst: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      count: vi.fn(),
+    },
+    messageAttachment: {
+      create: vi.fn(),
+      findFirst: vi.fn(),
+    },
     // $transaction can be called with either an array (batch) or a callback
     // (interactive). Tests should override the implementation per scenario.
     $transaction: vi.fn(),

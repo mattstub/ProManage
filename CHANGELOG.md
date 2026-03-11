@@ -7,6 +7,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - Phase 2.3B Channel Chat (Sessions 13-14, 2026-03-11)
+
+**Phase 2.3B — Real-Time Channel Chat (Discord/Slack style)**
+
+*apps/api/prisma*
+- `schema.prisma`: 5 new models — `Channel` (name/slug/isPrivate, org+project scoped), `ChannelPermission` (canRead/canWrite/canManage per role), `ChannelMember`, `ChatMessage` (body, soft-delete via `deletedAt`, thread via `parentId`), `MessageAttachment` (MinIO storageKey, MIME type, size) — 21 models total
+- `seed.ts`: seeds 2 demo channels ("General", "Project Alpha"), 6-role permissions each, all 3 demo users as members
+
+*packages/core*
+- `types/channel.ts`: Channel, ChannelWithRelations, ChannelPermission, ChannelMember, ChatMessage, ChatMessageWithRelations, MessageAttachment + input types
+- `types/socket-events.ts`: typed Socket.io event payloads (channel:message, channel:message:edited, channel:message:deleted, channel member join/leave)
+- `schemas/channel.ts`: createChannelSchema, updateChannelSchema, sendChatMessageSchema, updateChannelPermissionSchema
+- `constants/channel.ts`: CHANNEL_MANAGE_ROLES, ALLOWED_ATTACHMENT_MIME_TYPES, MAX_ATTACHMENT_SIZE_BYTES (50MB), MINIO_BUCKET_NAME
+
+*apps/api*
+- `plugins/minio.ts`: MinIO client plugin — ensures bucket exists at startup, decorates `fastify.minio`
+- `plugins/socket-io.ts`: Socket.io plugin — JWT auth via `handshake.auth.token` (never query param), joins org/user rooms on connect, decorates `fastify.io`
+- `types/fastify.d.ts`: extended with `io: Server` and `minio: MinioClient`
+- `app.ts`: registers minioPlugin + socketIoPlugin
+- `services/channel.service.ts`: 15 functions — listChannels, getChannel, createChannel, updateChannel, deleteChannel, listChannelPermissions, updateChannelPermission (upsert), joinChannel, leaveChannel, listMessages, sendMessage, editMessage, deleteMessage (soft), getUploadUrl (presigned PUT 5min), confirmAttachment, getAttachmentDownloadUrl (presigned GET 1hr)
+- `routes/channels/index.ts`: 15 routes with READ/WRITE/SENSITIVE rate limits and RBAC
+- `routes/index.ts`: registered `/channels` prefix
+
+*packages/api-client*
+- `resources/channels.ts`: ChannelsResource — 14 methods covering channels CRUD, permissions, membership, messages, attachments
+- `types.ts`: added `'PUT'` to `RequestOptions.method` union
+- `index.ts`: ApiClient interface + createApiClient() updated with `channels` namespace
+
+*apps/web*
+- `hooks/use-socket.ts`: Socket.io singleton with `getSocket(accessToken)` / `resetSocket()` — JWT in handshake.auth
+- `hooks/use-channels.ts`: 14 TanStack Query hooks (useChannels, useChannel, useChannelMessages, useChannelPermissions, useCreateChannel, useUpdateChannel, useDeleteChannel, useUpdateChannelPermission, useJoinChannel, useLeaveChannel, useSendChannelMessage, useEditChannelMessage, useDeleteChannelMessage, useGetUploadUrl, useConfirmAttachment) + `useChannelSocketEvents()` for real-time cache invalidation
+- `lib/api-client.ts`: calls `resetSocket()` on auth error alongside resetApiClient()
+- `components/channels/create-channel-dialog.tsx`: name/slug/description/isPrivate
+- `components/channels/channel-chat-panel.tsx`: scrollable message list, inline edit, soft-delete, thread trigger, socket-powered real-time updates
+- `components/channels/message-thread-panel.tsx`: slide-in thread reply panel
+- `components/channels/attachment-uploader.tsx`: 3-step presigned PUT upload flow
+- `components/channels/channel-settings-panel.tsx`: General/Permissions/Members/Danger Zone tabs
+- `app/(dashboard)/channels/page.tsx`: split-panel channel list + chat
+- `components/layout/sidebar.tsx`: added Channels nav item (HashtagIcon)
+
+*packages added*
+- `apps/api`: `socket.io ^4.8.3`, `minio ^8.0.7`, `@fastify/multipart ^8.3.0`
+- `apps/web`: `socket.io-client ^4.8.3`
+
+*tests*
+- `__tests__/helpers/mock-prisma.ts`: channel, channelPermission, channelMember, chatMessage, messageAttachment mocks
+- `__tests__/helpers/build-app.ts`: createMockIo(), createMockMinio(), buildChannelTestApp()
+- **162 API tests passing**, web type-check clean
+
+*bug fixes (Sessions 13-14)*
+- `middleware/error-handler.ts`: Zod 4 compatibility — `.issues ?? .errors` duck-typing for ZodError
+- `config/env.ts`: Zod 4 `.default(false)` instead of `.default('false')` for boolean transform
+- `services/messaging.service.ts`: renamed unused `authorId` → `_authorId` (TS strict unused-param)
+
 ### Added - Phase 2.3A Async Messaging Module (Session 12, 2026-03-10)
 
 **Phase 2.3A — Async Messaging (DMs + Announcements)**

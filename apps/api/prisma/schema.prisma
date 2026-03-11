@@ -32,6 +32,7 @@ model Organization {
   notifications  Notification[]
   conversations  Conversation[]
   announcements  Announcement[]
+  channels       Channel[]
 
   @@map("organizations")
 }
@@ -69,6 +70,8 @@ model User {
   directMessagesSent     DirectMessage[] @relation("DirectMessageSender")
   announcementsAuthored  Announcement[]  @relation("AnnouncementAuthor")
   announcementReads      AnnouncementRead[]
+  channelMemberships     ChannelMember[]
+  chatMessagesSent       ChatMessage[]   @relation("ChatMessageSender")
 
   @@index([organizationId])
   @@index([email])
@@ -179,6 +182,7 @@ model Project {
   tasks          Task[]
   procedures     Procedure[]
   calendarEvents CalendarEvent[]
+  channels       Channel[]
 
   @@unique([number, organizationId])
   @@index([organizationId])
@@ -392,4 +396,103 @@ model AnnouncementRead {
   @@id([announcementId, userId])
   @@index([userId])
   @@map("announcement_reads")
+}
+
+// ===========================================
+// CHANNELS (Phase 2.3B)
+// ===========================================
+
+model Channel {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String
+  description String?
+  isPrivate   Boolean  @default(false) @map("is_private")
+  projectId   String?  @map("project_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @map("organization_id")
+
+  project     Project?            @relation(fields: [projectId], references: [id])
+  members     ChannelMember[]
+  permissions ChannelPermission[]
+  messages    ChatMessage[]
+
+  @@unique([organizationId, slug])
+  @@index([organizationId])
+  @@index([projectId])
+  @@map("channels")
+}
+
+model ChannelPermission {
+  id        String  @id @default(cuid())
+  roleName  String  @map("role_name")
+  canRead   Boolean @default(true)  @map("can_read")
+  canWrite  Boolean @default(true)  @map("can_write")
+  canManage Boolean @default(false) @map("can_manage")
+
+  channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  channelId String  @map("channel_id")
+
+  @@unique([channelId, roleName])
+  @@index([channelId])
+  @@map("channel_permissions")
+}
+
+model ChannelMember {
+  joinedAt DateTime @default(now()) @map("joined_at")
+
+  channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  channelId String  @map("channel_id")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @map("user_id")
+
+  @@id([channelId, userId])
+  @@index([channelId])
+  @@index([userId])
+  @@map("channel_members")
+}
+
+model ChatMessage {
+  id        String    @id @default(cuid())
+  body      String
+  editedAt  DateTime? @map("edited_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  channelId String  @map("channel_id")
+
+  sender   User   @relation("ChatMessageSender", fields: [senderId], references: [id])
+  senderId String @map("sender_id")
+
+  parent   ChatMessage?  @relation("MessageThread", fields: [parentId], references: [id])
+  parentId String?       @map("parent_id")
+  replies  ChatMessage[] @relation("MessageThread")
+
+  attachments MessageAttachment[]
+
+  @@index([channelId])
+  @@index([senderId])
+  @@index([parentId])
+  @@index([createdAt])
+  @@map("chat_messages")
+}
+
+model MessageAttachment {
+  id         String   @id @default(cuid())
+  filename   String
+  mimeType   String   @map("mime_type")
+  sizeBytes  Int      @map("size_bytes")
+  storageKey String   @map("storage_key")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  message   ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  messageId String      @map("message_id")
+
+  @@index([messageId])
+  @@map("message_attachments")
 }

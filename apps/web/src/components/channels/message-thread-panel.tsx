@@ -84,15 +84,27 @@ export function MessageThreadPanel({
         ) : (
           replies.map((msg) => {
             const isMine = msg.senderId === currentUserId
+            const sender = msg.sender
+            const senderFirst = sender?.firstName ?? ''
+            const senderLast = sender?.lastName ?? ''
+            const hasName = senderFirst.length > 0 || senderLast.length > 0
+            const initials = hasName
+              ? `${senderFirst[0] ?? ''}${senderLast[0] ?? ''}`.trim() || '?'
+              : '?'
+            const displayName = isMine
+              ? 'You'
+              : sender
+              ? `${senderFirst} ${senderLast}`.trim() || 'Unknown user'
+              : 'Deleted user'
             return (
               <div key={msg.id} className="flex items-start gap-2">
                 <div className="h-7 w-7 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-semibold text-xs shrink-0">
-                  {msg.sender.firstName[0]}{msg.sender.lastName[0]}
+                  {initials}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline gap-2">
                     <p className="text-xs font-medium text-gray-900">
-                      {isMine ? 'You' : `${msg.sender.firstName} ${msg.sender.lastName}`}
+                      {displayName}
                     </p>
                     <span className="text-xs text-gray-400">{formatTime(msg.createdAt)}</span>
                   </div>

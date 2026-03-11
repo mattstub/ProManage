@@ -117,6 +117,17 @@ export function ChannelChatPanel({ channel, currentUserId }: ChannelChatPanelPro
               const isMine = msg.senderId === currentUserId
               const isEditing = editingId === msg.id
               const replyCount = msg.replyCount ?? 0
+              const senderFirst = msg.sender?.firstName ?? ''
+              const senderLast = msg.sender?.lastName ?? ''
+              const hasName = senderFirst.length > 0 || senderLast.length > 0
+              const initials = hasName
+                ? `${senderFirst.slice(0, 1)}${senderLast.slice(0, 1)}`.trim() || '?'
+                : '?'
+              const displayName = isMine
+                ? 'You'
+                : msg.sender
+                ? `${senderFirst} ${senderLast}`.trim() || 'Unknown user'
+                : 'Deleted user'
 
               return (
                 <div
@@ -124,12 +135,12 @@ export function ChannelChatPanel({ channel, currentUserId }: ChannelChatPanelPro
                   className="group flex items-start gap-3 py-1 px-2 rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   <div className={`h-8 w-8 rounded-full flex items-center justify-center font-semibold text-xs shrink-0 mt-0.5 ${msg.sender ? 'bg-blue-100 text-blue-700' : 'bg-gray-200 text-gray-400'}`}>
-                    {msg.sender ? `${msg.sender.firstName[0]}${msg.sender.lastName[0]}` : '?'}
+                    {initials}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-baseline gap-2">
                       <p className="text-sm font-semibold text-gray-900">
-                        {isMine ? 'You' : (msg.sender ? `${msg.sender.firstName} ${msg.sender.lastName}` : 'Deleted user')}
+                        {displayName}
                       </p>
                       <span className="text-xs text-gray-400">{formatTime(msg.createdAt)}</span>
                       {msg.editedAt && (

@@ -39,6 +39,19 @@ export function MessageThreadPanel({
 
   const replies = result?.data ?? []
 
+  const isParentMine = parentMessage.senderId === currentUserId
+  const parentSenderFirst = parentMessage.sender?.firstName ?? ''
+  const parentSenderLast = parentMessage.sender?.lastName ?? ''
+  const parentHasName = parentSenderFirst.length > 0 || parentSenderLast.length > 0
+  const parentInitials = parentHasName
+    ? `${parentSenderFirst.slice(0, 1)}${parentSenderLast.slice(0, 1)}`.trim() || '?'
+    : '?'
+  const parentDisplayName = isParentMine
+    ? 'You'
+    : parentMessage.sender
+    ? `${parentSenderFirst} ${parentSenderLast}`.trim() || 'Unknown user'
+    : 'Deleted user'
+
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!body.trim()) return
@@ -59,12 +72,12 @@ export function MessageThreadPanel({
       {/* Parent message */}
       <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
         <div className="flex items-start gap-2">
-          <div className="h-7 w-7 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-xs shrink-0">
-            {parentMessage.sender.firstName[0]}{parentMessage.sender.lastName[0]}
+          <div className={`h-7 w-7 rounded-full flex items-center justify-center font-semibold text-xs shrink-0 ${parentMessage.sender ? 'bg-blue-100 text-blue-700' : 'bg-gray-200 text-gray-400'}`}>
+            {parentInitials}
           </div>
           <div>
             <p className="text-xs font-medium text-gray-900">
-              {parentMessage.sender.firstName} {parentMessage.sender.lastName}
+              {parentDisplayName}
             </p>
             <p className="text-sm text-gray-700 whitespace-pre-wrap mt-0.5">{parentMessage.body}</p>
           </div>
@@ -89,7 +102,7 @@ export function MessageThreadPanel({
             const senderLast = sender?.lastName ?? ''
             const hasName = senderFirst.length > 0 || senderLast.length > 0
             const initials = hasName
-              ? `${senderFirst[0] ?? ''}${senderLast[0] ?? ''}`.trim() || '?'
+              ? `${senderFirst.slice(0, 1)}${senderLast.slice(0, 1)}`.trim() || '?'
               : '?'
             const displayName = isMine
               ? 'You'

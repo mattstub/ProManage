@@ -106,6 +106,15 @@ export type {
 } from './channel'
 
 export type {
+  ContactType,
+  Contact,
+  ContactWithRelations,
+  ContactProjectSummary,
+  CreateContactInput,
+  UpdateContactInput,
+} from './contact'
+
+export type {
   ChannelMessageEvent,
   ChannelMessageEditedEvent,
   ChannelMessageDeletedEvent,

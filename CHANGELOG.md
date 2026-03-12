@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - Phase 3.1 Contact Management (Session 15, 2026-03-12)
+
+**Phase 3.1 — Organization Contact Directory**
+
+*apps/api/prisma*
+- `schema.prisma`: `Contact` model (firstName, lastName, company, type, email, phone, mobile, title, notes, isActive) + `ContactProject` join table; `@@unique([organizationId, email])` for org-scoped email uniqueness; relations added on Organization, User, Project — 23 models total
+- `seed.ts`: 3 demo contacts (SUBCONTRACTOR, INSPECTOR, ARCHITECT), 2 project associations on project 1
+
+*packages/core*
+- `types/contact.ts`: `ContactType` union, `Contact`, `ContactWithRelations`, `ContactProjectSummary`, `CreateContactInput`, `UpdateContactInput`
+- `schemas/contact.ts`: `createContactSchema`, `updateContactSchema` (Zod: required name, enum type, email format, max lengths)
+- `constants/contact.ts`: `CONTACT_TYPES` (label + color per type), `CONTACT_TYPE_LIST`
+
+*apps/api*
+- `services/contact.service.ts`: `listContacts` (paginated, type filter, full-text search across name/company/email), `getContact`, `createContact`, `updateContact`, `deleteContact`, `addContactToProject`, `removeContactFromProject` — all queries org-scoped
+- `routes/contacts/index.ts`: 7 routes — GET list/single (all auth), POST/PATCH (Admin/PM/OfficeAdmin), DELETE (Admin), POST+DELETE project association (Admin/PM)
+- `routes/index.ts`: registered `/contacts` prefix
+- `__tests__/helpers/mock-prisma.ts`: contact + contactProject mocks added
+- `__tests__/helpers/build-app.ts`: `buildContactTestApp()` helper added
+- `__tests__/services/contact.service.test.ts`: 24 service tests (listContacts, getContact, createContact, updateContact, deleteContact, addContactToProject, removeContactFromProject)
+- `__tests__/routes/contact.routes.test.ts`: 37 route tests (auth, RBAC, validation, org-scoping, project association)
+- **259 total tests passing** (up from 198)
+
+*packages/api-client*
+- `resources/contacts.ts`: `ContactsResource` — `list`, `get`, `create`, `update`, `delete`, `addToProject`, `removeFromProject`
+- `index.ts`: `ContactsResource` exported, `contacts` added to `ApiClient` interface + `createApiClient()`
+
+*apps/web*
+- `hooks/use-contacts.ts`: `useContacts`, `useContact`, `useCreateContact`, `useUpdateContact`, `useDeleteContact`, `useAddContactToProject`, `useRemoveContactFromProject`
+- `app/(dashboard)/contacts/page.tsx`: table with type filter + full-text search, create/edit/delete dialogs, RBAC-gated actions (skeleton loading, empty states)
+- `components/layout/sidebar.tsx`: Contacts nav item with `UsersIcon`
+
+*Security*
+- Org-scoped email uniqueness: `@@unique([organizationId, email])`
+- All service queries include `organizationId` filter
+- Zod schemas exclude `organizationId`, `createdById` (mass-assignment prevention)
+- Cross-org project association blocked at service layer
+- 404 returned for cross-org access (not 403, prevents resource existence disclosure
+
 ### Added - Phase 2.3B Channel Chat (Sessions 13-14, 2026-03-11)
 
 **Phase 2.3B — Real-Time Channel Chat (Discord/Slack style)**

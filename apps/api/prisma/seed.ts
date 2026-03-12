@@ -242,6 +242,74 @@ async function main() {
     skipDuplicates: true,
   })
 
+  // 7. Create demo contacts
+  console.log('Creating demo contacts...')
+
+  const contact1 = await prisma.contact.upsert({
+    where: { id: 'seed-contact-1' },
+    update: {},
+    create: {
+      id: 'seed-contact-1',
+      firstName: 'Robert',
+      lastName: 'Chen',
+      company: 'Chen Electrical Services',
+      type: 'SUBCONTRACTOR',
+      email: 'robert@chenelectrical.com',
+      phone: '(555) 200-0001',
+      mobile: '(555) 200-0011',
+      title: 'Owner',
+      organizationId: org.id,
+      createdById: adminUser.id,
+    },
+  })
+
+  const contact2 = await prisma.contact.upsert({
+    where: { id: 'seed-contact-2' },
+    update: {},
+    create: {
+      id: 'seed-contact-2',
+      firstName: 'Maria',
+      lastName: 'Gonzalez',
+      company: 'City Building Department',
+      type: 'INSPECTOR',
+      email: 'mgonzalez@citybuilding.gov',
+      phone: '(555) 200-0002',
+      title: 'Senior Inspector',
+      organizationId: org.id,
+      createdById: adminUser.id,
+    },
+  })
+
+  await prisma.contact.upsert({
+    where: { id: 'seed-contact-3' },
+    update: {},
+    create: {
+      id: 'seed-contact-3',
+      firstName: 'James',
+      lastName: 'Harmon',
+      company: 'Harmon & Associates Architecture',
+      type: 'ARCHITECT',
+      email: 'jharmon@harmonarch.com',
+      phone: '(555) 200-0003',
+      title: 'Principal Architect',
+      organizationId: org.id,
+      createdById: adminUser.id,
+    },
+  })
+
+  // Associate contacts with the first project
+  await prisma.contactProject.upsert({
+    where: { contactId_projectId: { contactId: contact1.id, projectId: project1.id } },
+    update: {},
+    create: { contactId: contact1.id, projectId: project1.id },
+  })
+
+  await prisma.contactProject.upsert({
+    where: { contactId_projectId: { contactId: contact2.id, projectId: project1.id } },
+    update: {},
+    create: { contactId: contact2.id, projectId: project1.id },
+  })
+
   console.log('Seed completed successfully!')
   console.log('  Demo users (password: password123):')
   console.log('    admin@demo.com    - Admin')

@@ -12,6 +12,7 @@ import { errorHandler } from '../../middleware/error-handler'
 import authRoutes from '../../routes/auth'
 import calendarEventRoutes from '../../routes/calendar-events'
 import channelRoutes from '../../routes/channels'
+import contactRoutes from '../../routes/contacts'
 import messageRoutes from '../../routes/messages'
 import notificationRoutes from '../../routes/notifications'
 import taskRoutes from '../../routes/tasks'
@@ -191,6 +192,29 @@ export async function buildChannelTestApp(overridePrisma?: MockPrisma) {
   await app.ready()
 
   return { app, prisma, io, minio }
+}
+
+/**
+ * Builds a minimal Fastify instance for testing contact routes.
+ */
+export async function buildContactTestApp(overridePrisma?: MockPrisma) {
+  const prisma = overridePrisma ?? createMockPrisma()
+
+  const app = Fastify({ logger: false })
+
+  await app.register(cookie)
+  await app.register(jwt, { secret: process.env['JWT_SECRET']! })
+  await app.register(rateLimit, { max: 1000, timeWindow: '1 minute' })
+
+  // Cast required: MockPrisma is a partial of PrismaClient
+  app.decorate('prisma', prisma as unknown as PrismaClient)
+
+  app.setErrorHandler(errorHandler)
+
+  await app.register(contactRoutes, { prefix: '/api/v1/contacts' })
+  await app.ready()
+
+  return { app, prisma }
 }
 
 /**

@@ -2,6 +2,7 @@ export { ProManageClient } from './client'
 export { ApiClientError } from './errors'
 export { AuthResource } from './resources/auth'
 export { CalendarEventsResource } from './resources/calendar-events'
+export { ContactsResource } from './resources/contacts'
 export { ChannelsResource } from './resources/channels'
 export { DashboardResource } from './resources/dashboard'
 export { MessagingResource } from './resources/messaging'
@@ -15,6 +16,7 @@ export { UsersResource } from './resources/users'
 
 export type { ClientConfig, PaginatedResult, PaginationParams, RequestOptions } from './types'
 export type { ListCalendarEventsParams } from './resources/calendar-events'
+export type { ListContactsParams } from './resources/contacts'
 export type { ListChannelMessagesParams } from './resources/channels'
 export type { HealthResponse } from './resources/health'
 export type {
@@ -31,6 +33,7 @@ import { ProManageClient } from './client'
 import { AuthResource } from './resources/auth'
 import { CalendarEventsResource } from './resources/calendar-events'
 import { ChannelsResource } from './resources/channels'
+import { ContactsResource } from './resources/contacts'
 import { DashboardResource } from './resources/dashboard'
 import { MessagingResource } from './resources/messaging'
 import { HealthResource } from './resources/health'
@@ -63,6 +66,7 @@ export interface ApiClient {
   auth: AuthResource
   calendarEvents: CalendarEventsResource
   channels: ChannelsResource
+  contacts: ContactsResource
   dashboard: DashboardResource
   health: HealthResource
   messaging: MessagingResource
@@ -87,6 +91,7 @@ export function createApiClient(config: ClientConfig): ApiClient {
     auth: new AuthResource(core),
     calendarEvents: new CalendarEventsResource(core),
     channels: new ChannelsResource(core),
+    contacts: new ContactsResource(core),
     dashboard: new DashboardResource(core),
     health: new HealthResource(core),
     messaging: new MessagingResource(core),

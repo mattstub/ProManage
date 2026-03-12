@@ -31,11 +31,16 @@ import {
   TableHeader,
   TableRow,
   Textarea,
+  type BadgeProps,
 } from '@promanage/ui-components'
 
-import type { ContactType, ContactWithRelations, RoleName } from '@promanage/core'
-import { CONTACT_TYPE_LIST, CONTACT_TYPES } from '@promanage/core'
-import type { BadgeProps } from '@promanage/ui-components'
+import {
+  CONTACT_TYPE_LIST,
+  CONTACT_TYPES,
+  type ContactType,
+  type ContactWithRelations,
+  type RoleName,
+} from '@promanage/core'
 
 import { useAuth } from '@/hooks/use-auth'
 import {

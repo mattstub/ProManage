@@ -133,14 +133,14 @@ The central landing page where managers access all tools, view reports, and comm
 
 Company-level modules that support all downstream project work.
 
-### 3.1 Contact Management
-- [ ] Contact CRUD (create, read, update, delete)
-- [ ] Contact types: Contractors, Customers, Vendors, Subcontractors, Employees, Inspectors, Architects, Engineers
-- [ ] Organization-level contact directory
-- [ ] Search and filter by type, company, role
-- [ ] Unified identity across communication modes (phone, email, etc.)
-- [ ] Contact association to projects
-- [ ] Import/export contacts (CSV)
+### 3.1 Contact Management ✅ COMPLETE (Session 15, 2026-03-12)
+- [x] Contact CRUD (create, read, update, delete)
+- [x] Contact types: Contractors, Customers, Vendors, Subcontractors, Employees, Inspectors, Architects, Engineers
+- [x] Organization-level contact directory
+- [x] Search and filter by type, company, name, email
+- [x] Unified identity across communication modes (phone, mobile, email, etc.)
+- [x] Contact association to projects
+- [ ] Import/export contacts (CSV) — deferred
 
 ### 3.2 Licensing
 - [ ] License tracking (company and employee level)

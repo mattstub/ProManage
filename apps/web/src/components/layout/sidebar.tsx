@@ -10,6 +10,7 @@ import {
   FolderOpenIcon,
   HashtagIcon,
   HomeIcon,
+  UsersIcon,
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
@@ -57,6 +58,11 @@ const NAV_ITEMS: NavItemConfig[] = [
     href: '/channels',
     label: 'Channels',
     icon: <HashtagIcon className="h-5 w-5" />,
+  },
+  {
+    href: '/contacts',
+    label: 'Contacts',
+    icon: <UsersIcon className="h-5 w-5" />,
   },
   {
     href: '/messages',

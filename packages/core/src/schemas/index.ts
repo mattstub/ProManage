@@ -57,6 +57,13 @@ export {
 } from './messaging'
 
 export {
+  createContactSchema,
+  updateContactSchema,
+  type CreateContactSchemaInput,
+  type UpdateContactSchemaInput,
+} from './contact'
+
+export {
   createChannelSchema,
   updateChannelSchema,
   sendChatMessageSchema,

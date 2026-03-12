@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-11 (Session 14)
+**Last Updated**: 2026-03-12 (Session 15)
 
 ---
 
@@ -59,27 +59,27 @@
 
 ```
 ProManage/
-apps/api/              COMPLETE through Phase 2.3B
-  prisma/schema.prisma   21 models (+ Channel, ChannelPermission, ChannelMember, ChatMessage, MessageAttachment)
-  prisma/seed.ts         demo org, 6 roles, 64 perms, 3 users, 2 projects, 2 channels
+apps/api/              COMPLETE through Phase 3.1
+  prisma/schema.prisma   23 models (+ Contact, ContactProject)
+  prisma/seed.ts         demo org, 6 roles, 64 perms, 3 users, 2 projects, 2 channels, 3 contacts
   src/config/            Zod env validation
   src/lib/               errors, response helpers, pino logger, rate-limit, sse
   src/middleware/        authenticate, authorize, error-handler
   src/plugins/           prisma, swagger, sse, minio, socket-io
   src/routes/            health, auth, users, organizations, projects, dashboard, tasks, procedures,
-                         notifications, messages, calendar-events, channels
+                         notifications, messages, calendar-events, channels, contacts
   src/services/          auth, user, org, token, password, project, dashboard, task, procedure,
-                         notification, messaging, calendar-event, channel
+                         notification, messaging, calendar-event, channel, contact
   src/types/             fastify.d.ts (augmented with io, minio, sseClients)
   src/__tests__/         162 tests passing
 apps/web/              COMPLETE through Phase 2.3B
-  src/app/               App Router: dashboard, projects, tasks, procedures, calendar, messages, channels
+  src/app/               App Router: dashboard, projects, tasks, procedures, calendar, messages, channels, contacts
   src/components/        layout (sidebar, header, nav-item, notification-bell),
                          dashboard (stats-card, project-summary-list),
                          channels (chat-panel, thread-panel, attachment-uploader, create-dialog, settings-panel)
   src/hooks/             use-auth, use-dashboard-stats, use-organization, use-procedures, use-projects,
                          use-tasks, use-users, use-notifications, use-messaging, use-calendar-events,
-                         use-channels, use-socket
+                         use-channels, use-socket, use-contacts
   src/lib/               api-client singleton (with resetSocket on auth error), query-client
 apps/mobile/           DEFERRED
 
@@ -91,10 +91,10 @@ packages/core/         COMPLETE through Phase 2.3B
                          notification, calendar-event, channel
   src/utils/             pagination, format-date, format-currency
   src/__tests__/         97 tests
-packages/api-client/   COMPLETE through Phase 2.3B
+packages/api-client/   COMPLETE through Phase 3.1
   src/resources/         auth, users, organizations, health, projects, dashboard, tasks,
-                         procedures, notifications, messaging, calendar-events, channels
-  src/index.ts           createApiClient() factory + all exports (channels resource added)
+                         procedures, notifications, messaging, calendar-events, channels, contacts
+  src/index.ts           createApiClient() factory + all exports (contacts resource added)
 packages/ui-components/ COMPLETE (Sub-phase F - 30 files, 26 components)
 
 Root tooling:          COMPLETE (Sub-phase A)
@@ -103,7 +103,7 @@ Root tooling:          COMPLETE (Sub-phase A)
 
 ---
 
-## Current State (2026-03-11)
+## Current State (2026-03-12)
 
 - **Phase 1, Sub-phases A-G**: COMPLETE (~150 source files)
 - **Phase 2.1 Dashboard**: COMPLETE — real data, projects list, stats widgets, role-aware sidebar
@@ -113,15 +113,16 @@ Root tooling:          COMPLETE (Sub-phase A)
 - **Phase 2.4 Calendar**: COMPLETE — custom month-view calendar, full CRUD with RBAC
 - **Phase 2.5 Task Management**: COMPLETE — full CRUD with RBAC
 - **Phase 2.6 Procedures**: COMPLETE — full CRUD with RBAC
-- **API**: Runs on http://localhost:3001 | Routes: /auth, /calendar-events, /channels, /dashboard, /messages, /notifications, /organizations, /procedures, /projects, /tasks, /users
-- **DB**: PostgreSQL in Docker. 21 models. Channels + members + permissions + messages + attachments added. `prisma db push` applied.
-- **api-client**: Built — all resource namespaces including ChannelsResource
+- **Phase 3.1 Contact Management**: COMPLETE — 8-type contact directory, search/filter, project associations, org-scoped email uniqueness
+- **API**: Runs on http://localhost:3001 | Routes: /auth, /calendar-events, /channels, /contacts, /dashboard, /messages, /notifications, /organizations, /procedures, /projects, /tasks, /users
+- **DB**: PostgreSQL in Docker. 23 models. Contact + ContactProject added. `prisma db push` applied.
+- **api-client**: Built — all resource namespaces including ContactsResource
 - **ui-components**: Built (tsc --build, zero errors), 26 Radix+Tailwind components
-- **Sidebar**: Dashboard, Projects, Tasks, Procedures, Calendar, Channels, Messages, Organization, Settings
+- **Sidebar**: Dashboard, Projects, Tasks, Procedures, Calendar, Channels, Contacts, Messages, Organization, Settings
 - **Header**: NotificationBell with live badge + dropdown (SSE-powered)
 - **packages/core**: CommonJS output (fixed ESM seed issue; web/bundler still works fine)
-- **Tests**: 162 API tests passing, web type-check clean
-- **Next**: Phase 3 — Contacts & Company Setup (Contact Management, Licensing, Safety)
+- **Tests**: 259 API tests passing, web type-check clean
+- **Next**: Phase 3.2 — Licensing (license tracking, renewal reminders, document uploads)
 
 ### Seed Credentials
 
@@ -208,6 +209,18 @@ DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-d
 - TypeScript project references wired (composite + tsc --build on both packages)
 - Removed .claude/settings.local.json from git tracking
 - PR merged by user
+
+### Session 15 - 2026-03-12
+
+- **Phase 3.1 Contact Management COMPLETE** (all 5 layers):
+  - Layer 1: `Contact` + `ContactProject` Prisma models (23 models total); `@@unique([organizationId, email])` for org-scoped email uniqueness; seed updated with 3 demo contacts + 2 project associations; `prisma db push` applied
+  - Layer 2: `packages/core` — `types/contact.ts`, `schemas/contact.ts` (Zod: email validation, max lengths, enum type), `constants/contact.ts` (CONTACT_TYPES + CONTACT_TYPE_LIST)
+  - Layer 3: `contact.service.ts` (7 functions — listContacts with full-text search, getContact, createContact, updateContact, deleteContact, addContactToProject, removeContactFromProject); `routes/contacts/index.ts` (7 routes with RBAC); `buildContactTestApp()` + mock-prisma updated
+  - Layer 4: `packages/api-client/src/resources/contacts.ts` (ContactsResource, 7 methods); wired into ApiClient interface + createApiClient()
+  - Layer 5: `use-contacts.ts` (7 hooks), `/contacts/page.tsx` (table + type filter + search + CRUD dialogs), Contacts nav item in sidebar
+  - **Security**: multi-agent deployment — security agent identified 10 findings; org-scoped email uniqueness (Finding #10) implemented; CSV import/export sanitization deferred with the feature
+  - **Tests**: 259 API tests passing (61 new contact tests: 24 service + 37 route), web type-check clean
+- Branch: `feat/phase3-subphase-1-contact-management` — push pending
 
 ### Session 14 - 2026-03-11
 

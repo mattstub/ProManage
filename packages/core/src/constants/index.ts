@@ -36,6 +36,8 @@ export { NOTIFICATION_TYPES, NOTIFICATION_TYPE_LIST } from './notification-type'
 
 export { ERROR_CODES, HTTP_STATUS, type ErrorCode } from './api'
 
+export { CONTACT_TYPES, CONTACT_TYPE_LIST } from './contact'
+
 export {
   CHANNEL_MANAGE_ROLES,
   ALLOWED_ATTACHMENT_MIME_TYPES,

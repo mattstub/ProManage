@@ -19,7 +19,10 @@ ProManage is a free, open-source platform designed to help small construction co
 > | Phase 2.4 — Company Calendar | ✅ Complete |
 > | Phase 2.5 — Task Management | ✅ Complete |
 > | Phase 2.6 — General Procedures | ✅ Complete |
-> | Phase 2.3B — Channel Chat (Discord-style, Socket.io) | 🔜 Next |
+> | Phase 2.3B — Channel Chat (Discord-style, Socket.io) | ✅ Complete |
+> | Phase 3.1 — Contact Management | ✅ Complete |
+> | Phase 3.2 — Licensing | 🔜 Next |
+> | Phase 3.3 — Safety | 🔜 Next | 
 
 ## Features
 
@@ -30,6 +33,7 @@ ProManage is a free, open-source platform designed to help small construction co
 - **Notifications** — Real-time SSE push notifications (task assignments, etc.)
 - **Company Calendar** — Custom month-view calendar with event CRUD
 - **Procedures** — Document workflows, safety protocols, and SOPs
+- **Contact Management** — Organization-level contact directory
 - **6 Roles** — Admin, ProjectManager, Superintendent, Foreman, FieldUser, OfficeAdmin
 
 ## Architecture

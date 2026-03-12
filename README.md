@@ -22,7 +22,7 @@ ProManage is a free, open-source platform designed to help small construction co
 > | Phase 2.3B — Channel Chat (Discord-style, Socket.io) | ✅ Complete |
 > | Phase 3.1 — Contact Management | ✅ Complete |
 > | Phase 3.2 — Licensing | 🔜 Next |
-> | Phase 3.3 — Safety | 🔜 Next | 
+> | Phase 3.3 — Safety | 🔜 Next |
 
 ## Features
 

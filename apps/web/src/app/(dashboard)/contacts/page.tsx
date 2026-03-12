@@ -5,7 +5,7 @@ import {
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   Badge,
@@ -31,10 +31,16 @@ import {
   TableHeader,
   TableRow,
   Textarea,
+  type BadgeProps,
 } from '@promanage/ui-components'
 
-import type { ContactType, ContactWithRelations, RoleName } from '@promanage/core'
-import type { BadgeProps } from '@promanage/ui-components'
+import {
+  CONTACT_TYPE_LIST,
+  CONTACT_TYPES,
+  type ContactType,
+  type ContactWithRelations,
+  type RoleName,
+} from '@promanage/core'
 
 import { useAuth } from '@/hooks/use-auth'
 import {
@@ -54,28 +60,6 @@ const TYPE_VARIANT: Record<ContactType, BadgeProps['variant']> = {
   ARCHITECT: 'primary',
   ENGINEER: 'danger',
 }
-
-const TYPE_LABEL: Record<ContactType, string> = {
-  CONTRACTOR: 'Contractor',
-  CUSTOMER: 'Customer',
-  VENDOR: 'Vendor',
-  SUBCONTRACTOR: 'Subcontractor',
-  EMPLOYEE: 'Employee',
-  INSPECTOR: 'Inspector',
-  ARCHITECT: 'Architect',
-  ENGINEER: 'Engineer',
-}
-
-const CONTACT_TYPE_OPTIONS: ContactType[] = [
-  'CONTRACTOR',
-  'CUSTOMER',
-  'VENDOR',
-  'SUBCONTRACTOR',
-  'EMPLOYEE',
-  'INSPECTOR',
-  'ARCHITECT',
-  'ENGINEER',
-]
 
 const WRITE_ROLES: RoleName[] = ['Admin', 'ProjectManager', 'OfficeAdmin']
 const DELETE_ROLES: RoleName[] = ['Admin']
@@ -127,6 +111,11 @@ export default function ContactsPage() {
   const [search, setSearch] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
 
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search), 300)
+    return () => clearTimeout(timer)
+  }, [search])
+
   const { data: contactsResult, isLoading } = useContacts({
     type: filterType !== 'ALL' ? filterType : undefined,
     search: debouncedSearch || undefined,
@@ -148,8 +137,6 @@ export default function ContactsPage() {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value)
-    // Simple debounce via setTimeout replacement — just update directly for now
-    setDebouncedSearch(e.target.value)
   }
 
   const handleOpenCreate = () => {
@@ -254,9 +241,9 @@ export default function ContactsPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="ALL">All Types</SelectItem>
-              {CONTACT_TYPE_OPTIONS.map((type) => (
+              {CONTACT_TYPE_LIST.map((type) => (
                 <SelectItem key={type} value={type}>
-                  {TYPE_LABEL[type]}
+                  {CONTACT_TYPES[type].label}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -316,7 +303,7 @@ export default function ContactsPage() {
                   </TableCell>
                   <TableCell>
                     <Badge variant={TYPE_VARIANT[contact.type]}>
-                      {TYPE_LABEL[contact.type]}
+                      {CONTACT_TYPES[contact.type].label}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-gray-600">
@@ -405,9 +392,9 @@ export default function ContactsPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {CONTACT_TYPE_OPTIONS.map((type) => (
+                    {CONTACT_TYPE_LIST.map((type) => (
                       <SelectItem key={type} value={type}>
-                        {TYPE_LABEL[type]}
+                        {CONTACT_TYPES[type].label}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -521,9 +508,9 @@ export default function ContactsPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {CONTACT_TYPE_OPTIONS.map((type) => (
+                    {CONTACT_TYPE_LIST.map((type) => (
                       <SelectItem key={type} value={type}>
-                        {TYPE_LABEL[type]}
+                        {CONTACT_TYPES[type].label}
                       </SelectItem>
                     ))}
                   </SelectContent>

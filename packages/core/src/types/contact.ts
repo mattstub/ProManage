@@ -22,8 +22,8 @@ export interface Contact {
   isActive: boolean
   organizationId: string
   createdById: string
-  createdAt: string | Date
-  updatedAt: string | Date
+  createdAt: string
+  updatedAt: string
 }
 
 export interface ContactProjectSummary {
@@ -40,7 +40,7 @@ export interface ContactWithRelations extends Contact {
     email: string
   }
   projectContacts: Array<{
-    assignedAt: string | Date
+    assignedAt: string
     project: ContactProjectSummary
   }>
 }

@@ -1,10 +1,10 @@
 import { updateUserSchema } from '@promanage/core'
 
-import { authenticate } from '../../middleware/authenticate'
-import { requireRole } from '../../middleware/authorize'
 import { RATE_LIMITS } from '../../lib/rate-limit'
 import { setupRateLimit } from '../../lib/rate-limit-setup'
 import { success, paginated, noContent } from '../../lib/response'
+import { authenticate } from '../../middleware/authenticate'
+import { requireRole } from '../../middleware/authorize'
 import * as userService from '../../services/user.service'
 
 import type { FastifyPluginAsync } from 'fastify'

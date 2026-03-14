@@ -1,10 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-import type { FastifyInstance } from 'fastify'
-
 import { UnauthorizedError } from '../../lib/errors'
 import * as authService from '../../services/auth.service'
+import { comparePassword } from '../../services/password.service'
 import { createMockPrisma } from '../helpers/mock-prisma'
+
+import type { FastifyInstance } from 'fastify'
 
 // Mock bcrypt so tests don't pay the hashing cost
 vi.mock('../../services/password.service', () => ({
@@ -18,8 +19,6 @@ vi.mock('../../services/token.service', () => ({
   generateRefreshToken: vi.fn().mockReturnValue('mock-refresh-token'),
   getRefreshTokenExpiry: vi.fn().mockReturnValue(new Date('2099-01-01')),
 }))
-
-import { comparePassword } from '../../services/password.service'
 
 function buildMockFastify() {
   const prisma = createMockPrisma()

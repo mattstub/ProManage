@@ -1,8 +1,8 @@
 import { UnauthorizedError } from '../../lib/errors'
-import { authenticate } from '../../middleware/authenticate'
 import { RATE_LIMITS } from '../../lib/rate-limit'
 import { setupRateLimit } from '../../lib/rate-limit-setup'
 import { noContent, paginated, success } from '../../lib/response'
+import { authenticate } from '../../middleware/authenticate'
 import * as notificationService from '../../services/notification.service'
 
 import type { FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify'

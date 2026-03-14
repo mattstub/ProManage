@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Tests mock Prisma — DATABASE_URL only needed to satisfy env validation at startup
+  DATABASE_URL: postgresql://postgres:postgres@localhost:5432/promanage_test
+  JWT_SECRET: ci-test-secret-minimum-32-characters-long
+  NODE_ENV: test
+  NEXT_PUBLIC_API_URL: http://localhost:3001
+
+jobs:
+  ci:
+    name: Lint · Type-check · Test · Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Get pnpm store path
+        id: pnpm-store
+        run: echo "path=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-store.outputs.path }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-
+
+      - name: Cache Turborepo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-turbo-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm --filter @promanage/api exec prisma generate
+
+      - name: Build workspace packages
+        run: |
+          pnpm --filter @promanage/core build
+          pnpm --filter @promanage/api-client build
+          pnpm --filter @promanage/ui-components build
+
+      - name: Lint
+        run: pnpm turbo lint
+
+      - name: Type-check
+        run: pnpm turbo type-check
+
+      - name: Test
+        run: pnpm turbo test
+
+      - name: Build API
+        run: pnpm --filter @promanage/api build
+
+      - name: Build web
+        run: pnpm --filter @promanage/web build

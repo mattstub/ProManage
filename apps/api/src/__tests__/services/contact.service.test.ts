@@ -1,10 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-import type { FastifyInstance } from 'fastify'
 
 import { NotFoundError } from '../../lib/errors'
 import * as contactService from '../../services/contact.service'
 import { createMockPrisma } from '../helpers/mock-prisma'
+
+import type { FastifyInstance } from 'fastify'
 
 function buildMockFastify() {
   const prisma = createMockPrisma()

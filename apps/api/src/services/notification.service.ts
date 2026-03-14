@@ -1,6 +1,7 @@
-import { emitToUser } from '../lib/sse'
-import { ForbiddenError, NotFoundError } from '../lib/errors'
 import { buildPaginationMeta, parsePagination } from '@promanage/core'
+
+import { ForbiddenError, NotFoundError } from '../lib/errors'
+import { emitToUser } from '../lib/sse'
 
 import type { CreateNotificationInput } from '@promanage/core'
 import type { FastifyInstance } from 'fastify'

@@ -126,6 +126,7 @@ Every PR must include documentation updates in the same commit. Check all four:
 
 | File | What to update |
 |---|---|
+| `README.md` | Update feature list / phase status if a new phase or major feature is complete |
 | `CHANGELOG.md` | Add entry under `[Unreleased]` — packages changed, new files, bug fixes |
 | `docs/ROADMAP.md` | Check off completed items (`- [ ]` → `- [x]`), update "Last Updated" + "Status" footer |
 | `docs/context/session-context.md` | Update "Last Updated", current state section, directory map, session log |
@@ -136,7 +137,7 @@ Every PR must include documentation updates in the same commit. Check all four:
 Quick check before committing:
 ```bash
 # Confirm docs are staged alongside code
-git diff --staged --name-only | grep -E "CHANGELOG|ROADMAP|session-context|CLAUDE"
+git diff --staged --name-only | grep -E "README|CHANGELOG|ROADMAP|session-context|CLAUDE"
 ```
 
 ---

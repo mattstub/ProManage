@@ -1,7 +1,9 @@
 'use client'
 
-import { useEffect } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useEffect } from 'react'
+
+import { getSocket } from './use-socket'
 
 import type { ListChannelMessagesParams } from '@promanage/api-client'
 import type {
@@ -13,7 +15,6 @@ import type {
 
 import { getApiClient } from '@/lib/api-client'
 import { useAuthStore } from '@/stores/auth.store'
-import { getSocket } from './use-socket'
 
 // ─── Query Hooks ─────────────────────────────────────────────────────────────
 

@@ -6,9 +6,7 @@ ProManage is a free, open-source platform designed to help small construction co
 
 ## Current Status
 
-> **Phase 2 (Dashboard & Hub) — In Progress**
->
-> Phase 1 (Foundation) is complete. Active development is on Phase 2 modules.
+> **Phase 3 (Contacts & Company Setup) — In Progress**
 >
 > | Module | Status |
 > |---|---|
@@ -16,11 +14,12 @@ ProManage is a free, open-source platform designed to help small construction co
 > | Phase 2.1 — Dashboard (stats, project list) | ✅ Complete |
 > | Phase 2.2 — Notifications (SSE real-time push) | ✅ Complete |
 > | Phase 2.3A — Async Messaging (DMs + Announcements) | ✅ Complete |
+> | Phase 2.3B — Channel Chat (Discord-style, Socket.io) | ✅ Complete |
 > | Phase 2.4 — Company Calendar | ✅ Complete |
 > | Phase 2.5 — Task Management | ✅ Complete |
 > | Phase 2.6 — General Procedures | ✅ Complete |
-> | Phase 2.3B — Channel Chat (Discord-style, Socket.io) | ✅ Complete |
 > | Phase 3.1 — Contact Management | ✅ Complete |
+> | Infrastructure — Docker, CI/CD, structured logging | ✅ Complete |
 > | Phase 3.2 — Licensing | 🔜 Next |
 > | Phase 3.3 — Safety | 🔜 Next |
 
@@ -80,7 +79,7 @@ pnpm install
 cp apps/api/.env.example apps/api/.env
 
 # Web environment
-echo "NEXT_PUBLIC_API_URL=http://localhost:3001" > apps/web/.env.local
+cp apps/web/.env.local.example apps/web/.env.local
 ```
 
 The default `apps/api/.env` values work out of the box with the Docker services below.
@@ -193,18 +192,20 @@ pnpm --filter @promanage/core build
 ProManage/
 ├── apps/
 │   ├── api/                # Fastify API server (TypeScript, Prisma, JWT auth)
-│   │   ├── prisma/         # Schema (16 models), seed script
+│   │   ├── prisma/         # Schema (23 models), seed script
 │   │   └── src/
-│   │       ├── routes/     # auth, calendar-events, dashboard, messages,
-│   │       │               # notifications, organizations, procedures,
-│   │       │               # projects, tasks, users
+│   │       ├── routes/     # auth, calendar-events, channels, contacts,
+│   │       │               # dashboard, messages, notifications,
+│   │       │               # organizations, procedures, projects, tasks, users
 │   │       ├── services/   # Business logic (one file per domain)
 │   │       └── middleware/ # authenticate, authorize, error-handler
 │   └── web/                # Next.js 14 App Router (desktop-first)
 │       └── src/
 │           ├── app/        # Pages: dashboard, projects, tasks, procedures,
-│           │               # calendar, messages, organization, settings
-│           ├── components/ # layout (sidebar, header, nav), dashboard, auth
+│           │               # calendar, messages, channels, contacts,
+│           │               # organization, settings
+│           ├── components/ # layout (sidebar, header, nav), dashboard, auth,
+│           │               # channels (chat, thread, attachments)
 │           └── hooks/      # TanStack Query hooks (one file per domain)
 ├── packages/
 │   ├── core/               # Shared types, Zod schemas, constants, utils
@@ -213,6 +214,44 @@ ProManage/
 ├── docs/                   # Architecture, roadmap, context files
 └── scripts/                # Development scripts
 ```
+
+---
+
+## Docker Deployment
+
+ProManage ships with Dockerfiles for the API and web app. Docker images are published to [GitHub Container Registry](https://ghcr.io) on every merge to `main`.
+
+### Run with docker compose
+
+```bash
+# Set required secrets
+export JWT_SECRET="$(openssl rand -base64 48)"
+
+# Optional overrides
+export NEXT_PUBLIC_API_URL=https://api.yoursite.com
+export CORS_ORIGINS=https://yoursite.com
+
+# Pull pre-built images (or remove --no-build to build locally)
+docker compose up -d postgres minio
+docker compose up -d api web
+```
+
+### Build images locally
+
+```bash
+# API
+docker build -f apps/api/Dockerfile -t promanage-api .
+
+# Web (NEXT_PUBLIC_API_URL is baked in at build time)
+docker build -f apps/web/Dockerfile \
+  --build-arg NEXT_PUBLIC_API_URL=http://localhost:3001 \
+  -t promanage-web .
+```
+
+### CI / CD
+
+- **Pull Requests** → `.github/workflows/ci.yml` — lint, type-check, test, build
+- **Merge to main** → `.github/workflows/release.yml` — build + push Docker images to GHCR
 
 ---
 

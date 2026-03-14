@@ -28,7 +28,7 @@ node_modules/
 
 # pnpm
 .pnpm-debug.log*
-pnpm-lock.yaml
+# pnpm-lock.yaml must be committed for reproducible CI installs
 
 # Testing
 coverage/

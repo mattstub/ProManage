@@ -1,10 +1,10 @@
 import { createProjectSchema, updateProjectSchema } from '@promanage/core'
 
-import { authenticate } from '../../middleware/authenticate'
-import { requireRole } from '../../middleware/authorize'
 import { RATE_LIMITS } from '../../lib/rate-limit'
 import { setupRateLimit } from '../../lib/rate-limit-setup'
 import { created, noContent, paginated, success } from '../../lib/response'
+import { authenticate } from '../../middleware/authenticate'
+import { requireRole } from '../../middleware/authorize'
 import * as projectService from '../../services/project.service'
 
 import type { ProjectStatus } from '@promanage/core'

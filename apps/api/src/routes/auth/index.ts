@@ -1,9 +1,9 @@
 import { loginSchema, registerSchema } from '@promanage/core'
 
-import { authenticate } from '../../middleware/authenticate'
 import { RATE_LIMITS } from '../../lib/rate-limit'
 import { setupRateLimit } from '../../lib/rate-limit-setup'
 import { success } from '../../lib/response'
+import { authenticate } from '../../middleware/authenticate'
 import * as authService from '../../services/auth.service'
 
 import type { FastifyPluginAsync } from 'fastify'

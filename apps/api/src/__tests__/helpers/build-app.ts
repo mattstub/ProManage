@@ -1,12 +1,9 @@
-import { vi } from 'vitest'
-import Fastify from 'fastify'
 import cookie from '@fastify/cookie'
 import jwt from '@fastify/jwt'
 import rateLimit from '@fastify/rate-limit'
+import Fastify from 'fastify'
+import { vi } from 'vitest'
 
-import type { PrismaClient } from '@prisma/client'
-import type { Server as SocketIoServer } from 'socket.io'
-import type { Client as MinioClient } from 'minio'
 
 import { errorHandler } from '../../middleware/error-handler'
 import authRoutes from '../../routes/auth'
@@ -18,7 +15,11 @@ import notificationRoutes from '../../routes/notifications'
 import taskRoutes from '../../routes/tasks'
 
 import { createMockPrisma } from './mock-prisma'
+
 import type { MockPrisma } from './mock-prisma'
+import type { PrismaClient } from '@prisma/client'
+import type { Client as MinioClient } from 'minio'
+import type { Server as SocketIoServer } from 'socket.io'
 
 /**
  * Creates a mock Socket.io server for use in test apps.

@@ -1,5 +1,6 @@
-import { NotFoundError } from '../lib/errors'
 import { buildPaginationMeta, parsePagination } from '@promanage/core'
+
+import { NotFoundError } from '../lib/errors'
 
 import type { CreateContactSchemaInput, UpdateContactSchemaInput } from '@promanage/core'
 import type { FastifyInstance } from 'fastify'

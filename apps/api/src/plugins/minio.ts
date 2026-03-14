@@ -1,8 +1,9 @@
 import fp from 'fastify-plugin'
 import * as Minio from 'minio'
 
-import type { FastifyPluginAsync } from 'fastify'
 import { MINIO_BUCKET_NAME } from '@promanage/core'
+
+import type { FastifyPluginAsync } from 'fastify'
 
 const minioPlugin: FastifyPluginAsync = async (fastify) => {
   const isDevelopment = process.env['NODE_ENV'] === 'development'

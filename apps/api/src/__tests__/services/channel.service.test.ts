@@ -1,12 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-import type { FastifyInstance } from 'fastify'
-import type { Server as SocketIoServer } from 'socket.io'
-import type { Client as MinioClient } from 'minio'
 
 import { ForbiddenError, NotFoundError, ValidationError } from '../../lib/errors'
 import * as channelService from '../../services/channel.service'
 import { createMockPrisma } from '../helpers/mock-prisma'
+
+import type { FastifyInstance } from 'fastify'
+import type { Client as MinioClient } from 'minio'
+import type { Server as SocketIoServer } from 'socket.io'
 
 function buildMockFastify() {
   const prisma = createMockPrisma()

@@ -1,6 +1,6 @@
 import type { ProManageClient } from '../client'
-import type { User, UpdateUserInput, ApiResponse } from '@promanage/core'
 import type { PaginatedResult, PaginationParams } from '../types'
+import type { User, UpdateUserInput, ApiResponse } from '@promanage/core'
 
 export class UsersResource {
   constructor(private readonly client: ProManageClient) {}

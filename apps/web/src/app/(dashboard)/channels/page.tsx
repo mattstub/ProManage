@@ -1,17 +1,17 @@
 'use client'
 
-import { useState } from 'react'
 import { Cog6ToothIcon, HashtagIcon, LockClosedIcon, PlusIcon } from '@heroicons/react/24/outline'
+import { useState } from 'react'
 
 import { Badge, Breadcrumbs, Button, Skeleton } from '@promanage/ui-components'
 
 import type { Channel, ChannelWithRelations, RoleName } from '@promanage/core'
 
-import { useAuth } from '@/hooks/use-auth'
-import { useChannels, useJoinChannel } from '@/hooks/use-channels'
 import { ChannelChatPanel } from '@/components/channels/channel-chat-panel'
 import { ChannelSettingsPanel } from '@/components/channels/channel-settings-panel'
 import { CreateChannelDialog } from '@/components/channels/create-channel-dialog'
+import { useAuth } from '@/hooks/use-auth'
+import { useChannels, useJoinChannel } from '@/hooks/use-channels'
 
 const MANAGE_ROLES: RoleName[] = ['Admin', 'ProjectManager', 'OfficeAdmin']
 

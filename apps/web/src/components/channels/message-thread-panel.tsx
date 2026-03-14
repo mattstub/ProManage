@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import { PaperAirplaneIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { useState } from 'react'
 
 import { Button, Skeleton, Textarea } from '@promanage/ui-components'
 

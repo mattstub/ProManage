@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
+import { CHANNEL_MANAGE_ROLES } from '@promanage/core'
 import {
   Badge,
   Button,
@@ -25,7 +26,6 @@ import {
 } from '@promanage/ui-components'
 
 import type { ChannelPermission, ChannelWithRelations, RoleName } from '@promanage/core'
-import { CHANNEL_MANAGE_ROLES } from '@promanage/core'
 
 import {
   useChannelPermissions,

@@ -1,4 +1,5 @@
 import { cn } from '../utils/cn'
+
 import { Button } from './button'
 
 export interface PaginationProps extends React.HTMLAttributes<HTMLElement> {

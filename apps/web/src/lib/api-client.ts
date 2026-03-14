@@ -2,8 +2,8 @@
 
 import { createApiClient } from '@promanage/api-client'
 
-import { useAuthStore } from '@/stores/auth.store'
 import { resetSocket } from '@/hooks/use-socket'
+import { useAuthStore } from '@/stores/auth.store'
 
 let _client: ReturnType<typeof createApiClient> | null = null
 

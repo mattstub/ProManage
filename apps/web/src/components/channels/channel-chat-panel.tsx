@@ -1,14 +1,16 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
 import {
   ChatBubbleLeftIcon,
   PaperAirplaneIcon,
   PencilIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline'
+import { useEffect, useRef, useState } from 'react'
 
 import { Button, Skeleton, Textarea } from '@promanage/ui-components'
+
+import { MessageThreadPanel } from './message-thread-panel'
 
 import type { Channel, ChatMessageWithRelations } from '@promanage/core'
 
@@ -19,7 +21,6 @@ import {
   useEditChannelMessage,
   useSendChannelMessage,
 } from '@/hooks/use-channels'
-import { MessageThreadPanel } from './message-thread-panel'
 
 function formatTime(date: Date | string) {
   const d = new Date(date)

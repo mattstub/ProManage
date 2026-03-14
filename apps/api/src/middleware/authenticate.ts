@@ -17,6 +17,11 @@ export async function authenticate(
       email: payload.email,
       organizationId: payload.organizationId,
     }
+    // Enrich the per-request logger so all downstream logs carry user context
+    request.log = request.log.child({
+      userId: payload.sub,
+      organizationId: payload.organizationId,
+    })
   } catch {
     throw new UnauthorizedError('Invalid or expired token')
   }

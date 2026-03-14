@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-12 (Session 15)
+**Last Updated**: 2026-03-14 (Session 16)
 
 ---
 
@@ -122,6 +122,7 @@ Root tooling:          COMPLETE (Sub-phase A)
 - **Header**: NotificationBell with live badge + dropdown (SSE-powered)
 - **packages/core**: CommonJS output (fixed ESM seed issue; web/bundler still works fine)
 - **Tests**: 259 API tests passing, web type-check clean
+- **Infrastructure (chore/infrastructure)**: IN PROGRESS — Dockerfiles, CI/CD, structured logging, Sentry scaffold done; PR pending
 - **Next**: Phase 3.2 — Licensing (license tracking, renewal reminders, document uploads)
 
 ### Seed Credentials
@@ -131,6 +132,18 @@ Root tooling:          COMPLETE (Sub-phase A)
 | admin@demo.com | password123 | Admin |
 | pm@demo.com | password123 | ProjectManager |
 | field@demo.com | password123 | FieldUser |
+
+---
+
+## Infrastructure (COMPLETE — Session 16)
+
+All items shipped on `chore/infrastructure` branch. See Session 16 log for full details.
+
+**Deployment**: `docker compose up -d` starts all 4 services (postgres, minio, api, web). `JWT_SECRET` must be set. Images pushed to GHCR on every merge to main.
+
+**Sentry**: Env var scaffolded (`SENTRY_DSN`). Install `@sentry/node` / `@sentry/nextjs` to activate — see `.env.example` for instructions.
+
+**Log aggregation** (still deferred): Self-hosted: Loki + Grafana. Managed: any platform log drain. App logs JSON to stdout — no app changes needed.
 
 ---
 
@@ -209,6 +222,22 @@ DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-d
 - TypeScript project references wired (composite + tsc --build on both packages)
 - Removed .claude/settings.local.json from git tracking
 - PR merged by user
+
+### Session 16 — 2026-03-14
+
+- **Infrastructure sub-phase COMPLETE** (`chore/infrastructure` branch):
+  - `apps/api/Dockerfile` — single-stage pnpm monorepo build (node:20-alpine, corepack, non-root user, prisma generate, runs `dist/server.js`)
+  - `apps/web/Dockerfile` — multi-stage build using Next.js standalone output (`output: 'standalone'` + `outputFileTracingRoot`); runner is minimal node:20-alpine with only `.next/standalone` + static
+  - `docker-compose.yml` — added `api` + `web` services with healthchecks, `JWT_SECRET` required via env, `NEXT_PUBLIC_API_URL` as build arg; minio/postgres services unchanged
+  - `.dockerignore` — standard monorepo ignores (node_modules, dist, .next, .turbo, secrets)
+  - `.github/workflows/ci.yml` — PR gate: lint → type-check → test → build (API + web); pnpm + Turborepo cache
+  - `.github/workflows/release.yml` — push to main: build + push API + web Docker images to GHCR; uses GHA cache for layers
+  - **Structured logging**: `authenticate.ts` now enriches `request.log` with `userId` + `organizationId` via `request.log.child(...)` after JWT verification; all downstream logs in authenticated requests carry user context automatically
+  - **Sentry scaffold**: `SENTRY_DSN` added as optional field to `env.ts` + `.env.example`; install `@sentry/node` / `@sentry/nextjs` to activate (see `.env.example` for instructions)
+  - `apps/api/.env.example` + `apps/web/.env.local.example` — created with all env vars documented
+  - `README.md` — updated status table (infra complete), added Docker Deployment section, fixed web env setup, updated project structure to reflect contacts/channels
+  - **259 tests still passing, API type-check clean, web type-check clean**
+- Branch: `chore/infrastructure` — PR pending
 
 ### Session 15 - 2026-03-12
 

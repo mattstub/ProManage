@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import { ZodError } from 'zod'
 
 import { ERROR_CODES, HTTP_STATUS } from '@promanage/core'
@@ -45,7 +45,7 @@ export function errorHandler(
   }
 
   // Prisma errors
-  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+  if (error instanceof PrismaClientKnownRequestError) {
     if (error.code === 'P2002') {
       return reply.status(HTTP_STATUS.CONFLICT).send({
         error: {

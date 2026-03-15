@@ -24,9 +24,7 @@ RUN pnpm install --frozen-lockfile
 
 # --- Generate Prisma client before build (types required by tsc) ---
 COPY apps/api/prisma/ apps/api/prisma/
-WORKDIR /app/apps/api
-RUN npx prisma generate
-WORKDIR /app
+RUN pnpm --filter @promanage/api exec prisma generate
 
 # --- Source ---
 COPY packages/ packages/

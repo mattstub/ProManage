@@ -3,6 +3,7 @@ import calendarEventRoutes from './calendar-events'
 import channelRoutes from './channels'
 import contactRoutes from './contacts'
 import dashboardRoutes from './dashboard'
+import licenseRoutes from './licenses'
 import messageRoutes from './messages'
 import notificationRoutes from './notifications'
 import organizationRoutes from './organizations'
@@ -19,6 +20,7 @@ const routes: FastifyPluginAsync = async (fastify) => {
   fastify.register(contactRoutes, { prefix: '/contacts' })
   fastify.register(channelRoutes, { prefix: '/channels' })
   fastify.register(dashboardRoutes, { prefix: '/dashboard' })
+  fastify.register(licenseRoutes, { prefix: '/licenses' })
   fastify.register(messageRoutes, { prefix: '/messages' })
   fastify.register(notificationRoutes, { prefix: '/notifications' })
   fastify.register(organizationRoutes, { prefix: '/organizations' })

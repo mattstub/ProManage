@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-14 (Session 16)
+**Last Updated**: 2026-03-15 (Session 17)
 
 ---
 
@@ -59,42 +59,42 @@
 
 ```
 ProManage/
-apps/api/              COMPLETE through Phase 3.1
-  prisma/schema.prisma   23 models (+ Contact, ContactProject)
-  prisma/seed.ts         demo org, 6 roles, 64 perms, 3 users, 2 projects, 2 channels, 3 contacts
+apps/api/              COMPLETE through Phase 3.2
+  prisma/schema.prisma   26 models (+ License, LicenseDocument, LicenseReminder)
+  prisma/seed.ts         demo org, 6 roles, 64 perms, 3 users, 2 projects, 2 channels, 3 contacts, 2 licenses, 2 reminders
   src/config/            Zod env validation
   src/lib/               errors, response helpers, pino logger, rate-limit, sse
   src/middleware/        authenticate, authorize, error-handler
-  src/plugins/           prisma, swagger, sse, minio, socket-io
+  src/plugins/           prisma, swagger, sse, minio, socket-io, license-reminder
   src/routes/            health, auth, users, organizations, projects, dashboard, tasks, procedures,
-                         notifications, messages, calendar-events, channels, contacts
+                         notifications, messages, calendar-events, channels, contacts, licenses
   src/services/          auth, user, org, token, password, project, dashboard, task, procedure,
-                         notification, messaging, calendar-event, channel, contact
+                         notification, messaging, calendar-event, channel, contact, license
   src/types/             fastify.d.ts (augmented with io, minio, sseClients)
-  src/__tests__/         162 tests passing
-apps/web/              COMPLETE through Phase 2.3B
-  src/app/               App Router: dashboard, projects, tasks, procedures, calendar, messages, channels, contacts
+  src/__tests__/         302 tests passing
+apps/web/              COMPLETE through Phase 3.2
+  src/app/               App Router: dashboard, projects, tasks, procedures, calendar, messages, channels, contacts, licenses
   src/components/        layout (sidebar, header, nav-item, notification-bell),
                          dashboard (stats-card, project-summary-list),
                          channels (chat-panel, thread-panel, attachment-uploader, create-dialog, settings-panel)
   src/hooks/             use-auth, use-dashboard-stats, use-organization, use-procedures, use-projects,
                          use-tasks, use-users, use-notifications, use-messaging, use-calendar-events,
-                         use-channels, use-socket, use-contacts
+                         use-channels, use-socket, use-contacts, use-licenses
   src/lib/               api-client singleton (with resetSocket on auth error), query-client
 apps/mobile/           DEFERRED
 
-packages/core/         COMPLETE through Phase 2.3B
+packages/core/         COMPLETE through Phase 3.2
   src/types/             api, auth, user, role, org, project, task, dashboard, procedure,
-                         notification, messaging, calendar-event, channel, socket-events
-  src/schemas/           auth, user, org, project, task, procedure, messaging, calendar-event, channel
+                         notification, messaging, calendar-event, channel, socket-events, license
+  src/schemas/           auth, user, org, project, task, procedure, messaging, calendar-event, channel, license
   src/constants/         roles, permissions, project-status, task-status, api, procedure-status,
-                         notification, calendar-event, channel
+                         notification, calendar-event, channel, license
   src/utils/             pagination, format-date, format-currency
   src/__tests__/         97 tests
-packages/api-client/   COMPLETE through Phase 3.1
+packages/api-client/   COMPLETE through Phase 3.2
   src/resources/         auth, users, organizations, health, projects, dashboard, tasks,
-                         procedures, notifications, messaging, calendar-events, channels, contacts
-  src/index.ts           createApiClient() factory + all exports (contacts resource added)
+                         procedures, notifications, messaging, calendar-events, channels, contacts, licenses
+  src/index.ts           createApiClient() factory + all exports (licenses resource added)
 packages/ui-components/ COMPLETE (Sub-phase F - 30 files, 26 components)
 
 Root tooling:          COMPLETE (Sub-phase A)
@@ -103,7 +103,7 @@ Root tooling:          COMPLETE (Sub-phase A)
 
 ---
 
-## Current State (2026-03-12)
+## Current State (2026-03-15)
 
 - **Phase 1, Sub-phases A-G**: COMPLETE (~150 source files)
 - **Phase 2.1 Dashboard**: COMPLETE — real data, projects list, stats widgets, role-aware sidebar
@@ -114,16 +114,17 @@ Root tooling:          COMPLETE (Sub-phase A)
 - **Phase 2.5 Task Management**: COMPLETE — full CRUD with RBAC
 - **Phase 2.6 Procedures**: COMPLETE — full CRUD with RBAC
 - **Phase 3.1 Contact Management**: COMPLETE — 8-type contact directory, search/filter, project associations, org-scoped email uniqueness
-- **API**: Runs on http://localhost:3001 | Routes: /auth, /calendar-events, /channels, /contacts, /dashboard, /messages, /notifications, /organizations, /procedures, /projects, /tasks, /users
-- **DB**: PostgreSQL in Docker. 23 models. Contact + ContactProject added. `prisma db push` applied.
-- **api-client**: Built — all resource namespaces including ContactsResource
+- **Phase 3.2 Licensing**: COMPLETE — org + individual license tracking, freeform types, multi-doc upload (MinIO), configurable renewal reminders (≤7d daily / >7d once), SSE bell notifications
+- **API**: Runs on http://localhost:3001 | Routes: /auth, /calendar-events, /channels, /contacts, /dashboard, /licenses, /messages, /notifications, /organizations, /procedures, /projects, /tasks, /users
+- **DB**: PostgreSQL in Docker. 26 models. License + LicenseDocument + LicenseReminder added. `prisma db push` applied.
+- **api-client**: Built — all resource namespaces including LicensesResource
 - **ui-components**: Built (tsc --build, zero errors), 26 Radix+Tailwind components
 - **Sidebar**: Dashboard, Projects, Tasks, Procedures, Calendar, Channels, Contacts, Messages, Organization, Settings
 - **Header**: NotificationBell with live badge + dropdown (SSE-powered)
 - **packages/core**: CommonJS output (fixed ESM seed issue; web/bundler still works fine)
-- **Tests**: 259 API tests passing, web type-check clean
-- **Infrastructure (chore/infrastructure)**: COMPLETE — Dockerfiles, CI/CD, structured logging, Sentry scaffold done; PR merged
-- **Next**: Phase 3.2 — Licensing (license tracking, renewal reminders, document uploads)
+- **Tests**: 399 total (97 core + 302 API), web type-check clean
+- **Infrastructure**: COMPLETE and merged — Dockerfiles, CI/CD, structured logging, Sentry scaffold, Fastify 5 upgrade, Dockerfile prisma-generate order fixed
+- **Next**: Phase 3.3 — Safety (safety document library, SDS catalog, toolbox talks, incident reports)
 
 ### Seed Credentials
 
@@ -222,6 +223,18 @@ DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-d
 - TypeScript project references wired (composite + tsc --build on both packages)
 - Removed .claude/settings.local.json from git tracking
 - PR merged by user
+
+### Session 17 — 2026-03-15
+
+- **Phase 3.2 Licensing COMPLETE** (all 5 layers):
+  - Layer 1: `License` + `LicenseDocument` + `LicenseReminder` Prisma models (26 total); holderType discriminator (ORGANIZATION|USER), freeform licenseType; seed with 2 demo licenses + 2 reminders; `prisma db push` applied
+  - Layer 2: `packages/core` — `types/license.ts`, `schemas/license.ts` (Zod: createLicense, updateLicense, createLicenseReminder, updateLicenseReminder), `constants/license.ts` (holder types, statuses, `LICENSE_REMINDER_DAILY_THRESHOLD`)
+  - Layer 3: `license.service.ts` (12 functions — list/get/create/update/delete + addDoc/deleteDoc + createReminder/updateReminder/deleteReminder); `routes/licenses/index.ts` (12 routes with RBAC); `plugins/license-reminder.ts` (setInterval daily check: ≤7d fires every day, >7d fires once per cycle, expirationDate update resets cycle); SSE notifications via existing bell; `buildLicenseTestApp()` + mock models added
+  - Layer 4: `packages/api-client/src/resources/licenses.ts` (LicensesResource, 12 methods); wired into ApiClient + createApiClient()
+  - Layer 5: `use-licenses.ts` (10 hooks, 3-step presigned MinIO document upload), `/licenses/page.tsx` (table + filters + create/edit/detail/delete dialogs; detail shows docs panel + reminder config panel with pause/resume), Licenses nav item (`IdentificationIcon`)
+  - **Tests**: 302 API tests passing (43 new: 24 service + 19 route); 399 total with core; web type-check clean
+- **Infrastructure cleanup**: reviewed Fastify 5 upgrade (all 302 tests pass, type-check clean); fixed Dockerfile `prisma generate` order (PR #73 merged); Copilot improved to `pnpm --filter exec` pattern
+- Branch: `feat/phase3-subphase-2-licensing` — PR pending
 
 ### Session 16 — 2026-03-14
 

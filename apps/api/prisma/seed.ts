@@ -310,6 +310,79 @@ async function main() {
     create: { contactId: contact2.id, projectId: project1.id },
   })
 
+  // Seed licenses
+  console.log('Creating demo licenses...')
+  const today = new Date()
+  const in25Days = new Date(today); in25Days.setDate(today.getDate() + 25)
+  const in90Days = new Date(today); in90Days.setDate(today.getDate() + 90)
+  const lastYear = new Date(today); lastYear.setFullYear(today.getFullYear() - 1)
+
+  const license1 = await prisma.license.upsert({
+    where: { id: 'seed-license-1' },
+    update: {},
+    create: {
+      id: 'seed-license-1',
+      name: 'General Contractor License',
+      licenseNumber: 'GC-2024-001234',
+      authority: 'State Contractor Board',
+      licenseType: 'General Contractor',
+      holderType: 'ORGANIZATION',
+      status: 'ACTIVE',
+      startDate: lastYear,
+      expirationDate: in25Days,
+      renewalDate: in25Days,
+      notes: 'Renewal application submitted',
+      organizationId: org.id,
+      createdById: adminUser.id,
+    },
+  })
+
+  await prisma.license.upsert({
+    where: { id: 'seed-license-2' },
+    update: {},
+    create: {
+      id: 'seed-license-2',
+      name: 'Master Electrician License',
+      licenseNumber: 'ME-2023-005678',
+      authority: 'State Electrical Board',
+      licenseType: 'Master Electrician',
+      holderType: 'USER',
+      status: 'ACTIVE',
+      startDate: lastYear,
+      expirationDate: in90Days,
+      renewalDate: in90Days,
+      organizationId: org.id,
+      userId: adminUser.id,
+      createdById: adminUser.id,
+    },
+  })
+
+  // Reminder on the soon-to-expire org license: 30-day (already past) + 7-day daily
+  await prisma.licenseReminder.upsert({
+    where: { id: 'seed-reminder-1' },
+    update: {},
+    create: {
+      id: 'seed-reminder-1',
+      licenseId: license1.id,
+      daysBeforeExpiration: 30,
+      notifyUserId: adminUser.id,
+      isActive: true,
+    },
+  })
+
+  await prisma.licenseReminder.upsert({
+    where: { id: 'seed-reminder-2' },
+    update: {},
+    create: {
+      id: 'seed-reminder-2',
+      licenseId: license1.id,
+      daysBeforeExpiration: 7,
+      notifyUserId: adminUser.id,
+      notifySupervisorId: adminUser.id,
+      isActive: true,
+    },
+  })
+
   console.log('Seed completed successfully!')
   console.log('  Demo users (password: password123):')
   console.log('    admin@demo.com    - Admin')

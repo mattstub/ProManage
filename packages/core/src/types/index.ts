@@ -115,6 +115,20 @@ export type {
 } from './contact'
 
 export type {
+  LicenseHolderType,
+  LicenseStatus,
+  License,
+  LicenseDocument,
+  LicenseReminder,
+  LicenseUserSummary,
+  LicenseWithRelations,
+  CreateLicenseInput,
+  UpdateLicenseInput,
+  CreateLicenseReminderInput,
+  UpdateLicenseReminderInput,
+} from './license'
+
+export type {
   ChannelMessageEvent,
   ChannelMessageEditedEvent,
   ChannelMessageDeletedEvent,

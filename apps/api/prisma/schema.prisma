@@ -34,6 +34,7 @@ model Organization {
   announcements  Announcement[]
   channels       Channel[]
   contacts       Contact[]
+  licenses       License[]
 
   @@map("organizations")
 }
@@ -74,6 +75,11 @@ model User {
   channelMemberships     ChannelMember[]
   chatMessagesSent       ChatMessage[]   @relation("ChatMessageSender")
   contactsCreated        Contact[]       @relation("ContactCreator")
+  licensesHeld           License[]       @relation("LicenseHolder")
+  licensesCreated        License[]       @relation("LicenseCreator")
+  licenseDocumentsUploaded LicenseDocument[] @relation("LicenseDocumentUploader")
+  licenseRemindersAsNotify      LicenseReminder[] @relation("LicenseReminderNotifyUser")
+  licenseRemindersAsSupervisor  LicenseReminder[] @relation("LicenseReminderSupervisor")
 
   @@index([organizationId])
   @@index([email])
@@ -547,4 +553,84 @@ model ContactProject {
   @@index([contactId])
   @@index([projectId])
   @@map("contact_projects")
+}
+
+// ===========================================
+// LICENSING (Phase 3.2)
+// ===========================================
+
+model License {
+  id             String    @id @default(cuid())
+  name           String
+  licenseNumber  String?   @map("license_number")
+  authority      String?
+  licenseType    String?   @map("license_type")
+  holderType     String    @default("ORGANIZATION") @map("holder_type") // ORGANIZATION | USER
+  startDate      DateTime? @map("start_date")
+  expirationDate DateTime? @map("expiration_date")
+  renewalDate    DateTime? @map("renewal_date")
+  status         String    @default("ACTIVE") // ACTIVE | EXPIRED | PENDING | SUSPENDED | REVOKED
+  notes          String?
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @map("organization_id")
+
+  // nullable — populated when holderType is USER
+  user   User?   @relation("LicenseHolder", fields: [userId], references: [id])
+  userId String? @map("user_id")
+
+  createdBy   User   @relation("LicenseCreator", fields: [createdById], references: [id])
+  createdById String @map("created_by_id")
+
+  documents LicenseDocument[]
+  reminders LicenseReminder[]
+
+  @@index([organizationId])
+  @@index([userId])
+  @@index([status])
+  @@index([expirationDate])
+  @@map("licenses")
+}
+
+model LicenseDocument {
+  id          String   @id @default(cuid())
+  fileName    String   @map("file_name")
+  fileKey     String   @map("file_key")  // MinIO object key
+  fileUrl     String   @map("file_url")
+  fileSize    Int      @map("file_size") // bytes
+  mimeType    String   @map("mime_type")
+  documentTag String?  @map("document_tag") // e.g. "2024 Application", "Current License"
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  license   License @relation(fields: [licenseId], references: [id], onDelete: Cascade)
+  licenseId String  @map("license_id")
+
+  uploadedBy   User   @relation("LicenseDocumentUploader", fields: [uploadedById], references: [id])
+  uploadedById String @map("uploaded_by_id")
+
+  @@index([licenseId])
+  @@map("license_documents")
+}
+
+model LicenseReminder {
+  id                   String    @id @default(cuid())
+  daysBeforeExpiration Int       @map("days_before_expiration")
+  // <=7 days → fires daily; >7 days → fires once per expiration cycle
+  notifyUserId         String    @map("notify_user_id")
+  notifySupervisorId   String?   @map("notify_supervisor_id")
+  isActive             Boolean   @default(true) @map("is_active")
+  lastNotifiedAt       DateTime? @map("last_notified_at")
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+
+  license   License @relation(fields: [licenseId], references: [id], onDelete: Cascade)
+  licenseId String  @map("license_id")
+
+  notifyUser       User  @relation("LicenseReminderNotifyUser", fields: [notifyUserId], references: [id])
+  notifySupervisor User? @relation("LicenseReminderSupervisor", fields: [notifySupervisorId], references: [id])
+
+  @@index([licenseId])
+  @@map("license_reminders")
 }

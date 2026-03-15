@@ -7,6 +7,7 @@ import Fastify from 'fastify'
 
 import { config } from './config'
 import { errorHandler } from './middleware/error-handler'
+import licenseReminderPlugin from './plugins/license-reminder'
 import minioPlugin from './plugins/minio'
 import prismaPlugin from './plugins/prisma'
 import socketIoPlugin from './plugins/socket-io'
@@ -59,6 +60,7 @@ export async function buildApp() {
   await app.register(minioPlugin)
   await app.register(socketIoPlugin)
   await app.register(swaggerPlugin)
+  await app.register(licenseReminderPlugin)
 
   // Error handler
   app.setErrorHandler(errorHandler)

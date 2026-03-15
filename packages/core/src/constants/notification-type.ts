@@ -3,6 +3,7 @@ import type { NotificationType } from '../types/notification'
 export const NOTIFICATION_TYPES: Record<NotificationType, { label: string }> = {
   TASK_ASSIGNED: { label: 'Task Assigned' },
   INFO: { label: 'Info' },
+  LICENSE_EXPIRING: { label: 'License Expiring' },
 }
 
-export const NOTIFICATION_TYPE_LIST: NotificationType[] = ['TASK_ASSIGNED', 'INFO']
+export const NOTIFICATION_TYPE_LIST: NotificationType[] = ['TASK_ASSIGNED', 'INFO', 'LICENSE_EXPIRING']

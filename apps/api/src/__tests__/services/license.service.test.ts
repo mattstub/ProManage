@@ -239,6 +239,33 @@ describe('license.service', () => {
 
       await expect(licenseService.updateLicense(fastify, 'bad-id', ORG_ID, {})).rejects.toThrow('License not found')
     })
+
+    it('clears userId when holderType changes to ORGANIZATION', async () => {
+      const userLicense = { ...mockLicense, holderType: 'USER', userId: USER_ID }
+      prisma.license.findFirst.mockResolvedValue(userLicense)
+      const updated = { ...userLicense, holderType: 'ORGANIZATION', userId: null }
+
+      let capturedData: { userId?: string | null; holderType?: string } = {}
+      prisma.$transaction.mockImplementation(async (fn: (tx: MockPrisma) => Promise<unknown>) => {
+        const tx = {
+          ...prisma,
+          license: {
+            ...prisma.license,
+            update: vi.fn().mockImplementation(({ data }: { data: { userId?: string | null; holderType?: string } }) => {
+              capturedData = data
+              return Promise.resolve(updated)
+            }),
+          },
+          licenseReminder: { ...prisma.licenseReminder, updateMany: vi.fn().mockResolvedValue({ count: 0 }) },
+        }
+        await fn(tx as unknown as MockPrisma)
+        return [updated]
+      })
+
+      await licenseService.updateLicense(fastify, LICENSE_ID, ORG_ID, { holderType: 'ORGANIZATION' })
+
+      expect(capturedData.userId).toBeNull()
+    })
   })
 
   // ── deleteLicense ───────────────────────────────────────────────────────────

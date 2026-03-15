@@ -1,4 +1,4 @@
-export type NotificationType = 'TASK_ASSIGNED' | 'INFO'
+export type NotificationType = 'TASK_ASSIGNED' | 'INFO' | 'LICENSE_EXPIRING'
 
 export interface Notification {
   id: string

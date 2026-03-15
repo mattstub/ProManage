@@ -14,8 +14,16 @@ async function checkLicenseReminders(fastify: FastifyInstance) {
   todayStart.setHours(0, 0, 0, 0)
 
   try {
+    // Push filters into the DB query: only active reminders on licenses that have a
+    // future expiration date and are not already expired/revoked.
     const reminders = await fastify.prisma.licenseReminder.findMany({
-      where: { isActive: true },
+      where: {
+        isActive: true,
+        license: {
+          expirationDate: { not: null, gt: now },
+          status: { notIn: ['EXPIRED', 'REVOKED'] },
+        },
+      },
       include: {
         license: true,
         notifyUser: { select: { id: true, firstName: true, lastName: true } },
@@ -25,13 +33,11 @@ async function checkLicenseReminders(fastify: FastifyInstance) {
 
     for (const reminder of reminders) {
       const { license } = reminder
+      // expirationDate is guaranteed non-null by the query filter above, but guard defensively
       if (!license.expirationDate) continue
-      if (license.status === 'EXPIRED' || license.status === 'REVOKED') continue
-
       const msUntilExpiry = license.expirationDate.getTime() - now.getTime()
       const daysUntilExpiry = Math.ceil(msUntilExpiry / (1000 * 60 * 60 * 24))
 
-      if (daysUntilExpiry < 0) continue // already expired
       if (daysUntilExpiry > reminder.daysBeforeExpiration) continue // not yet in window
 
       const isInDailyWindow = daysUntilExpiry <= LICENSE_REMINDER_DAILY_THRESHOLD
@@ -40,8 +46,9 @@ async function checkLicenseReminders(fastify: FastifyInstance) {
         // Daily: skip if already notified today
         if (reminder.lastNotifiedAt && reminder.lastNotifiedAt >= todayStart) continue
       } else {
-        // Once per cycle: skip if notified after license was last updated
-        if (reminder.lastNotifiedAt && reminder.lastNotifiedAt > license.updatedAt) continue
+        // Once per expiration cycle: updateLicense nulls lastNotifiedAt when expirationDate
+        // changes, so a non-null value means we've already fired for this cycle.
+        if (reminder.lastNotifiedAt !== null) continue
       }
 
       const message = daysUntilExpiry === 0

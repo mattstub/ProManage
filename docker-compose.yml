@@ -56,15 +56,16 @@ services:
       # Required — set via .env or shell export before running docker compose up
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set (min 32 chars)}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
-      # MinIO / S3
-      S3_ENDPOINT: http://minio:9000
-      S3_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
-      S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin}
-      S3_BUCKET: ${S3_BUCKET:-promanage}
-      S3_REGION: ${S3_REGION:-us-east-1}
+      # MinIO (hostname only — no protocol prefix)
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: 9000
+      MINIO_USE_SSL: false
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin}
       # Optional
       LOG_LEVEL: ${LOG_LEVEL:-info}
-      SENTRY_DSN: ${SENTRY_DSN:-}
+      # Only set SENTRY_DSN if you have a real DSN — leave unset to disable Sentry
+      # SENTRY_DSN: https://examplePublicKey@o0.ingest.sentry.io/0
     depends_on:
       postgres:
         condition: service_healthy

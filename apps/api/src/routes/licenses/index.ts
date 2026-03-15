@@ -3,9 +3,9 @@ import {
   updateLicenseSchema,
   createLicenseReminderSchema,
   updateLicenseReminderSchema,
+  MINIO_BUCKET_NAME,
 } from '@promanage/core'
 
-import { MINIO_BUCKET_NAME } from '@promanage/core'
 import { RATE_LIMITS } from '../../lib/rate-limit'
 import { setupRateLimit } from '../../lib/rate-limit-setup'
 import { created, noContent, paginated, success } from '../../lib/response'

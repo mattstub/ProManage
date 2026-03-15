@@ -122,7 +122,7 @@ Root tooling:          COMPLETE (Sub-phase A)
 - **Header**: NotificationBell with live badge + dropdown (SSE-powered)
 - **packages/core**: CommonJS output (fixed ESM seed issue; web/bundler still works fine)
 - **Tests**: 259 API tests passing, web type-check clean
-- **Infrastructure (chore/infrastructure)**: IN PROGRESS — Dockerfiles, CI/CD, structured logging, Sentry scaffold done; PR pending
+- **Infrastructure (chore/infrastructure)**: COMPLETE — Dockerfiles, CI/CD, structured logging, Sentry scaffold done; PR merged
 - **Next**: Phase 3.2 — Licensing (license tracking, renewal reminders, document uploads)
 
 ### Seed Credentials

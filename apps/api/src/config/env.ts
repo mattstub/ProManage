@@ -34,8 +34,11 @@ export const envSchema = z.object({
     .transform((v) => v === 'true')
     .default(false),
 
-  // Observability — Sentry is disabled when not set
-  SENTRY_DSN: z.string().url().optional(),
+  // Observability — Sentry is disabled when not set or set to empty string
+  SENTRY_DSN: z.preprocess(
+    (v) => (v === '' ? undefined : v),
+    z.string().url().optional(),
+  ),
 })
 
 export type Env = z.infer<typeof envSchema>

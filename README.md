@@ -199,7 +199,7 @@ ProManage/
 │   │       │               # organizations, procedures, projects, tasks, users
 │   │       ├── services/   # Business logic (one file per domain)
 │   │       └── middleware/ # authenticate, authorize, error-handler
-│   └── web/                # Next.js 14 App Router (desktop-first)
+│   └── web/                # Next.js 15 App Router (desktop-first)
 │       └── src/
 │           ├── app/        # Pages: dashboard, projects, tasks, procedures,
 │           │               # calendar, messages, channels, contacts,
@@ -231,9 +231,9 @@ export JWT_SECRET="$(openssl rand -base64 48)"
 export NEXT_PUBLIC_API_URL=https://api.yoursite.com
 export CORS_ORIGINS=https://yoursite.com
 
-# Pull pre-built images (or remove --no-build to build locally)
+# Start infrastructure, then build and run app services from source
 docker compose up -d postgres minio
-docker compose up -d api web
+docker compose up -d --build api web
 ```
 
 ### Build images locally

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed - API Dockerfile prisma generate order (2026-03-15)
+
+- `apps/api/Dockerfile`: moved `prisma generate` to run **before** `tsc`; schema is now copied immediately after `pnpm install` so Prisma TypeScript types are available during compilation — fixes `noImplicitAny` errors on all Prisma callback parameters in Docker builds (mirrors the CI workflow fix in `6ca0a7e`)
+
 ### Added - Phase 3.1 Contact Management (Session 15, 2026-03-12)
 
 **Phase 3.1 — Organization Contact Directory**

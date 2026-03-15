@@ -22,6 +22,12 @@ COPY apps/api/package.json apps/api/
 
 RUN pnpm install --frozen-lockfile
 
+# --- Generate Prisma client before build (types required by tsc) ---
+COPY apps/api/prisma/ apps/api/prisma/
+WORKDIR /app/apps/api
+RUN npx prisma generate
+WORKDIR /app
+
 # --- Source ---
 COPY packages/ packages/
 COPY apps/api/ apps/api/
@@ -30,10 +36,6 @@ COPY apps/api/ apps/api/
 RUN pnpm --filter @promanage/core build && \
     pnpm --filter @promanage/api-client build && \
     pnpm --filter @promanage/api build
-
-# Generate Prisma client (must run after source is present)
-WORKDIR /app/apps/api
-RUN npx prisma generate
 
 USER nodeuser
 

@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - Phase 3.2 Licensing (Session 17, 2026-03-15)
+
+**Phase 3.2 — License Tracking with Renewal Reminders**
+
+*apps/api/prisma*
+- `schema.prisma`: `License` model (name, licenseNumber, authority, licenseType freeform, holderType ORGANIZATION|USER, userId nullable, startDate, expirationDate, renewalDate, status, notes) + `LicenseDocument` (fileName, fileKey, fileUrl, fileSize, mimeType, documentTag) + `LicenseReminder` (daysBeforeExpiration, notifyUserId, notifySupervisorId nullable, isActive, lastNotifiedAt) — 26 models total
+- `seed.ts`: 2 demo licenses (org-level GC License expiring in 25 days + user-level Master Electrician) + 2 reminders (30d + 7d daily) on the near-expiry license
+
+*packages/core*
+- `types/license.ts`: `LicenseHolderType`, `LicenseStatus`, `License`, `LicenseDocument`, `LicenseReminder`, `LicenseWithRelations`, `LicenseUserSummary`, input types
+- `schemas/license.ts`: `createLicenseSchema`, `updateLicenseSchema`, `createLicenseReminderSchema`, `updateLicenseReminderSchema` (freeform licenseType, Zod validation)
+- `constants/license.ts`: `LICENSE_HOLDER_TYPES`, `LICENSE_STATUS_LIST`, `LICENSE_REMINDER_DAILY_THRESHOLD` (7)
+
+*apps/api*
+- `services/license.service.ts`: `listLicenses` (paginated, search, holderType/status/userId filter), `getLicense`, `createLicense`, `updateLicense` (resets reminder cycles on expiration change), `deleteLicense` (cascades MinIO documents), `addLicenseDocument`, `deleteLicenseDocument`, `createReminder`, `updateReminder`, `deleteReminder`
+- `routes/licenses/index.ts`: 12 routes — GET list/detail (all auth), POST/PATCH license (Admin/OfficeAdmin), DELETE license (Admin), POST upload-url + confirm + DELETE document (Admin/OfficeAdmin), GET download-url (all auth), POST/PATCH/DELETE reminder (Admin/OfficeAdmin/PM)
+- `plugins/license-reminder.ts`: daily in-process check (setInterval); ≤7-day window fires every day; >7-day threshold fires once per expiration cycle; reset when expirationDate updated; SSE notifications via existing bell
+- `__tests__/helpers/mock-prisma.ts` + `build-app.ts`: license/licenseDocument/licenseReminder mocks + `buildLicenseTestApp()`
+- `__tests__/services/license.service.test.ts`: 24 service tests
+- `__tests__/routes/license.routes.test.ts`: 19 route tests — 43 new tests (399 total)
+
+*packages/api-client*
+- `resources/licenses.ts`: `LicensesResource` — `list`, `get`, `create`, `update`, `delete`, `getDocumentUploadUrl`, `confirmDocumentUpload`, `deleteDocument`, `getDocumentDownloadUrl`, `createReminder`, `updateReminder`, `deleteReminder`
+
+*apps/web*
+- `hooks/use-licenses.ts`: 10 hooks — `useLicenses`, `useLicense`, `useCreateLicense`, `useUpdateLicense`, `useDeleteLicense`, `useUploadLicenseDocument` (3-step presigned MinIO), `useDeleteLicenseDocument`, `useCreateLicenseReminder`, `useUpdateLicenseReminder`, `useDeleteLicenseReminder`
+- `app/(dashboard)/licenses/page.tsx`: table + holderType/status/search filters, create/edit dialog (freeform type, holder, date fields), detail dialog (document upload/delete panel + reminder config panel with pause/resume), delete confirm dialog; expiry countdown badges (7d=red, 30d=yellow)
+- `components/layout/sidebar.tsx`: Licenses nav item (`IdentificationIcon`)
+
 ### Fixed - API Dockerfile prisma generate order (2026-03-15)
 
 - `apps/api/Dockerfile`: moved `prisma generate` to run **before** `tsc`; schema is now copied immediately after `pnpm install` so Prisma TypeScript types are available during compilation — fixes `noImplicitAny` errors on all Prisma callback parameters in Docker builds (mirrors the CI workflow fix in `6ca0a7e`)

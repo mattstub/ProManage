@@ -142,14 +142,14 @@ Company-level modules that support all downstream project work.
 - [x] Contact association to projects
 - [ ] Import/export contacts (CSV) — deferred
 
-### 3.2 Licensing
-- [ ] License tracking (company and employee level)
-- [ ] License types (user-defined)
-- [ ] Schema: license number, authority, type, start date, renewal date, status
-- [ ] License document upload (PDF/photo)
-- [ ] Application instructions storage
-- [ ] Renewal reminder workflow
-- [ ] Continuing education tracking
+### 3.2 Licensing ✅ COMPLETE (Session 17, 2026-03-15)
+- [x] License tracking (company and employee level — ORGANIZATION | USER holderType)
+- [x] License types (user-defined freeform string)
+- [x] Schema: license number, authority, type, start date, renewal date, status
+- [x] License document upload (PDF/photo — multiple attachments via MinIO presigned URLs)
+- [x] Application instructions storage (documentTag field on LicenseDocument)
+- [x] Renewal reminder workflow (configurable days-before thresholds; ≤7d daily, >7d once per cycle; SSE bell notifications)
+- [ ] Continuing education tracking — deferred
 
 ### 3.3 Safety (Company-Wide)
 - [ ] Company-wide safety document library
@@ -453,6 +453,6 @@ Each module follows a consistent pattern from the canvas:
 
 ---
 
-**Last Updated**: 2026-03-11
-**Status**: Active — Phase 2 in progress (2.3B complete, moving to Phase 3)
+**Last Updated**: 2026-03-15
+**Status**: Active — Phase 3 in progress (3.1 + 3.2 complete, 3.3 Safety next)
 **Source**: `notes/ProManage Suite.canvas`

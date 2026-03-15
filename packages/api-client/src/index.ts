@@ -4,6 +4,7 @@ export { AuthResource } from './resources/auth'
 export { CalendarEventsResource } from './resources/calendar-events'
 export { ContactsResource } from './resources/contacts'
 export { ChannelsResource } from './resources/channels'
+export { LicensesResource } from './resources/licenses'
 export { DashboardResource } from './resources/dashboard'
 export { MessagingResource } from './resources/messaging'
 export { NotificationsResource } from './resources/notifications'
@@ -17,6 +18,7 @@ export { UsersResource } from './resources/users'
 export type { ClientConfig, PaginatedResult, PaginationParams, RequestOptions } from './types'
 export type { ListCalendarEventsParams } from './resources/calendar-events'
 export type { ListContactsParams } from './resources/contacts'
+export type { ListLicensesParams, LicenseReminderWithRelations } from './resources/licenses'
 export type { ListChannelMessagesParams } from './resources/channels'
 export type { HealthResponse } from './resources/health'
 export type {
@@ -35,6 +37,7 @@ import { CalendarEventsResource } from './resources/calendar-events'
 import { ChannelsResource } from './resources/channels'
 import { ContactsResource } from './resources/contacts'
 import { DashboardResource } from './resources/dashboard'
+import { LicensesResource } from './resources/licenses'
 import { HealthResource } from './resources/health'
 import { MessagingResource } from './resources/messaging'
 import { NotificationsResource } from './resources/notifications'
@@ -68,6 +71,7 @@ export interface ApiClient {
   channels: ChannelsResource
   contacts: ContactsResource
   dashboard: DashboardResource
+  licenses: LicensesResource
   health: HealthResource
   messaging: MessagingResource
   notifications: NotificationsResource
@@ -93,6 +97,7 @@ export function createApiClient(config: ClientConfig): ApiClient {
     channels: new ChannelsResource(core),
     contacts: new ContactsResource(core),
     dashboard: new DashboardResource(core),
+    licenses: new LicensesResource(core),
     health: new HealthResource(core),
     messaging: new MessagingResource(core),
     notifications: new NotificationsResource(core),

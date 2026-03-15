@@ -64,6 +64,17 @@ export {
 } from './contact'
 
 export {
+  createLicenseSchema,
+  updateLicenseSchema,
+  createLicenseReminderSchema,
+  updateLicenseReminderSchema,
+  type CreateLicenseSchema,
+  type UpdateLicenseSchema,
+  type CreateLicenseReminderSchema,
+  type UpdateLicenseReminderSchema,
+} from './license'
+
+export {
   createChannelSchema,
   updateChannelSchema,
   sendChatMessageSchema,

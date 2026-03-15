@@ -10,6 +10,7 @@ import authRoutes from '../../routes/auth'
 import calendarEventRoutes from '../../routes/calendar-events'
 import channelRoutes from '../../routes/channels'
 import contactRoutes from '../../routes/contacts'
+import licenseRoutes from '../../routes/licenses'
 import messageRoutes from '../../routes/messages'
 import notificationRoutes from '../../routes/notifications'
 import taskRoutes from '../../routes/tasks'
@@ -216,6 +217,32 @@ export async function buildContactTestApp(overridePrisma?: MockPrisma) {
   await app.ready()
 
   return { app, prisma }
+}
+
+/**
+ * Builds a minimal Fastify instance for testing license routes.
+ * Decorates fastify.minio with a mock client (document upload/delete).
+ */
+export async function buildLicenseTestApp(overridePrisma?: MockPrisma) {
+  const prisma = overridePrisma ?? createMockPrisma()
+  const minio = createMockMinio()
+
+  const app = Fastify({ logger: false })
+
+  await app.register(cookie)
+  await app.register(jwt, { secret: process.env['JWT_SECRET']! })
+  await app.register(rateLimit, { max: 1000, timeWindow: '1 minute' })
+
+  app.decorate('prisma', prisma as unknown as PrismaClient)
+  app.decorate('minio', minio)
+  app.decorate('sseClients', new Map())
+
+  app.setErrorHandler(errorHandler)
+
+  await app.register(licenseRoutes, { prefix: '/api/v1/licenses' })
+  await app.ready()
+
+  return { app, prisma, minio }
 }
 
 /**

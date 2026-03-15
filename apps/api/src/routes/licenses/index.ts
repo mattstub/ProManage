@@ -4,8 +4,11 @@ import {
   createLicenseReminderSchema,
   updateLicenseReminderSchema,
   MINIO_BUCKET_NAME,
+  ALLOWED_ATTACHMENT_MIME_TYPES,
+  MAX_ATTACHMENT_SIZE_BYTES,
 } from '@promanage/core'
 
+import { NotFoundError, ValidationError } from '../../lib/errors'
 import { RATE_LIMITS } from '../../lib/rate-limit'
 import { setupRateLimit } from '../../lib/rate-limit-setup'
 import { created, noContent, paginated, success } from '../../lib/response'
@@ -148,6 +151,13 @@ const licenseRoutes: FastifyPluginAsync = async (fastify) => {
       // Verify license exists and belongs to org
       await licenseService.getLicense(fastify, id, request.user.organizationId)
 
+      if (!ALLOWED_ATTACHMENT_MIME_TYPES.includes(mimeType)) {
+        throw new ValidationError(`Invalid file type. Allowed types: ${ALLOWED_ATTACHMENT_MIME_TYPES.join(', ')}`)
+      }
+      if (fileSize > MAX_ATTACHMENT_SIZE_BYTES) {
+        throw new ValidationError(`File too large. Maximum allowed size is ${MAX_ATTACHMENT_SIZE_BYTES / (1024 * 1024)} MB`)
+      }
+
       const fileKey = `licenses/${id}/${Date.now()}-${fileName.replace(/[^a-zA-Z0-9._-]/g, '_')}`
       const uploadUrl = await fastify.minio.presignedPutObject(MINIO_BUCKET_NAME, fileKey, 900) // 15min
 
@@ -223,7 +233,7 @@ const licenseRoutes: FastifyPluginAsync = async (fastify) => {
         where: { id: docId, licenseId: id, license: { organizationId: request.user.organizationId } },
       })
       if (!doc) {
-        return reply.status(404).send({ error: 'Document not found' })
+        throw new NotFoundError('Document not found')
       }
       const downloadUrl = await fastify.minio.presignedGetObject(MINIO_BUCKET_NAME, doc.fileKey, 900)
       return success(reply, { downloadUrl, fileName: doc.fileName })

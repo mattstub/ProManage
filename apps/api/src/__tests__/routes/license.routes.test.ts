@@ -280,6 +280,38 @@ describe('POST /api/v1/licenses/:id/documents/upload-url', () => {
     expect(body.data.fileKey).toContain(LICENSE_ID)
     expect(minio.presignedPutObject).toHaveBeenCalled()
   })
+
+  it('rejects invalid MIME type with 400', async () => {
+    const prisma = createMockPrisma()
+    prisma.userRole.findMany.mockResolvedValue([{ role: { name: 'Admin' } }])
+    prisma.license.findFirst.mockResolvedValue(mockLicense)
+    const { app } = await buildApp(prisma)
+
+    const res = await app.inject({
+      method: 'POST',
+      url: `/api/v1/licenses/${LICENSE_ID}/documents/upload-url`,
+      headers: { authorization: adminToken(app), 'content-type': 'application/json' },
+      payload: { fileName: 'script.exe', mimeType: 'application/x-msdownload', fileSize: 12345 },
+    })
+
+    expect(res.statusCode).toBe(400)
+  })
+
+  it('rejects files exceeding maximum size with 400', async () => {
+    const prisma = createMockPrisma()
+    prisma.userRole.findMany.mockResolvedValue([{ role: { name: 'Admin' } }])
+    prisma.license.findFirst.mockResolvedValue(mockLicense)
+    const { app } = await buildApp(prisma)
+
+    const res = await app.inject({
+      method: 'POST',
+      url: `/api/v1/licenses/${LICENSE_ID}/documents/upload-url`,
+      headers: { authorization: adminToken(app), 'content-type': 'application/json' },
+      payload: { fileName: 'large.pdf', mimeType: 'application/pdf', fileSize: 52428801 },
+    })
+
+    expect(res.statusCode).toBe(400)
+  })
 })
 
 describe('POST /api/v1/licenses/:id/documents', () => {

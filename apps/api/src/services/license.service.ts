@@ -1,4 +1,4 @@
-import { parsePagination, buildPaginationMeta } from '@promanage/core'
+import { MINIO_BUCKET_NAME, parsePagination, buildPaginationMeta } from '@promanage/core'
 
 import { NotFoundError, ValidationError } from '../lib/errors'
 
@@ -184,7 +184,7 @@ export async function deleteLicense(
   const documents = await fastify.prisma.licenseDocument.findMany({ where: { licenseId: id } })
   for (const doc of documents) {
     try {
-      await fastify.minio.removeObject(process.env['MINIO_BUCKET'] ?? 'promanage', doc.fileKey)
+      await fastify.minio.removeObject(MINIO_BUCKET_NAME, doc.fileKey)
     } catch {
       // best-effort: don't block delete if MinIO object already gone
     }
@@ -238,7 +238,7 @@ export async function deleteLicenseDocument(
   if (!doc) throw new NotFoundError('Document not found')
 
   try {
-    await fastify.minio.removeObject(process.env['MINIO_BUCKET'] ?? 'promanage', doc.fileKey)
+    await fastify.minio.removeObject(MINIO_BUCKET_NAME, doc.fileKey)
   } catch {
     // best-effort
   }

@@ -3,6 +3,7 @@ import {
   updateLicenseSchema,
   createLicenseReminderSchema,
   updateLicenseReminderSchema,
+  MINIO_BUCKET_NAME,
 } from '@promanage/core'
 
 import {

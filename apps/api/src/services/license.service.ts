@@ -1,5 +1,5 @@
 import { NotFoundError, ValidationError } from '../lib/errors'
-import { parsePagination, buildPaginationMeta } from '@promanage/core'
+import { MINIO_BUCKET_NAME, parsePagination, buildPaginationMeta } from '@promanage/core'
 
 import type {
   CreateLicenseInput,
@@ -144,7 +144,10 @@ export async function updateLicense(
         ...(input.authority !== undefined && { authority: input.authority }),
         ...(input.licenseType !== undefined && { licenseType: input.licenseType }),
         ...(input.holderType !== undefined && { holderType: input.holderType }),
-        ...(input.userId !== undefined && { userId: input.userId }),
+        // When switching to ORGANIZATION, always clear userId; otherwise apply input.userId if provided
+        ...(input.holderType === 'ORGANIZATION'
+          ? { userId: null }
+          : input.userId !== undefined && { userId: input.userId }),
         ...(input.startDate !== undefined && {
           startDate: input.startDate ? new Date(input.startDate) : null,
         }),
@@ -183,7 +186,7 @@ export async function deleteLicense(
   const documents = await fastify.prisma.licenseDocument.findMany({ where: { licenseId: id } })
   for (const doc of documents) {
     try {
-      await fastify.minio.removeObject(process.env['MINIO_BUCKET'] ?? 'promanage', doc.fileKey)
+      await fastify.minio.removeObject(MINIO_BUCKET_NAME, doc.fileKey)
     } catch {
       // best-effort: don't block delete if MinIO object already gone
     }
@@ -237,7 +240,7 @@ export async function deleteLicenseDocument(
   if (!doc) throw new NotFoundError('Document not found')
 
   try {
-    await fastify.minio.removeObject(process.env['MINIO_BUCKET'] ?? 'promanage', doc.fileKey)
+    await fastify.minio.removeObject(MINIO_BUCKET_NAME, doc.fileKey)
   } catch {
     // best-effort
   }

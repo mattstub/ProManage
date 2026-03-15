@@ -93,11 +93,14 @@ export function useUploadLicenseDocument() {
       })
 
       // Step 2: upload directly to MinIO
-      await fetch(uploadUrl, {
+      const uploadResponse = await fetch(uploadUrl, {
         method: 'PUT',
         body: file,
         headers: { 'Content-Type': file.type },
       })
+      if (!uploadResponse.ok) {
+        throw new Error(`Document upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`)
+      }
 
       // Step 3: confirm and create DB record
       return client.licenses.confirmDocumentUpload(licenseId, {

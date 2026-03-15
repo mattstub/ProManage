@@ -1,0 +1,35 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Build artifacts (rebuilt inside Docker)
+dist
+.next
+build
+*.tsbuildinfo
+
+# Turbo cache
+.turbo
+
+# Git
+.git
+.gitignore
+
+# Env files (secrets must be passed at runtime)
+.env
+.env.*
+!.env.example
+
+# Dev tooling
+coverage
+*.log
+.eslintcache
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode
+.idea
+*.swp

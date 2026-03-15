@@ -1,11 +1,11 @@
 'use client'
 
-import { useRef, useState } from 'react'
 import { PaperClipIcon } from '@heroicons/react/24/outline'
-
-import { Button } from '@promanage/ui-components'
+import { useRef, useState } from 'react'
 
 import { ALLOWED_ATTACHMENT_MIME_TYPES, MAX_ATTACHMENT_SIZE_BYTES } from '@promanage/core'
+import { Button } from '@promanage/ui-components'
+
 
 import { useConfirmAttachment, useGetUploadUrl } from '@/hooks/use-channels'
 

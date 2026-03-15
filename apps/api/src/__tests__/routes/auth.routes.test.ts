@@ -1,5 +1,6 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 
+import { comparePassword } from '../../services/password.service'
 import { buildAuthTestApp, signTestToken } from '../helpers/build-app'
 import { createMockPrisma } from '../helpers/mock-prisma'
 
@@ -8,8 +9,6 @@ vi.mock('../../services/password.service', () => ({
   hashPassword: vi.fn().mockResolvedValue('hashed-password'),
   comparePassword: vi.fn(),
 }))
-
-import { comparePassword } from '../../services/password.service'
 
 const baseUser = {
   id: 'user-1',

@@ -1,10 +1,10 @@
 import { updateOrganizationSchema } from '@promanage/core'
 
-import { authenticate } from '../../middleware/authenticate'
-import { requireRole } from '../../middleware/authorize'
 import { RATE_LIMITS } from '../../lib/rate-limit'
 import { setupRateLimit } from '../../lib/rate-limit-setup'
 import { success } from '../../lib/response'
+import { authenticate } from '../../middleware/authenticate'
+import { requireRole } from '../../middleware/authorize'
 import * as orgService from '../../services/organization.service'
 
 import type { FastifyPluginAsync } from 'fastify'

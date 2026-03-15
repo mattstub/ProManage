@@ -6,11 +6,11 @@ import {
   updateChannelPermissionSchema,
 } from '@promanage/core'
 
-import { authenticate } from '../../middleware/authenticate'
-import { requireRole } from '../../middleware/authorize'
 import { RATE_LIMITS } from '../../lib/rate-limit'
 import { setupRateLimit } from '../../lib/rate-limit-setup'
 import { created, noContent, paginated, success } from '../../lib/response'
+import { authenticate } from '../../middleware/authenticate'
+import { requireRole } from '../../middleware/authorize'
 import * as channelService from '../../services/channel.service'
 
 import type { FastifyInstance, FastifyPluginAsync } from 'fastify'

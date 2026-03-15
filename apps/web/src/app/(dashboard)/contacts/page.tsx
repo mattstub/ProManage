@@ -8,6 +8,13 @@ import {
 import { useEffect, useState } from 'react'
 
 import {
+  CONTACT_TYPE_LIST,
+  CONTACT_TYPES,
+  type ContactType,
+  type ContactWithRelations,
+  type RoleName,
+} from '@promanage/core'
+import {
   Badge,
   Breadcrumbs,
   Button,
@@ -34,13 +41,6 @@ import {
   type BadgeProps,
 } from '@promanage/ui-components'
 
-import {
-  CONTACT_TYPE_LIST,
-  CONTACT_TYPES,
-  type ContactType,
-  type ContactWithRelations,
-  type RoleName,
-} from '@promanage/core'
 
 import { useAuth } from '@/hooks/use-auth'
 import {

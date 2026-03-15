@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect } from 'vitest'
 
 import { buildCalendarEventTestApp, signTestToken } from '../helpers/build-app'
 import { createMockPrisma } from '../helpers/mock-prisma'

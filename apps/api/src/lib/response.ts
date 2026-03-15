@@ -1,5 +1,5 @@
-import type { FastifyReply } from 'fastify'
 import type { PaginationMeta } from '@promanage/core'
+import type { FastifyReply } from 'fastify'
 
 export function success<T>(reply: FastifyReply, data: T, statusCode = 200) {
   return reply.status(statusCode).send({ data })

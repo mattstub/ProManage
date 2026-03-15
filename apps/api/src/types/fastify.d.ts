@@ -1,9 +1,9 @@
 import 'fastify'
 
-import type { ServerResponse } from 'http'
 import type { PrismaClient } from '@prisma/client'
-import type { Server as SocketIoServer } from 'socket.io'
+import type { ServerResponse } from 'http'
 import type { Client as MinioClient } from 'minio'
+import type { Server as SocketIoServer } from 'socket.io'
 
 declare module 'fastify' {
   interface FastifyInstance {

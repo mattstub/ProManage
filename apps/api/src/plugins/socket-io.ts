@@ -1,8 +1,9 @@
 import fp from 'fastify-plugin'
 import { Server } from 'socket.io'
 
-import type { FastifyPluginAsync } from 'fastify'
 import { config } from '../config'
+
+import type { FastifyPluginAsync } from 'fastify'
 
 const socketIoPlugin: FastifyPluginAsync = async (fastify) => {
   fastify.addHook('onReady', async () => {

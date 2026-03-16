@@ -120,8 +120,19 @@ export function useUploadLicenseDocument() {
 
 export function useDownloadLicenseDocument() {
   return useMutation({
-    mutationFn: ({ licenseId, docId }: { licenseId: string; docId: string }) =>
-      getApiClient().licenses.getDocumentDownloadUrl(licenseId, docId),
+    mutationFn: async ({ licenseId, docId }: { licenseId: string; docId: string }) => {
+      // Open a blank window synchronously so it remains tied to the user gesture.
+      const newWindow = window.open('', '_blank', 'noopener,noreferrer')
+
+      const { downloadUrl } = await getApiClient().licenses.getDocumentDownloadUrl(licenseId, docId)
+
+      if (newWindow) {
+        newWindow.location.href = downloadUrl
+      } else {
+        // Fallback in case the blank window was blocked.
+        window.open(downloadUrl, '_blank', 'noopener,noreferrer')
+      }
+    },
   })
 }
 

@@ -92,10 +92,14 @@ export function useMarkAllRead() {
           return { ...old, data: old.data.map((n) => ({ ...n, read: true })) }
         },
       )
-      return { previous }
+
+      return { previousQueries }
     },
-    onError: (_err, _vars, context) => {
-      context?.previous.forEach(([key, value]) => queryClient.setQueryData(key as QueryKey, value))
+    onError: (_error, _variables, context) => {
+      if (!context?.previousQueries) return
+      for (const [queryKey, data] of context.previousQueries) {
+        queryClient.setQueryData(queryKey, data)
+      }
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY] })

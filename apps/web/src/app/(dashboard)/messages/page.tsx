@@ -7,6 +7,7 @@ import {
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline'
+import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
 
 import {
@@ -36,8 +37,6 @@ import {
 import type { AnnouncementWithRelations, ConversationWithRelations, RoleName } from '@promanage/core'
 
 import { useAuth } from '@/hooks/use-auth'
-import { useQueryClient } from '@tanstack/react-query'
-
 import {
   useAnnouncements,
   useConversationMessages,

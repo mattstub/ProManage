@@ -1,6 +1,6 @@
 'use client'
 
-import { type QueryKey, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useCallback } from 'react'
 
 import type { ListAnnouncementsParams, ListConversationsParams, ListMessagesParams } from '@promanage/api-client'
@@ -206,12 +206,6 @@ export function useMarkAnnouncementRead() {
         )
       }
       return { previousAnnouncements, previousUnreadCount }
-    },
-    onError: (_err, _id, context) => {
-      context?.previousAnnouncements.forEach(([key, value]) => queryClient.setQueryData(key as QueryKey, value))
-      if (context?.previousUnreadCount !== undefined) {
-        queryClient.setQueryData(['messaging', 'unread-count'], context.previousUnreadCount)
-      }
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['messaging', 'announcements'] })

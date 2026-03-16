@@ -110,9 +110,9 @@ export function useDeleteNotification() {
     mutationFn: (id: string) => getApiClient().notifications.delete(id),
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: [QUERY_KEY] })
-      const previousNotifications = queryClient.getQueryData<{ data: Notification[] }>([
-        QUERY_KEY,
-      ])
+      const previousQueries = queryClient.getQueriesData<{ data: Notification[] }>({
+        queryKey: [QUERY_KEY],
+      })
 
       queryClient.setQueriesData<{ data: Notification[] }>(
         { queryKey: [QUERY_KEY] },
@@ -122,11 +122,13 @@ export function useDeleteNotification() {
         },
       )
 
-      return { previousNotifications }
+      return { previousQueries }
     },
     onError: (_error, _id, context) => {
-      if (!context?.previousNotifications) return
-      queryClient.setQueryData([QUERY_KEY], context.previousNotifications)
+      if (!context?.previousQueries) return
+      for (const [queryKey, data] of context.previousQueries) {
+        queryClient.setQueryData(queryKey, data)
+      }
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY] })

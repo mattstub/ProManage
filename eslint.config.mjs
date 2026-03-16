@@ -5,7 +5,7 @@ import importPlugin from 'eslint-plugin-import'
 
 export default [
   {
-    ignores: ['node_modules/**', 'dist/**', 'build/**', '.next/**', '.turbo/**'],
+    ignores: ['node_modules/**', 'dist/**', 'build/**', '.next/**', '.turbo/**', 'coverage/**'],
   },
   js.configs.recommended,
   {

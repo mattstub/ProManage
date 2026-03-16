@@ -1,14 +1,11 @@
 import {
-  createLicenseSchema,
-  updateLicenseSchema,
-  createLicenseReminderSchema,
-  updateLicenseReminderSchema,
-  MINIO_BUCKET_NAME,
-} from '@promanage/core'
-import {
   ALLOWED_ATTACHMENT_MIME_TYPES,
   MAX_ATTACHMENT_SIZE_BYTES,
   MINIO_BUCKET_NAME,
+  createLicenseReminderSchema,
+  createLicenseSchema,
+  updateLicenseReminderSchema,
+  updateLicenseSchema,
 } from '@promanage/core'
 
 import { NotFoundError, ValidationError } from '../../lib/errors'

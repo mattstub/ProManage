@@ -108,7 +108,12 @@ export function useDeleteNotification() {
 
   return useMutation({
     mutationFn: (id: string) => getApiClient().notifications.delete(id),
-    onMutate: (id) => {
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: [QUERY_KEY] })
+      const previousNotifications = queryClient.getQueryData<{ data: Notification[] }>([
+        QUERY_KEY,
+      ])
+
       queryClient.setQueriesData<{ data: Notification[] }>(
         { queryKey: [QUERY_KEY] },
         (old) => {
@@ -116,8 +121,14 @@ export function useDeleteNotification() {
           return { ...old, data: old.data.filter((n) => n.id !== id) }
         },
       )
+
+      return { previousNotifications }
     },
-    onSuccess: () => {
+    onError: (_error, _id, context) => {
+      if (!context?.previousNotifications) return
+      queryClient.setQueryData([QUERY_KEY], context.previousNotifications)
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY] })
     },
   })

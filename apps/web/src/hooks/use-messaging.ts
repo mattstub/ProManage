@@ -193,7 +193,7 @@ export function useMarkAnnouncementRead() {
         )
       }
     },
-    onSuccess: () => {
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['messaging', 'announcements'] })
       queryClient.invalidateQueries({ queryKey: ['messaging', 'unread-count'] })
     },

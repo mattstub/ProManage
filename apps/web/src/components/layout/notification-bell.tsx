@@ -2,7 +2,7 @@
 
 import { BellIcon, CheckIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 
 import { Button } from '@promanage/ui-components'
 
@@ -49,6 +49,14 @@ function NotificationItem({
 }) {
   const href = getNotificationHref(notification)
 
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (!href) return
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      onNavigate(notification)
+    }
+  }
+
   return (
     <div
       className={[
@@ -57,6 +65,9 @@ function NotificationItem({
         href ? 'cursor-pointer' : '',
       ].join(' ')}
       onClick={href ? () => onNavigate(notification) : undefined}
+      role={href ? 'button' : undefined}
+      tabIndex={href ? 0 : undefined}
+      onKeyDown={href ? handleKeyDown : undefined}
     >
       {/* Unread dot */}
       <div className="mt-1.5 flex-shrink-0">

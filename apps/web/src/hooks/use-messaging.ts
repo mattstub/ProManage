@@ -1,7 +1,7 @@
 'use client'
 
+import { type QueryKey, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useCallback } from 'react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import type { ListAnnouncementsParams, ListConversationsParams, ListMessagesParams } from '@promanage/api-client'
 import type {
@@ -166,16 +166,29 @@ export function useMarkAnnouncementRead() {
 
   return useMutation({
     mutationFn: (id: string) => getApiClient().messaging.markAnnouncementRead(id),
-    onMutate: (id) => {
-      // Optimistically mark as read — track whether it was actually unread
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ['messaging', 'announcements'] })
+      await queryClient.cancelQueries({ queryKey: ['messaging', 'unread-count'] })
+
+      // Snapshot previous values for rollback
+      const previousAnnouncements = queryClient.getQueriesData<{ data: AnnouncementWithRelations[] }>(
+        { queryKey: ['messaging', 'announcements'] },
+      )
+      const previousUnreadCount = queryClient.getQueryData<UnreadCount>(['messaging', 'unread-count'])
+
+      // Optimistically mark as read — detect whether it was actually unread from the snapshot
       let wasUnread = false
+      previousAnnouncements.forEach(([, data]) => {
+        if (!data || !Array.isArray(data.data)) return
+        const ann = data.data.find((a) => a.id === id)
+        if (ann && !ann.isRead) wasUnread = true
+      })
+
       queryClient.setQueriesData<{ data: AnnouncementWithRelations[] }>(
         { queryKey: ['messaging', 'announcements'] },
         (old) => {
           // Guard against the drafts query which has a different shape (Announcement[] not { data: ... })
           if (!old || !Array.isArray(old.data)) return old
-          const ann = old.data.find((a) => a.id === id)
-          if (ann && !ann.isRead) wasUnread = true
           return {
             ...old,
             data: old.data.map((a) => (a.id === id ? { ...a, isRead: true } : a)),
@@ -192,8 +205,15 @@ export function useMarkAnnouncementRead() {
           },
         )
       }
+      return { previousAnnouncements, previousUnreadCount }
     },
-    onSuccess: () => {
+    onError: (_err, _id, context) => {
+      context?.previousAnnouncements.forEach(([key, value]) => queryClient.setQueryData(key as QueryKey, value))
+      if (context?.previousUnreadCount !== undefined) {
+        queryClient.setQueryData(['messaging', 'unread-count'], context.previousUnreadCount)
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['messaging', 'announcements'] })
       queryClient.invalidateQueries({ queryKey: ['messaging', 'unread-count'] })
     },

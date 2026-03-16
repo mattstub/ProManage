@@ -51,12 +51,24 @@ function NotificationItem({
 
   return (
     <div
+      role={href ? 'button' : undefined}
+      tabIndex={href ? 0 : undefined}
       className={[
         'flex items-start gap-3 px-4 py-3 hover:bg-gray-50 transition-colors',
         notification.read ? 'opacity-60' : '',
         href ? 'cursor-pointer' : '',
       ].join(' ')}
       onClick={href ? () => onNavigate(notification) : undefined}
+      onKeyDown={
+        href
+          ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                onNavigate(notification)
+              }
+            }
+          : undefined
+      }
     >
       {/* Unread dot */}
       <div className="mt-1.5 flex-shrink-0">
@@ -81,6 +93,7 @@ function NotificationItem({
             onClick={() => onMarkRead(notification.id)}
             className="p-1 rounded text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
             title="Mark as read"
+            aria-label="Mark as read"
           >
             <CheckIcon className="h-3.5 w-3.5" />
           </button>
@@ -88,7 +101,8 @@ function NotificationItem({
         <button
           onClick={() => onDelete(notification.id)}
           className="p-1 rounded text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-          title="Delete"
+          title="Delete notification"
+          aria-label="Delete notification"
         >
           <TrashIcon className="h-3.5 w-3.5" />
         </button>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { type QueryKey, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 
 import type { ListNotificationsParams } from '@promanage/api-client'
@@ -56,7 +56,9 @@ export function useMarkRead() {
 
   return useMutation({
     mutationFn: (id: string) => getApiClient().notifications.markRead(id),
-    onMutate: (id) => {
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: [QUERY_KEY] })
+      const previous = queryClient.getQueriesData<{ data: Notification[] }>({ queryKey: [QUERY_KEY] })
       queryClient.setQueriesData<{ data: Notification[] }>(
         { queryKey: [QUERY_KEY] },
         (old) => {
@@ -64,8 +66,12 @@ export function useMarkRead() {
           return { ...old, data: old.data.map((n) => (n.id === id ? { ...n, read: true } : n)) }
         },
       )
+      return { previous }
     },
-    onSuccess: () => {
+    onError: (_err, _id, context) => {
+      context?.previous.forEach(([key, value]) => queryClient.setQueryData(key as QueryKey, value))
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY] })
     },
   })
@@ -76,7 +82,9 @@ export function useMarkAllRead() {
 
   return useMutation({
     mutationFn: () => getApiClient().notifications.markAllRead(),
-    onMutate: () => {
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: [QUERY_KEY] })
+      const previous = queryClient.getQueriesData<{ data: Notification[] }>({ queryKey: [QUERY_KEY] })
       queryClient.setQueriesData<{ data: Notification[] }>(
         { queryKey: [QUERY_KEY] },
         (old) => {
@@ -84,8 +92,12 @@ export function useMarkAllRead() {
           return { ...old, data: old.data.map((n) => ({ ...n, read: true })) }
         },
       )
+      return { previous }
     },
-    onSuccess: () => {
+    onError: (_err, _vars, context) => {
+      context?.previous.forEach(([key, value]) => queryClient.setQueryData(key as QueryKey, value))
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY] })
     },
   })
@@ -96,7 +108,9 @@ export function useDeleteNotification() {
 
   return useMutation({
     mutationFn: (id: string) => getApiClient().notifications.delete(id),
-    onMutate: (id) => {
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: [QUERY_KEY] })
+      const previous = queryClient.getQueriesData<{ data: Notification[] }>({ queryKey: [QUERY_KEY] })
       queryClient.setQueriesData<{ data: Notification[] }>(
         { queryKey: [QUERY_KEY] },
         (old) => {
@@ -104,8 +118,12 @@ export function useDeleteNotification() {
           return { ...old, data: old.data.filter((n) => n.id !== id) }
         },
       )
+      return { previous }
     },
-    onSuccess: () => {
+    onError: (_err, _id, context) => {
+      context?.previous.forEach(([key, value]) => queryClient.setQueryData(key as QueryKey, value))
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY] })
     },
   })

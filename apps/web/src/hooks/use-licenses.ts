@@ -120,10 +120,8 @@ export function useUploadLicenseDocument() {
 
 export function useDownloadLicenseDocument() {
   return useMutation({
-    mutationFn: async ({ licenseId, docId }: { licenseId: string; docId: string }) => {
-      const { downloadUrl } = await getApiClient().licenses.getDocumentDownloadUrl(licenseId, docId)
-      window.open(downloadUrl, '_blank', 'noopener,noreferrer')
-    },
+    mutationFn: ({ licenseId, docId }: { licenseId: string; docId: string }) =>
+      getApiClient().licenses.getDocumentDownloadUrl(licenseId, docId),
   })
 }
 

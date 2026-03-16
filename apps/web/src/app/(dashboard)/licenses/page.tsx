@@ -315,7 +315,23 @@ function DocumentsPanel({ license, canWrite }: { license: LicenseWithRelations; 
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => downloadDoc.mutate({ licenseId: license.id, docId: doc.id })}
+                  aria-label={`Download ${doc.documentTag ?? doc.fileName}`}
+                  onClick={() => {
+                    const newTab = window.open('', '_blank', 'noopener,noreferrer')
+                    downloadDoc.mutate(
+                      { licenseId: license.id, docId: doc.id },
+                      {
+                        onSuccess: ({ downloadUrl }) => {
+                          if (newTab) {
+                            newTab.location.href = downloadUrl
+                          } else {
+                            // Popup was blocked — fall back to navigating the current tab
+                            window.location.assign(downloadUrl)
+                          }
+                        },
+                      },
+                    )
+                  }}
                   disabled={downloadDoc.isPending}
                   title="Download"
                 >
@@ -325,6 +341,7 @@ function DocumentsPanel({ license, canWrite }: { license: LicenseWithRelations; 
                   <Button
                     variant="ghost"
                     size="sm"
+                    aria-label={`Delete ${doc.documentTag ?? doc.fileName}`}
                     onClick={() => deleteDoc.mutate({ licenseId: license.id, docId: doc.id })}
                     disabled={deleteDoc.isPending}
                     title="Delete"

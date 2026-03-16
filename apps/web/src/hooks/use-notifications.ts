@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 
 import type { ListNotificationsParams } from '@promanage/api-client'
+import type { Notification } from '@promanage/core'
 
 import { getApiClient } from '@/lib/api-client'
 import { useAuthStore } from '@/stores/auth.store'
@@ -55,6 +56,15 @@ export function useMarkRead() {
 
   return useMutation({
     mutationFn: (id: string) => getApiClient().notifications.markRead(id),
+    onMutate: (id) => {
+      queryClient.setQueriesData<{ data: Notification[] }>(
+        { queryKey: [QUERY_KEY] },
+        (old) => {
+          if (!old) return old
+          return { ...old, data: old.data.map((n) => (n.id === id ? { ...n, read: true } : n)) }
+        },
+      )
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY] })
     },
@@ -66,6 +76,27 @@ export function useMarkAllRead() {
 
   return useMutation({
     mutationFn: () => getApiClient().notifications.markAllRead(),
+    onMutate: async () => {
+      const previousQueries = queryClient.getQueriesData<{ data: Notification[] }>({
+        queryKey: [QUERY_KEY],
+      })
+
+      queryClient.setQueriesData<{ data: Notification[] }>(
+        { queryKey: [QUERY_KEY] },
+        (old) => {
+          if (!old) return old
+          return { ...old, data: old.data.map((n) => ({ ...n, read: true })) }
+        },
+      )
+
+      return { previousQueries }
+    },
+    onError: (_error, _variables, context) => {
+      if (!context?.previousQueries) return
+      for (const [queryKey, data] of context.previousQueries) {
+        queryClient.setQueryData(queryKey, data)
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY] })
     },
@@ -77,7 +108,29 @@ export function useDeleteNotification() {
 
   return useMutation({
     mutationFn: (id: string) => getApiClient().notifications.delete(id),
-    onSuccess: () => {
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: [QUERY_KEY] })
+      const previousQueries = queryClient.getQueriesData<{ data: Notification[] }>({
+        queryKey: [QUERY_KEY],
+      })
+
+      queryClient.setQueriesData<{ data: Notification[] }>(
+        { queryKey: [QUERY_KEY] },
+        (old) => {
+          if (!old) return old
+          return { ...old, data: old.data.filter((n) => n.id !== id) }
+        },
+      )
+
+      return { previousQueries }
+    },
+    onError: (_error, _id, context) => {
+      if (!context?.previousQueries) return
+      for (const [queryKey, data] of context.previousQueries) {
+        queryClient.setQueryData(queryKey, data)
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY] })
     },
   })

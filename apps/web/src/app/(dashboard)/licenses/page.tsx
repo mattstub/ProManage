@@ -1,6 +1,7 @@
 'use client'
 
 import {
+  ArrowDownTrayIcon,
   BellIcon,
   DocumentArrowUpIcon,
   PencilSquareIcon,
@@ -52,6 +53,7 @@ import {
   useDeleteLicense,
   useDeleteLicenseDocument,
   useDeleteLicenseReminder,
+  useDownloadLicenseDocument,
   useLicense,
   useLicenses,
   useUpdateLicense,
@@ -285,6 +287,7 @@ function LicenseFormDialog({ open, onOpenChange, initial, users }: LicenseFormDi
 
 function DocumentsPanel({ license, canWrite }: { license: LicenseWithRelations; canWrite: boolean }) {
   const uploadDoc = useUploadLicenseDocument()
+  const downloadDoc = useDownloadLicenseDocument()
   const deleteDoc = useDeleteLicenseDocument()
   const fileRef = useRef<HTMLInputElement>(null)
   const [tag, setTag] = useState('')
@@ -308,16 +311,30 @@ function DocumentsPanel({ license, canWrite }: { license: LicenseWithRelations; 
                 {doc.documentTag ? <><span className="font-medium">{doc.documentTag}</span> — </> : ''}
                 {doc.fileName}
               </span>
-              {canWrite && (
+              <div className="flex items-center gap-1">
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => deleteDoc.mutate({ licenseId: license.id, docId: doc.id })}
-                  disabled={deleteDoc.isPending}
+                  onClick={() => downloadDoc.mutate({ licenseId: license.id, docId: doc.id })}
+                  disabled={downloadDoc.isPending}
+                  title="Download"
+                  aria-label="Download document"
                 >
-                  <TrashIcon className="h-4 w-4 text-red-500" />
+                  <ArrowDownTrayIcon className="h-4 w-4 text-gray-500" />
                 </Button>
-              )}
+                {canWrite && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => deleteDoc.mutate({ licenseId: license.id, docId: doc.id })}
+                    disabled={deleteDoc.isPending}
+                    title="Delete"
+                    aria-label="Delete document"
+                  >
+                    <TrashIcon className="h-4 w-4 text-red-500" />
+                  </Button>
+                )}
+              </div>
             </li>
           ))}
         </ul>
@@ -369,7 +386,7 @@ function RemindersPanel({
       licenseId: license.id,
       daysBeforeExpiration: parseInt(days, 10),
       notifyUserId: notifyId,
-      notifySupervisorId: supervisorId || undefined,
+      notifySupervisorId: supervisorId && supervisorId !== 'none' ? supervisorId : undefined,
     })
     setDays('30'); setNotifyId(''); setSupervisorId('')
   }
@@ -437,7 +454,7 @@ function RemindersPanel({
             <Select value={supervisorId} onValueChange={setSupervisorId}>
               <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="None" /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="">None</SelectItem>
+                <SelectItem value="none">None</SelectItem>
                 {users.map(u => <SelectItem key={u.id} value={u.id}>{u.firstName} {u.lastName}</SelectItem>)}
               </SelectContent>
             </Select>

@@ -7,7 +7,8 @@ import {
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline'
-import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import { useEffect, useRef, useState } from 'react'
 
 import {
   Badge,
@@ -44,6 +45,7 @@ import {
   useDeleteAnnouncement,
   useDraftAnnouncements,
   useMarkAnnouncementRead,
+  useMarkConversationRead,
   useSendMessage,
   useStartConversation,
 } from '@/hooks/use-messaging'
@@ -81,9 +83,21 @@ function ThreadPanel({
   conversation: ConversationWithRelations
   currentUserId: string
 }) {
+  const queryClient = useQueryClient()
   const { data: messagesResult, isLoading } = useConversationMessages(conversation.id)
   const sendMessage = useSendMessage(conversation.id)
   const [body, setBody] = useState('')
+
+  // Once messages load for this conversation, the server has marked them as read.
+  // Sync the true server count back so the badge reflects reality.
+  const syncedConvIdRef = useRef<string | null>(null)
+  useEffect(() => {
+    if (messagesResult && conversation.id !== syncedConvIdRef.current) {
+      syncedConvIdRef.current = conversation.id
+      queryClient.invalidateQueries({ queryKey: ['messaging', 'unread-count'] })
+      queryClient.invalidateQueries({ queryKey: ['messaging', 'conversations'] })
+    }
+  }, [messagesResult, conversation.id, queryClient])
 
   const messages = messagesResult?.data ?? []
   const other =
@@ -235,9 +249,11 @@ export default function MessagesPage() {
   const createAnnouncement = useCreateAnnouncement()
   const deleteAnnouncement = useDeleteAnnouncement()
 
+  const markConversationRead = useMarkConversationRead()
+
   const [activeTab, setActiveTab] = useState('messages')
-  const [selectedConv, setSelectedConv] = useState<ConversationWithRelations | null>(null)
-  const [selectedAnn, setSelectedAnn] = useState<AnnouncementWithRelations | null>(null)
+  const [selectedConvId, setSelectedConvId] = useState<string | null>(null)
+  const [selectedAnnId, setSelectedAnnId] = useState<string | null>(null)
 
   // Compose DM dialog
   const [composeOpen, setComposeOpen] = useState(false)
@@ -258,6 +274,8 @@ export default function MessagesPage() {
 
   const conversations = convsResult?.data ?? []
   const announcements = announcementsResult?.data ?? []
+  const selectedConv = conversations.find((c) => c.id === selectedConvId) ?? null
+  const selectedAnn = announcements.find((a) => a.id === selectedAnnId) ?? null
   const users = usersResult?.data ?? []
 
   const otherUsers = users.filter((u) => u.id !== user?.id)
@@ -273,7 +291,7 @@ export default function MessagesPage() {
     setComposeUserId('')
     setComposeBody('')
     setActiveTab('messages')
-    setSelectedConv(result.conversation as ConversationWithRelations)
+    setSelectedConvId(result.conversation.id)
   }
 
   const handleSendAnnouncement = async (e: React.FormEvent) => {
@@ -357,7 +375,7 @@ export default function MessagesPage() {
                   return (
                     <button
                       key={conv.id}
-                      onClick={() => setSelectedConv(conv)}
+                      onClick={() => { setSelectedConvId(conv.id); markConversationRead(conv) }}
                       className={`w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-gray-50 transition-colors border-b border-gray-100 ${
                         isSelected ? 'bg-blue-50 border-l-2 border-l-blue-600' : ''
                       }`}
@@ -431,7 +449,7 @@ export default function MessagesPage() {
                   return (
                     <button
                       key={ann.id}
-                      onClick={() => setSelectedAnn(ann)}
+                      onClick={() => setSelectedAnnId(ann.id)}
                       className={`w-full text-left px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors ${
                         isSelected ? 'bg-blue-50 border-l-2 border-l-blue-600' : ''
                       }`}

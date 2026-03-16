@@ -21,6 +21,7 @@ import { NavItem } from './nav-item'
 import type { RoleName } from '@promanage/core'
 
 import { useAuth } from '@/hooks/use-auth'
+import { useUnreadCount } from '@/hooks/use-messaging'
 
 interface NavItemConfig {
   href: string
@@ -92,6 +93,8 @@ const NAV_ITEMS: NavItemConfig[] = [
 export function Sidebar() {
   const { user } = useAuth()
   const userRoles = user?.roles ?? []
+  const { data: unreadData } = useUnreadCount()
+  const unreadMessages = unreadData?.total ?? 0
 
   const visibleItems = NAV_ITEMS.filter(
     (item) => !item.roles || item.roles.some((r) => userRoles.includes(r))
@@ -106,7 +109,13 @@ export function Sidebar() {
       </div>
       <nav className="flex-1 p-4 space-y-1">
         {visibleItems.map((item) => (
-          <NavItem key={item.href} href={item.href} label={item.label} icon={item.icon} />
+          <NavItem
+            key={item.href}
+            href={item.href}
+            label={item.label}
+            icon={item.icon}
+            badge={item.href === '/messages' ? unreadMessages : undefined}
+          />
         ))}
       </nav>
     </aside>

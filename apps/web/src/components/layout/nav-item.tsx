@@ -9,9 +9,10 @@ interface NavItemProps {
   href: string
   label: string
   icon?: React.ReactNode
+  badge?: number
 }
 
-export function NavItem({ href, label, icon }: NavItemProps) {
+export function NavItem({ href, label, icon, badge }: NavItemProps) {
   const pathname = usePathname()
   const isActive = pathname.startsWith(href)
 
@@ -26,7 +27,12 @@ export function NavItem({ href, label, icon }: NavItemProps) {
       )}
     >
       {icon && <span className="shrink-0">{icon}</span>}
-      {label}
+      <span className="flex-1">{label}</span>
+      {badge != null && badge > 0 && (
+        <span className="ml-auto min-w-[1.25rem] h-5 px-1 bg-blue-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+          {badge > 99 ? '99+' : badge}
+        </span>
+      )}
     </Link>
   )
 }

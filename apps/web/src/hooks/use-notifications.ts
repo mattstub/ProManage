@@ -76,7 +76,11 @@ export function useMarkAllRead() {
 
   return useMutation({
     mutationFn: () => getApiClient().notifications.markAllRead(),
-    onMutate: () => {
+    onMutate: async () => {
+      const previousQueries = queryClient.getQueriesData<{ data: Notification[] }>({
+        queryKey: [QUERY_KEY],
+      })
+
       queryClient.setQueriesData<{ data: Notification[] }>(
         { queryKey: [QUERY_KEY] },
         (old) => {
@@ -84,6 +88,14 @@ export function useMarkAllRead() {
           return { ...old, data: old.data.map((n) => ({ ...n, read: true })) }
         },
       )
+
+      return { previousQueries }
+    },
+    onError: (_error, _variables, context) => {
+      if (!context?.previousQueries) return
+      for (const [queryKey, data] of context.previousQueries) {
+        queryClient.setQueryData(queryKey, data)
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY] })

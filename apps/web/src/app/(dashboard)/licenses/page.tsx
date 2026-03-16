@@ -318,6 +318,7 @@ function DocumentsPanel({ license, canWrite }: { license: LicenseWithRelations; 
                   onClick={() => downloadDoc.mutate({ licenseId: license.id, docId: doc.id })}
                   disabled={downloadDoc.isPending}
                   title="Download"
+                  aria-label="Download document"
                 >
                   <ArrowDownTrayIcon className="h-4 w-4 text-gray-500" />
                 </Button>
@@ -328,6 +329,7 @@ function DocumentsPanel({ license, canWrite }: { license: LicenseWithRelations; 
                     onClick={() => deleteDoc.mutate({ licenseId: license.id, docId: doc.id })}
                     disabled={deleteDoc.isPending}
                     title="Delete"
+                    aria-label="Delete document"
                   >
                     <TrashIcon className="h-4 w-4 text-red-500" />
                   </Button>

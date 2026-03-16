@@ -1,9 +1,17 @@
 'use client'
 
+import { useCallback } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import type { ListAnnouncementsParams, ListConversationsParams, ListMessagesParams } from '@promanage/api-client'
-import type { CreateAnnouncementInput, SendDirectMessageInput, UpdateAnnouncementInput } from '@promanage/core'
+import type {
+  AnnouncementWithRelations,
+  ConversationWithRelations,
+  CreateAnnouncementInput,
+  SendDirectMessageInput,
+  UnreadCount,
+  UpdateAnnouncementInput,
+} from '@promanage/core'
 
 import { getApiClient } from '@/lib/api-client'
 import { useAuthStore } from '@/stores/auth.store'
@@ -30,6 +38,34 @@ export function useConversations(params?: ListConversationsParams) {
   })
 }
 
+/**
+ * Returns a callback to call when a conversation is selected.
+ * Optimistically zeros out that conversation's unread count in the cache.
+ */
+export function useMarkConversationRead() {
+  const queryClient = useQueryClient()
+
+  return useCallback((conv: ConversationWithRelations) => {
+    if (!conv.unreadCount) return
+
+    queryClient.setQueriesData<{ data: ConversationWithRelations[] }>(
+      { queryKey: ['messaging', 'conversations'] },
+      (old) => {
+        if (!old) return old
+        return { ...old, data: old.data.map((c) => c.id === conv.id ? { ...c, unreadCount: 0 } : c) }
+      },
+    )
+    queryClient.setQueryData<UnreadCount>(
+      ['messaging', 'unread-count'],
+      (old) => {
+        if (!old) return old
+        const dm = Math.max(0, old.directMessages - conv.unreadCount)
+        return { ...old, directMessages: dm, total: Math.max(0, old.total - conv.unreadCount) }
+      },
+    )
+  }, [queryClient])
+}
+
 export function useConversationMessages(conversationId: string | null, params?: ListMessagesParams) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
 
@@ -49,7 +85,6 @@ export function useStartConversation() {
       getApiClient().messaging.startConversation(userId, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['messaging', 'conversations'] })
-      queryClient.invalidateQueries({ queryKey: ['messaging', 'unread-count'] })
     },
   })
 }
@@ -63,7 +98,9 @@ export function useSendMessage(conversationId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['messaging', 'messages', conversationId] })
       queryClient.invalidateQueries({ queryKey: ['messaging', 'conversations'] })
-      queryClient.invalidateQueries({ queryKey: ['messaging', 'unread-count'] })
+      // Do NOT invalidate unread-count here — sending a message cannot increase the
+      // sender's unread count, and an early refetch races with the server-side
+      // mark-as-read that happens when getConversationMessages runs.
     },
   })
 }
@@ -129,6 +166,33 @@ export function useMarkAnnouncementRead() {
 
   return useMutation({
     mutationFn: (id: string) => getApiClient().messaging.markAnnouncementRead(id),
+    onMutate: (id) => {
+      // Optimistically mark as read — track whether it was actually unread
+      let wasUnread = false
+      queryClient.setQueriesData<{ data: AnnouncementWithRelations[] }>(
+        { queryKey: ['messaging', 'announcements'] },
+        (old) => {
+          // Guard against the drafts query which has a different shape (Announcement[] not { data: ... })
+          if (!old || !Array.isArray(old.data)) return old
+          const ann = old.data.find((a) => a.id === id)
+          if (ann && !ann.isRead) wasUnread = true
+          return {
+            ...old,
+            data: old.data.map((a) => (a.id === id ? { ...a, isRead: true } : a)),
+          }
+        },
+      )
+      if (wasUnread) {
+        queryClient.setQueryData<UnreadCount>(
+          ['messaging', 'unread-count'],
+          (old) => {
+            if (!old) return old
+            const announcements = Math.max(0, old.announcements - 1)
+            return { ...old, announcements, total: Math.max(0, old.total - 1) }
+          },
+        )
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['messaging', 'announcements'] })
       queryClient.invalidateQueries({ queryKey: ['messaging', 'unread-count'] })

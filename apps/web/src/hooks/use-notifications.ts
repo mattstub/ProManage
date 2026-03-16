@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 
 import type { ListNotificationsParams } from '@promanage/api-client'
+import type { Notification } from '@promanage/core'
 
 import { getApiClient } from '@/lib/api-client'
 import { useAuthStore } from '@/stores/auth.store'
@@ -55,6 +56,15 @@ export function useMarkRead() {
 
   return useMutation({
     mutationFn: (id: string) => getApiClient().notifications.markRead(id),
+    onMutate: (id) => {
+      queryClient.setQueriesData<{ data: Notification[] }>(
+        { queryKey: [QUERY_KEY] },
+        (old) => {
+          if (!old) return old
+          return { ...old, data: old.data.map((n) => (n.id === id ? { ...n, read: true } : n)) }
+        },
+      )
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY] })
     },
@@ -66,6 +76,15 @@ export function useMarkAllRead() {
 
   return useMutation({
     mutationFn: () => getApiClient().notifications.markAllRead(),
+    onMutate: () => {
+      queryClient.setQueriesData<{ data: Notification[] }>(
+        { queryKey: [QUERY_KEY] },
+        (old) => {
+          if (!old) return old
+          return { ...old, data: old.data.map((n) => ({ ...n, read: true })) }
+        },
+      )
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY] })
     },
@@ -77,6 +96,15 @@ export function useDeleteNotification() {
 
   return useMutation({
     mutationFn: (id: string) => getApiClient().notifications.delete(id),
+    onMutate: (id) => {
+      queryClient.setQueriesData<{ data: Notification[] }>(
+        { queryKey: [QUERY_KEY] },
+        (old) => {
+          if (!old) return old
+          return { ...old, data: old.data.filter((n) => n.id !== id) }
+        },
+      )
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY] })
     },

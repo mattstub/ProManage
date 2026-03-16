@@ -1,6 +1,7 @@
 'use client'
 
 import { BellIcon, CheckIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
 import { Button } from '@promanage/ui-components'
@@ -14,6 +15,12 @@ import {
   useNotifications,
   useSSENotifications,
 } from '@/hooks/use-notifications'
+
+function getNotificationHref(notification: Notification): string | null {
+  if (notification.entityType === 'task') return '/tasks'
+  if (notification.entityType === 'license') return '/licenses'
+  return null
+}
 
 function formatRelative(date: Date | string): string {
   const d = new Date(date)
@@ -33,17 +40,23 @@ function NotificationItem({
   notification,
   onMarkRead,
   onDelete,
+  onNavigate,
 }: {
   notification: Notification
   onMarkRead: (id: string) => void
   onDelete: (id: string) => void
+  onNavigate: (notification: Notification) => void
 }) {
+  const href = getNotificationHref(notification)
+
   return (
     <div
       className={[
         'flex items-start gap-3 px-4 py-3 hover:bg-gray-50 transition-colors',
         notification.read ? 'opacity-60' : '',
+        href ? 'cursor-pointer' : '',
       ].join(' ')}
+      onClick={href ? () => onNavigate(notification) : undefined}
     >
       {/* Unread dot */}
       <div className="mt-1.5 flex-shrink-0">
@@ -62,7 +75,7 @@ function NotificationItem({
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-1 flex-shrink-0">
+      <div className="flex items-center gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
         {!notification.read && (
           <button
             onClick={() => onMarkRead(notification.id)}
@@ -88,11 +101,19 @@ export function NotificationBell() {
   const [open, setOpen] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
+  const router = useRouter()
 
   const { data } = useNotifications({ perPage: 20 })
   const markRead = useMarkRead()
   const markAllRead = useMarkAllRead()
   const deleteNotification = useDeleteNotification()
+
+  function handleNavigate(notification: Notification) {
+    if (!notification.read) markRead.mutate(notification.id)
+    const href = getNotificationHref(notification)
+    if (href) router.push(href)
+    setOpen(false)
+  }
 
   // Start SSE connection for real-time updates
   useSSENotifications()
@@ -166,6 +187,7 @@ export function NotificationBell() {
                   notification={n}
                   onMarkRead={(id) => markRead.mutate(id)}
                   onDelete={(id) => deleteNotification.mutate(id)}
+                  onNavigate={handleNavigate}
                 />
               ))
             )}

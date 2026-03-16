@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed - Dev environment + live bug sweep (Session 18, 2026-03-15)
+
+**Branch: `fix/dev-env-setup`**
+
+*apps/api*
+- `package.json`: Fixed `dev` script — `tsx watch` does not auto-load `.env`; added `dotenv ^17.3.1` and changed script to `tsx watch --import=dotenv/config src/server.ts` so `DATABASE_URL`, `JWT_SECRET`, etc. are available at startup
+
+*apps/web*
+- `public/.gitkeep`: Added missing `public/` directory so web Dockerfile `COPY apps/web/public ./public` no longer fails
+- `hooks/use-licenses.ts`: Added `useDownloadLicenseDocument` hook — calls `getDocumentDownloadUrl`, opens presigned MinIO URL in new tab
+- `hooks/use-messaging.ts`:
+  - `useMarkConversationRead`: new hook — optimistically zeros `unreadCount` on a conversation and decrements `directMessages`/`total` in `unread-count` cache when a DM thread is opened
+  - `useMarkAnnouncementRead.onMutate`: tracks `wasUnread` before setting `isRead: true` to avoid double-decrement; added `Array.isArray(old.data)` guard so partial key match no longer corrupts the drafts query (which has a different data shape)
+  - `useSendMessage.onSuccess` + `useStartConversation.onSuccess`: removed `unread-count` invalidation — sending a message cannot increase the sender's unread count; early refetch raced with server-side mark-as-read
+- `hooks/use-notifications.ts`: Added `onMutate` optimistic updates to `useMarkRead`, `useMarkAllRead`, `useDeleteNotification` — notifications now clear instantly without waiting for server refetch
+- `components/layout/nav-item.tsx`: Added `badge?: number` prop — renders blue rounded pill badge when `badge > 0` (capped at "99+")
+- `components/layout/sidebar.tsx`: Wired `useUnreadCount` → passes `badge` to Messages nav item so unread DM+announcement count shows in sidebar
+- `components/layout/notification-bell.tsx`:
+  - Added click-to-navigate on notification rows (`getNotificationHref` maps entityType → route); marks as read + navigates + closes panel
+  - Added `e.stopPropagation()` on action buttons so row click doesn't fire when using mark-read/delete buttons
+  - Added `onMutate` optimistic updates (already landed in use-notifications.ts)
+- `app/(dashboard)/licenses/page.tsx`: Fixed `SelectItem value=""` → `value="none"` (Radix Select rejects empty string); updated `notifySupervisorId` mapping to filter out `"none"` sentinel; added download button (ArrowDownTrayIcon) to each document row using `useDownloadLicenseDocument`
+- `app/(dashboard)/messages/page.tsx`:
+  - Converted `selectedConv`/`selectedAnn` to ID-based pattern — stores only the ID in state and derives the live object from query cache to prevent stale snapshot bugs
+  - Calls `markConversationRead(conv)` on conversation click for optimistic unread-count decrement
+  - `ThreadPanel`: added `syncedConvIdRef` + `useEffect` — invalidates `unread-count` and `conversations` once after the first message fetch per conversation, ensuring server-side mark-as-read is reflected in the cache
+
 ### Added - Phase 3.2 Licensing (Session 17, 2026-03-15)
 
 **Phase 3.2 — License Tracking with Renewal Reminders**

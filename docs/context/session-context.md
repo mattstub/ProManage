@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-15 (Session 17)
+**Last Updated**: 2026-03-15 (Session 18)
 
 ---
 
@@ -114,7 +114,8 @@ Root tooling:          COMPLETE (Sub-phase A)
 - **Phase 2.5 Task Management**: COMPLETE — full CRUD with RBAC
 - **Phase 2.6 Procedures**: COMPLETE — full CRUD with RBAC
 - **Phase 3.1 Contact Management**: COMPLETE — 8-type contact directory, search/filter, project associations, org-scoped email uniqueness
-- **Phase 3.2 Licensing**: COMPLETE — org + individual license tracking, freeform types, multi-doc upload (MinIO), configurable renewal reminders (≤7d daily / >7d once), SSE bell notifications
+- **Phase 3.2 Licensing**: COMPLETE — org + individual license tracking, freeform types, multi-doc upload (MinIO), configurable renewal reminders (≤7d daily / >7d once), SSE bell notifications; document download button added (Session 18 bug fix)
+- **Dev env + live bug fixes** (Session 18): API dev server `.env` loading fixed (dotenv/config); licenses SelectItem fix; DM/announcement unread badge logic fixed (optimistic updates, race condition, stale snapshot, drafts shape guard); notification bell click-to-navigate + instant clear; Messages nav badge
 - **API**: Runs on http://localhost:3001 | Routes: /auth, /calendar-events, /channels, /contacts, /dashboard, /licenses, /messages, /notifications, /organizations, /procedures, /projects, /tasks, /users
 - **DB**: PostgreSQL in Docker. 26 models. License + LicenseDocument + LicenseReminder added. `prisma db push` applied.
 - **api-client**: Built — all resource namespaces including LicensesResource
@@ -223,6 +224,19 @@ DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-d
 - TypeScript project references wired (composite + tsc --build on both packages)
 - Removed .claude/settings.local.json from git tracking
 - PR merged by user
+
+### Session 18 — 2026-03-15
+
+**Dev environment + live bug sweep** (`fix/dev-env-setup` branch):
+- Fixed API dev server — `tsx watch` doesn't auto-load `.env`; added `dotenv ^17.3.1`, changed script to `tsx watch --import=dotenv/config src/server.ts`
+- Added `apps/web/public/.gitkeep` — was missing, causing web Dockerfile `COPY` to fail
+- Fixed licenses page `SelectItem value=""` → `value="none"` (Radix rejects empty string); added document download button using presigned MinIO URL
+- Fixed announcement unread bubble persisting after mark-as-read: added `onMutate` optimistic update with `wasUnread` guard and `Array.isArray(old.data)` guard to prevent corrupting the drafts query (different data shape, same partial key prefix)
+- Fixed notification bell: `onMutate` optimistic updates for mark-read/delete, click-to-navigate, `stopPropagation` on action buttons
+- Added Messages nav badge: `useUnreadCount` in sidebar, `badge` prop on `NavItem`
+- Fixed DM unread count race condition: removed `unread-count` invalidation from `useSendMessage`/`useStartConversation`; added `syncedConvIdRef` effect in `ThreadPanel` to sync after first fetch per conversation
+- Fixed stale snapshot: `selectedConvId`/`selectedAnnId` now store IDs, derive live objects from query cache
+- Added `useMarkConversationRead` hook for optimistic DM read tracking
 
 ### Session 17 — 2026-03-15
 

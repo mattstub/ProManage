@@ -20,7 +20,7 @@ ProManage is a free, open-source platform designed to help small construction co
 > | Phase 2.6 — General Procedures | ✅ Complete |
 > | Phase 3.1 — Contact Management | ✅ Complete |
 > | Infrastructure — Docker, CI/CD, structured logging | ✅ Complete |
-> | Phase 3.2 — Licensing | 🔜 Next |
+> | Phase 3.2 — Licensing | ✅ Complete |
 > | Phase 3.3 — Safety | 🔜 Next |
 
 ## Features

@@ -7,6 +7,7 @@ import type {
   UpdateLicenseInput,
   CreateLicenseReminderInput,
   UpdateLicenseReminderInput,
+  UpdateLicenseReminderInput,
 } from '@promanage/core'
 import type { FastifyInstance } from 'fastify'
 

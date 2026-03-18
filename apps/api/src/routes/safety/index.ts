@@ -188,7 +188,8 @@ const safetyRoutes: FastifyPluginAsync = async (fastify) => {
       if (fileSize > MAX_ATTACHMENT_SIZE_BYTES) {
         throw new ValidationError(`File exceeds maximum size of ${MAX_ATTACHMENT_SIZE_BYTES} bytes`)
       }
-      const fileKey = `safety/sds/${Date.now()}-${fileName.replace(/[^a-zA-Z0-9._-]/g, '_')}`
+      const sanitizedFileName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_')
+      const fileKey = `safety/sds/${request.user.organizationId}/${Date.now()}-${uuidv4()}-${sanitizedFileName}`
       const uploadUrl = await fastify.minio.presignedPutObject(MINIO_BUCKET_NAME, fileKey, 900)
       return success(reply, { uploadUrl, fileKey, fileName, mimeType, fileSize })
     }

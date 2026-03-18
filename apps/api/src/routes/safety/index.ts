@@ -60,6 +60,25 @@ const safetyRoutes: FastifyPluginAsync = async (fastify) => {
     return success(reply, doc)
   })
 
+  // GET /safety/documents/:id/download-url — all authenticated users
+  fastify.get(
+    '/documents/:id/download-url',
+    { preHandler: [readRateLimiter, authenticate] },
+    async (request, reply) => {
+      const { id } = request.params as { id: string }
+      const doc = await safetyService.getSafetyDocument(fastify, id, request.user.organizationId)
+
+      // Expect the SafetyDocument record to contain the storage key and file name
+      const { fileKey, fileName } = doc as { fileKey: string; fileName: string }
+      if (!fileKey) {
+        throw new ValidationError('Document file is not available for download')
+      }
+
+      const downloadUrl = await fastify.minio.presignedGetObject(MINIO_BUCKET_NAME, fileKey, 900)
+      return success(reply, { downloadUrl, fileName })
+    }
+  )
+
   // POST /safety/documents/upload-url — request presigned upload URL
   fastify.post(
     '/documents/upload-url',

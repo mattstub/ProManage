@@ -211,14 +211,10 @@ export function useDeleteSdsEntry() {
 
 export function useDownloadSds() {
   return useMutation({
-    mutationFn: async (id: string) => {
-      const newWindow = window.open('', '_blank', 'noopener,noreferrer')
-      const { downloadUrl } = await getApiClient().safety.getSdsDownloadUrl(id)
-      if (newWindow) {
-        newWindow.location.href = downloadUrl
-      } else {
-        window.open(downloadUrl, '_blank', 'noopener,noreferrer')
-      }
+    mutationFn: async (_id: string) => {
+      // The backend endpoint for generating an SDS download URL is not yet implemented.
+      // Fail fast with a clear error instead of calling a non-existent API route.
+      throw new Error('SDS download is not available: backend endpoint is not implemented.');
     },
   })
 }

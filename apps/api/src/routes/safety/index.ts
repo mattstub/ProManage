@@ -171,6 +171,28 @@ const safetyRoutes: FastifyPluginAsync = async (fastify) => {
     return success(reply, entry)
   })
 
+  // GET /safety/sds/:id/download-url — all authenticated users
+  fastify.get(
+    '/sds/:id/download-url',
+    { preHandler: [readRateLimiter, authenticate] },
+    async (request, reply) => {
+      const { id } = request.params as { id: string }
+      const entry = await safetyService.getSdsEntry(fastify, id, request.user.organizationId)
+
+      if (!entry || !entry.sdsFileKey) {
+        throw new ValidationError('No SDS file is attached to this entry')
+      }
+
+      const downloadUrl = await fastify.minio.presignedGetObject(
+        MINIO_BUCKET_NAME,
+        entry.sdsFileKey,
+        900
+      )
+
+      return success(reply, { downloadUrl })
+    }
+  )
+
   // POST /safety/sds/upload-url — presigned PUT URL for SDS PDF
   fastify.post(
     '/sds/upload-url',

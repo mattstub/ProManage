@@ -116,6 +116,16 @@ const safetyRoutes: FastifyPluginAsync = async (fastify) => {
       if (!input.fileKey.startsWith(expectedPrefix) || input.fileKey.length <= expectedPrefix.length) {
         throw new ValidationError('Invalid file key')
       }
+      // Ensure the uploaded object actually exists in MinIO before creating the DB record
+      try {
+        await fastify.minio.statObject(MINIO_BUCKET_NAME, input.fileKey)
+      } catch (err: any) {
+        // MinIO uses 'NoSuchKey' for missing objects; some clients may expose a 404 statusCode
+        if (err?.code === 'NoSuchKey' || err?.statusCode === 404) {
+          throw new ValidationError('Uploaded file not found')
+        }
+        throw err
+      }
       const doc = await safetyService.createSafetyDocument(
         fastify,
         request.user.organizationId,

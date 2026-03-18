@@ -92,7 +92,6 @@ import {
 
 const WRITE_ROLES: RoleName[] = ['Admin', 'ProjectManager', 'Superintendent', 'OfficeAdmin']
 const MANAGE_ROLES: RoleName[] = ['Admin', 'OfficeAdmin']
-const INCIDENT_VIEW_ROLES: RoleName[] = ['Admin', 'ProjectManager', 'Superintendent', 'OfficeAdmin']
 
 const INCIDENT_STATUS_VARIANT: Record<IncidentStatus, BadgeProps['variant']> = {
   OPEN: 'danger',
@@ -1314,7 +1313,6 @@ export default function SafetyPage() {
 
   const canWrite = WRITE_ROLES.some(r => userRoles.includes(r))
   const canManage = MANAGE_ROLES.some(r => userRoles.includes(r))
-  const canViewIncidents = INCIDENT_VIEW_ROLES.some(r => userRoles.includes(r))
 
   const [activeTab, setActiveTab] = useState<Tab>('documents')
 

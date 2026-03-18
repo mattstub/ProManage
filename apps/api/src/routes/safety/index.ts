@@ -15,6 +15,7 @@ import {
   updateToolboxTalkSchema,
 } from '@promanage/core'
 
+import { randomUUID } from 'node:crypto'
 import { ValidationError } from '../../lib/errors'
 import { RATE_LIMITS } from '../../lib/rate-limit'
 import { setupRateLimit } from '../../lib/rate-limit-setup'
@@ -99,7 +100,7 @@ const safetyRoutes: FastifyPluginAsync = async (fastify) => {
       }
       const organizationId = request.user.organizationId
       const safeFileName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_')
-      const fileKey = `safety/documents/${organizationId}/${Date.now()}-${crypto.randomUUID()}-${safeFileName}`
+      const fileKey = `safety/documents/${organizationId}/${Date.now()}-${randomUUID()}-${safeFileName}`
       const uploadUrl = await fastify.minio.presignedPutObject(MINIO_BUCKET_NAME, fileKey, 900)
       return success(reply, { uploadUrl, fileKey, fileName, mimeType, fileSize })
     }

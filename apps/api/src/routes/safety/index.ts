@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from 'uuid'
-
 import {
   ALLOWED_ATTACHMENT_MIME_TYPES,
   MAX_ATTACHMENT_SIZE_BYTES,
@@ -100,7 +98,7 @@ const safetyRoutes: FastifyPluginAsync = async (fastify) => {
       }
       const organizationId = request.user.organizationId
       const safeFileName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_')
-      const fileKey = `safety/documents/${organizationId}/${Date.now()}-${uuidv4()}-${safeFileName}`
+      const fileKey = `safety/documents/${organizationId}/${Date.now()}-${crypto.randomUUID()}-${safeFileName}`
       const uploadUrl = await fastify.minio.presignedPutObject(MINIO_BUCKET_NAME, fileKey, 900)
       return success(reply, { uploadUrl, fileKey, fileName, mimeType, fileSize })
     }

@@ -1326,7 +1326,7 @@ export default function SafetyPage() {
     { key: 'sds', label: 'SDS Catalog' },
     { key: 'toolbox-talks', label: 'Toolbox Talks' },
     { key: 'forms', label: 'Forms' },
-    ...(canViewIncidents ? [{ key: 'incidents' as Tab, label: 'Incidents' }] : []),
+    { key: 'incidents', label: 'Incidents' },
   ]
 
   return (
@@ -1373,7 +1373,7 @@ export default function SafetyPage() {
       {activeTab === 'forms' && (
         <FormsTab canWrite={canWrite} canManage={canManage} />
       )}
-      {activeTab === 'incidents' && canViewIncidents && (
+      {activeTab === 'incidents' && (
         <IncidentsTab canWrite={canWrite} canManage={canManage} projects={projects} />
       )}
     </div>

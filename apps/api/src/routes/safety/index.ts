@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid'
+
 import {
   ALLOWED_ATTACHMENT_MIME_TYPES,
   MAX_ATTACHMENT_SIZE_BYTES,
@@ -22,7 +24,6 @@ import { created, noContent, paginated, success } from '../../lib/response'
 import { authenticate } from '../../middleware/authenticate'
 import { requireRole } from '../../middleware/authorize'
 import * as safetyService from '../../services/safety.service'
-import { v4 as uuidv4 } from 'uuid'
 
 import type { FastifyPluginAsync } from 'fastify'
 

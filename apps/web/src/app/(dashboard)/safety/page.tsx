@@ -1313,6 +1313,7 @@ export default function SafetyPage() {
 
   const canWrite = WRITE_ROLES.some(r => userRoles.includes(r))
   const canManage = MANAGE_ROLES.some(r => userRoles.includes(r))
+  const canViewIncidents = canWrite || canManage
 
   const [activeTab, setActiveTab] = useState<Tab>('documents')
 
@@ -1324,7 +1325,7 @@ export default function SafetyPage() {
     { key: 'sds', label: 'SDS Catalog' },
     { key: 'toolbox-talks', label: 'Toolbox Talks' },
     { key: 'forms', label: 'Forms' },
-    { key: 'incidents', label: 'Incidents' },
+    ...(canViewIncidents ? [{ key: 'incidents', label: 'Incidents' }] : []),
   ]
 
   return (
@@ -1371,7 +1372,7 @@ export default function SafetyPage() {
       {activeTab === 'forms' && (
         <FormsTab canWrite={canWrite} canManage={canManage} />
       )}
-      {activeTab === 'incidents' && (
+      {activeTab === 'incidents' && canViewIncidents && (
         <IncidentsTab canWrite={canWrite} canManage={canManage} projects={projects} />
       )}
     </div>

@@ -22,6 +22,7 @@ import { created, noContent, paginated, success } from '../../lib/response'
 import { authenticate } from '../../middleware/authenticate'
 import { requireRole } from '../../middleware/authorize'
 import * as safetyService from '../../services/safety.service'
+import { v4 as uuidv4 } from 'uuid'
 
 import type { FastifyPluginAsync } from 'fastify'
 
@@ -96,7 +97,9 @@ const safetyRoutes: FastifyPluginAsync = async (fastify) => {
       if (fileSize > MAX_ATTACHMENT_SIZE_BYTES) {
         throw new ValidationError(`File exceeds maximum size of ${MAX_ATTACHMENT_SIZE_BYTES} bytes`)
       }
-      const fileKey = `safety/documents/${Date.now()}-${fileName.replace(/[^a-zA-Z0-9._-]/g, '_')}`
+      const organizationId = request.user.organizationId
+      const safeFileName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_')
+      const fileKey = `safety/documents/${organizationId}/${Date.now()}-${uuidv4()}-${safeFileName}`
       const uploadUrl = await fastify.minio.presignedPutObject(MINIO_BUCKET_NAME, fileKey, 900)
       return success(reply, { uploadUrl, fileKey, fileName, mimeType, fileSize })
     }
@@ -108,7 +111,7 @@ const safetyRoutes: FastifyPluginAsync = async (fastify) => {
     { preHandler: [writeRateLimiter, authenticate, requireRole(...WRITE_ROLES)] },
     async (request, reply) => {
       const input = createSafetyDocumentSchema.parse(request.body)
-      const expectedPrefix = 'safety/documents/'
+      const expectedPrefix = `safety/documents/${request.user.organizationId}/`
       if (!input.fileKey.startsWith(expectedPrefix) || input.fileKey.length <= expectedPrefix.length) {
         throw new ValidationError('Invalid file key')
       }

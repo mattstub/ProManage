@@ -190,14 +190,6 @@ export class SafetyResource {
     await this.client.request<void>(`/api/v1/safety/sds/${id}`, { method: 'DELETE' })
   }
 
-  /** Get a presigned download URL for an SDS file. */
-  async getSdsDownloadUrl(id: string): Promise<{ downloadUrl: string; fileName: string }> {
-    const res = await this.client.request<ApiResponse<{ downloadUrl: string; fileName: string }>>(
-      `/api/v1/safety/sds/${id}/download-url`
-    )
-    return res.data
-  }
-
   // ─── Toolbox Talks ───────────────────────────────────────────────────────────
 
   /** List toolbox talks for the current organization (paginated). */

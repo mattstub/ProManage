@@ -121,7 +121,7 @@ export function useDownloadSafetyDocument() {
   return useMutation({
     mutationFn: async (id: string) => {
       const newWindow = window.open('', '_blank', 'noopener,noreferrer')
-      const { downloadUrl } = await getApiClient().safety.getDocumentDownloadUrl(id)
+      const downloadUrl = `/api/safety/documents/${encodeURIComponent(id)}/download`
       if (newWindow) {
         newWindow.location.href = downloadUrl
       } else {

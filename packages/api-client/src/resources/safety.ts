@@ -91,6 +91,14 @@ export class SafetyResource {
     return res.data
   }
 
+  /** Request a presigned URL to download a safety document file from MinIO. */
+  async getDocumentDownloadUrl(id: string): Promise<{ downloadUrl: string }> {
+    const res = await this.client.request<ApiResponse<{ downloadUrl: string }>>(
+      `/api/v1/safety/documents/${id}/download-url`
+    )
+    return res.data
+  }
+
   /** Request a presigned URL to upload a safety document to MinIO. */
   async getDocumentUploadUrl(
     file: { fileName: string; mimeType: string; fileSize: number }

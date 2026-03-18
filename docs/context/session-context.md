@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-15 (Session 18)
+**Last Updated**: 2026-03-17 (Session 19)
 
 ---
 
@@ -224,6 +224,11 @@ DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-d
 - TypeScript project references wired (composite + tsc --build on both packages)
 - Removed .claude/settings.local.json from git tracking
 - PR merged by user
+
+### Session 19 — 2026-03-17
+
+**Docker web image build fix** (`fix/dockerignore-nested-node-modules`):
+- `.dockerignore`: added `**/node_modules` — the existing `node_modules` entry only excluded the repo root; nested `apps/web/node_modules` and `packages/*/node_modules` were being sent in the build context (185 MB!) and the `COPY apps/web/` step overwrote pnpm's workspace symlinks, causing `next build` to fail with `Cannot find module 'next/dist/bin/next'`
 
 ### Session 18 — 2026-03-15
 

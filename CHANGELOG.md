@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed - Docker web image build (Session 19, 2026-03-17)
+
+**Branch: `fix/dockerignore-nested-node-modules`**
+
+- `.dockerignore`: Added `**/node_modules` pattern — the previous `node_modules` entry only excluded the repo-root directory; nested workspace node_modules (`apps/web/node_modules`, `packages/*/node_modules`) were included in the build context, causing the `COPY apps/web/` step to overwrite pnpm's installed workspace symlinks and break `next build` inside Docker with `Cannot find module 'next/dist/bin/next'`
+
 ### Fixed - Dev environment + live bug sweep (Session 18, 2026-03-15)
 
 **Branch: `fix/dev-env-setup`**

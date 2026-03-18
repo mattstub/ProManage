@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-17 (Session 19)
+**Last Updated**: 2026-03-17 (Session 21)
 
 ---
 
@@ -59,42 +59,42 @@
 
 ```
 ProManage/
-apps/api/              COMPLETE through Phase 3.2
-  prisma/schema.prisma   26 models (+ License, LicenseDocument, LicenseReminder)
-  prisma/seed.ts         demo org, 6 roles, 64 perms, 3 users, 2 projects, 2 channels, 3 contacts, 2 licenses, 2 reminders
+apps/api/              COMPLETE through Phase 3.3
+  prisma/schema.prisma   32 models (+ SafetyDocument, SdsEntry, ToolboxTalk, ToolboxTalkAttendee, SafetyForm, IncidentReport)
+  prisma/seed.ts         demo org, 6 roles, 64 perms, 3 users, 2 projects, 2 channels, 3 contacts, 2 licenses, safety demo data
   src/config/            Zod env validation
   src/lib/               errors, response helpers, pino logger, rate-limit, sse
   src/middleware/        authenticate, authorize, error-handler
   src/plugins/           prisma, swagger, sse, minio, socket-io, license-reminder
   src/routes/            health, auth, users, organizations, projects, dashboard, tasks, procedures,
-                         notifications, messages, calendar-events, channels, contacts, licenses
+                         notifications, messages, calendar-events, channels, contacts, licenses, safety
   src/services/          auth, user, org, token, password, project, dashboard, task, procedure,
-                         notification, messaging, calendar-event, channel, contact, license
+                         notification, messaging, calendar-event, channel, contact, license, safety
   src/types/             fastify.d.ts (augmented with io, minio, sseClients)
-  src/__tests__/         302 tests passing
-apps/web/              COMPLETE through Phase 3.2
-  src/app/               App Router: dashboard, projects, tasks, procedures, calendar, messages, channels, contacts, licenses
+  src/__tests__/         383 tests passing
+apps/web/              COMPLETE through Phase 3.3
+  src/app/               App Router: dashboard, projects, tasks, procedures, calendar, messages, channels, contacts, licenses, safety
   src/components/        layout (sidebar, header, nav-item, notification-bell),
                          dashboard (stats-card, project-summary-list),
                          channels (chat-panel, thread-panel, attachment-uploader, create-dialog, settings-panel)
   src/hooks/             use-auth, use-dashboard-stats, use-organization, use-procedures, use-projects,
                          use-tasks, use-users, use-notifications, use-messaging, use-calendar-events,
-                         use-channels, use-socket, use-contacts, use-licenses
+                         use-channels, use-socket, use-contacts, use-licenses, use-safety
   src/lib/               api-client singleton (with resetSocket on auth error), query-client
 apps/mobile/           DEFERRED
 
-packages/core/         COMPLETE through Phase 3.2
+packages/core/         COMPLETE through Phase 3.3
   src/types/             api, auth, user, role, org, project, task, dashboard, procedure,
-                         notification, messaging, calendar-event, channel, socket-events, license
-  src/schemas/           auth, user, org, project, task, procedure, messaging, calendar-event, channel, license
+                         notification, messaging, calendar-event, channel, socket-events, license, safety
+  src/schemas/           auth, user, org, project, task, procedure, messaging, calendar-event, channel, license, safety
   src/constants/         roles, permissions, project-status, task-status, api, procedure-status,
-                         notification, calendar-event, channel, license
+                         notification, calendar-event, channel, license, safety
   src/utils/             pagination, format-date, format-currency
   src/__tests__/         97 tests
-packages/api-client/   COMPLETE through Phase 3.2
+packages/api-client/   COMPLETE through Phase 3.3
   src/resources/         auth, users, organizations, health, projects, dashboard, tasks,
-                         procedures, notifications, messaging, calendar-events, channels, contacts, licenses
-  src/index.ts           createApiClient() factory + all exports (licenses resource added)
+                         procedures, notifications, messaging, calendar-events, channels, contacts, licenses, safety
+  src/index.ts           createApiClient() factory + all exports (safety resource added)
 packages/ui-components/ COMPLETE (Sub-phase F - 30 files, 26 components)
 
 Root tooling:          COMPLETE (Sub-phase A)
@@ -103,7 +103,7 @@ Root tooling:          COMPLETE (Sub-phase A)
 
 ---
 
-## Current State (2026-03-15)
+## Current State (2026-03-17)
 
 - **Phase 1, Sub-phases A-G**: COMPLETE (~150 source files)
 - **Phase 2.1 Dashboard**: COMPLETE — real data, projects list, stats widgets, role-aware sidebar
@@ -114,18 +114,18 @@ Root tooling:          COMPLETE (Sub-phase A)
 - **Phase 2.5 Task Management**: COMPLETE — full CRUD with RBAC
 - **Phase 2.6 Procedures**: COMPLETE — full CRUD with RBAC
 - **Phase 3.1 Contact Management**: COMPLETE — 8-type contact directory, search/filter, project associations, org-scoped email uniqueness
-- **Phase 3.2 Licensing**: COMPLETE — org + individual license tracking, freeform types, multi-doc upload (MinIO), configurable renewal reminders (≤7d daily / >7d once), SSE bell notifications; document download button added (Session 18 bug fix)
-- **Dev env + live bug fixes** (Session 18): API dev server `.env` loading fixed (dotenv/config); licenses SelectItem fix; DM/announcement unread badge logic fixed (optimistic updates, race condition, stale snapshot, drafts shape guard); notification bell click-to-navigate + instant clear; Messages nav badge
-- **API**: Runs on http://localhost:3001 | Routes: /auth, /calendar-events, /channels, /contacts, /dashboard, /licenses, /messages, /notifications, /organizations, /procedures, /projects, /tasks, /users
-- **DB**: PostgreSQL in Docker. 26 models. License + LicenseDocument + LicenseReminder added. `prisma db push` applied.
-- **api-client**: Built — all resource namespaces including LicensesResource
+- **Phase 3.2 Licensing**: COMPLETE — org + individual license tracking, freeform types, multi-doc upload (MinIO), configurable renewal reminders (≤7d daily / >7d once), SSE bell notifications
+- **Phase 3.3 Safety**: COMPLETE — 5-tab safety hub (document library, SDS catalog, toolbox talks + attendee roster, safety forms, incident reports); all layers complete (Prisma, core, API service+routes+tests, api-client, web hooks+page+sidebar)
+- **API**: Runs on http://localhost:3001 | Routes: /auth, /calendar-events, /channels, /contacts, /dashboard, /licenses, /messages, /notifications, /organizations, /procedures, /projects, /safety, /tasks, /users
+- **DB**: PostgreSQL in Docker. 32 models. `prisma db push` applied. Seed includes safety demo data.
+- **api-client**: Built — all resource namespaces including SafetyResource
 - **ui-components**: Built (tsc --build, zero errors), 26 Radix+Tailwind components
-- **Sidebar**: Dashboard, Projects, Tasks, Procedures, Calendar, Channels, Contacts, Messages, Organization, Settings
+- **Sidebar**: Dashboard, Projects, Tasks, Procedures, Calendar, Channels, Contacts, Licenses, Safety, Messages, Organization, Settings
 - **Header**: NotificationBell with live badge + dropdown (SSE-powered)
 - **packages/core**: CommonJS output (fixed ESM seed issue; web/bundler still works fine)
-- **Tests**: 399 total (97 core + 302 API), web type-check clean
-- **Infrastructure**: COMPLETE and merged — Dockerfiles, CI/CD, structured logging, Sentry scaffold, Fastify 5 upgrade, Dockerfile prisma-generate order fixed
-- **Next**: Phase 3.3 — Safety (safety document library, SDS catalog, toolbox talks, incident reports)
+- **Tests**: 7/7 turbo tasks (lint, type-check, test, build) all passing; web type-check clean
+- **Infrastructure**: COMPLETE and merged — Dockerfiles, CI/CD, structured logging, Sentry scaffold, Fastify 5 upgrade
+- **Next**: Phase 4 — Project Management Core (project detail pages, Gantt/timeline, RFIs, submittals, change orders)
 
 ### Seed Credentials
 
@@ -224,6 +224,34 @@ DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-d
 - TypeScript project references wired (composite + tsc --build on both packages)
 - Removed .claude/settings.local.json from git tracking
 - PR merged by user
+
+### Session 21 — 2026-03-17
+
+**CI/Lint fixes for Phase 3.3 Safety** (`feat/phase3-subphase-3-safety` branch):
+
+- `eslint-plugin-import` → `eslint-plugin-import-x@4.16.2`: `eslint-plugin-import@2.x` incompatible with ESLint 10 (`getTokenOrCommentBefore` removed). Replaced in `package.json`, `eslint.config.mjs`, `.eslintrc.json`.
+- `apps/api/src/routes/safety/index.ts`: Fixed duplicate `randomUUID` import (removed `crypto`, kept `node:crypto`); fixed import group ordering (built-in first); removed dead `safeFileName`/`fileKey` lines from SDS download-url handler; fixed `const expectedPrefix` erroneously placed inside TypeScript type annotation in SDS upload-url handler; replaced `uuidv4()` with `randomUUID()`.
+- `packages/api-client/src/resources/safety.ts`: Removed duplicate `getDocumentDownloadUrl` implementation; added `getSdsDownloadUrl`.
+- `apps/web/src/hooks/use-safety.ts`: Restored `useDownloadSafetyDocument` to call `getApiClient().safety.getDocumentDownloadUrl(id)`; restored `useDownloadSds` to call `getApiClient().safety.getSdsDownloadUrl(id)`.
+- `apps/web/src/app/(dashboard)/safety/page.tsx`: Added `as Tab` cast on ternary spread element to fix TS2322.
+- `apps/api/src/__tests__/routes/safety.routes.test.ts`: Fixed fileKey fixture to include `organizationId` segment.
+- All 7 turbo tasks (lint, type-check ×3, test ×2, build) passing clean.
+
+### Session 20 — 2026-03-17
+
+**Phase 3.3 Safety COMPLETE** (`feat/phase3-subphase-3-safety` branch):
+
+Layer 1 — Prisma: Added 6 new models (SafetyDocument, SdsEntry, ToolboxTalk, ToolboxTalkAttendee, SafetyForm, IncidentReport). Schema now 32 models. `prisma db push` applied; seed updated with demo safety data.
+
+Layer 2 — packages/core: Created `types/safety.ts` (all 5 feature types + input types), `schemas/safety.ts` (11 Zod schemas), `constants/safety.ts` (5 constant maps + list arrays). Wired into index files.
+
+Layer 3 — API (service + routes + tests): `safety.service.ts` (23 functions), `routes/safety/index.ts` (23 routes). WRITE_ROLES = Admin/PM/Superintendent/OfficeAdmin. Incident POST open to all authenticated (FieldUser must be able to report). Mocked `userRole.findMany` per test via `mockRole()` helper. 81 new tests (383 total). Updated mock-prisma + build-app helpers.
+
+Layer 4 — api-client: `SafetyResource` class with methods for all 23 routes. Added to `ApiClient` interface and `createApiClient()` factory. `pnpm --filter @promanage/api-client build` passes clean.
+
+Layer 5 — Web: `use-safety.ts` (22 TanStack Query hooks). `app/(dashboard)/safety/page.tsx` — 5-tab safety hub (Documents, SDS Catalog, Toolbox Talks, Forms, Incidents). IncidentReport tab hidden for FieldUser (INCIDENT_VIEW_ROLES). MinIO 3-step upload pattern for SafetyDocument and SdsEntry. Sidebar: added Safety nav item with ShieldCheckIcon. Web type-check clean.
+
+Docker fix (Session 19) — `fix/dockerignore-nested-node-modules` — merged before this session.
 
 ### Session 19 — 2026-03-17
 

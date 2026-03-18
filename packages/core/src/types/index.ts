@@ -129,6 +129,31 @@ export type {
 } from './license'
 
 export type {
+  SafetyDocumentCategory,
+  SafetyDocument,
+  CreateSafetyDocumentInput,
+  UpdateSafetyDocumentInput,
+  SdsEntry,
+  CreateSdsEntryInput,
+  UpdateSdsEntryInput,
+  ToolboxTalkStatus,
+  ToolboxTalkAttendee,
+  ToolboxTalk,
+  CreateToolboxTalkInput,
+  UpdateToolboxTalkInput,
+  CreateToolboxTalkAttendeeInput,
+  SafetyFormCategory,
+  SafetyForm,
+  CreateSafetyFormInput,
+  UpdateSafetyFormInput,
+  IncidentType,
+  IncidentStatus,
+  IncidentReport,
+  CreateIncidentReportInput,
+  UpdateIncidentReportInput,
+} from './safety'
+
+export type {
   ChannelMessageEvent,
   ChannelMessageEditedEvent,
   ChannelMessageDeletedEvent,

@@ -35,6 +35,11 @@ model Organization {
   channels       Channel[]
   contacts       Contact[]
   licenses       License[]
+  safetyDocuments SafetyDocument[]
+  sdsEntries      SdsEntry[]
+  toolboxTalks    ToolboxTalk[]
+  safetyForms     SafetyForm[]
+  incidentReports IncidentReport[]
 
   @@map("organizations")
 }
@@ -80,6 +85,14 @@ model User {
   licenseDocumentsUploaded LicenseDocument[] @relation("LicenseDocumentUploader")
   licenseRemindersAsNotify      LicenseReminder[] @relation("LicenseReminderNotifyUser")
   licenseRemindersAsSupervisor  LicenseReminder[] @relation("LicenseReminderSupervisor")
+
+  safetyDocumentsUploaded  SafetyDocument[]      @relation("SafetyDocumentUploader")
+  sdsEntriesCreated        SdsEntry[]            @relation("SdsEntryCreator")
+  toolboxTalksCreated      ToolboxTalk[]         @relation("ToolboxTalkCreator")
+  toolboxTalksConducted    ToolboxTalk[]         @relation("ToolboxTalkConductor")
+  toolboxTalkAttendances   ToolboxTalkAttendee[] @relation("ToolboxTalkAttendeeUser")
+  safetyFormsCreated       SafetyForm[]          @relation("SafetyFormCreator")
+  incidentReportsReported  IncidentReport[]      @relation("IncidentReporter")
 
   @@index([organizationId])
   @@index([email])
@@ -192,6 +205,8 @@ model Project {
   calendarEvents CalendarEvent[]
   channels       Channel[]
   contactProjects ContactProject[]
+  toolboxTalks    ToolboxTalk[]
+  incidentReports IncidentReport[]
 
   @@unique([number, organizationId])
   @@index([organizationId])
@@ -633,4 +648,156 @@ model LicenseReminder {
 
   @@index([licenseId])
   @@map("license_reminders")
+}
+
+// ===========================================
+// SAFETY (Phase 3.3)
+// ===========================================
+
+model SafetyDocument {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  category    String   @default("POLICY") // POLICY | PROCEDURE | EMERGENCY_PLAN | TRAINING | COMPLIANCE | OTHER
+  fileName    String   @map("file_name")
+  fileKey     String   @map("file_key")  // MinIO object key
+  fileSize    Int      @map("file_size") // bytes
+  mimeType    String   @map("mime_type")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @map("organization_id")
+
+  uploadedBy   User   @relation("SafetyDocumentUploader", fields: [uploadedById], references: [id])
+  uploadedById String @map("uploaded_by_id")
+
+  @@index([organizationId])
+  @@index([category])
+  @@index([uploadedById])
+  @@map("safety_documents")
+}
+
+model SdsEntry {
+  id           String    @id @default(cuid())
+  productName  String    @map("product_name")
+  manufacturer String?
+  chemicalName String?   @map("chemical_name")
+  sdsFileKey   String?   @map("sds_file_key")   // MinIO object key (optional)
+  sdsFileName  String?   @map("sds_file_name")
+  reviewDate   DateTime? @map("review_date")
+  notes        String?
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @map("organization_id")
+
+  createdBy   User   @relation("SdsEntryCreator", fields: [createdById], references: [id])
+  createdById String @map("created_by_id")
+
+  @@index([organizationId])
+  @@index([createdById])
+  @@map("sds_entries")
+}
+
+model ToolboxTalk {
+  id            String    @id @default(cuid())
+  title         String
+  content       String?
+  scheduledDate DateTime? @map("scheduled_date")
+  conductedDate DateTime? @map("conducted_date")
+  status        String    @default("SCHEDULED") // SCHEDULED | COMPLETED | CANCELLED
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @map("organization_id")
+
+  project   Project? @relation(fields: [projectId], references: [id])
+  projectId String?  @map("project_id")
+
+  conductedBy   User?   @relation("ToolboxTalkConductor", fields: [conductedById], references: [id])
+  conductedById String? @map("conducted_by_id")
+
+  createdBy   User   @relation("ToolboxTalkCreator", fields: [createdById], references: [id])
+  createdById String @map("created_by_id")
+
+  attendees ToolboxTalkAttendee[]
+
+  @@index([organizationId])
+  @@index([projectId])
+  @@index([conductedById])
+  @@index([createdById])
+  @@index([status])
+  @@map("toolbox_talks")
+}
+
+model ToolboxTalkAttendee {
+  id        String    @id @default(cuid())
+  name      String    // display name (for manual / non-system attendees)
+  signedAt  DateTime? @map("signed_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  talk   ToolboxTalk @relation(fields: [talkId], references: [id], onDelete: Cascade)
+  talkId String      @map("talk_id")
+
+  user   User?   @relation("ToolboxTalkAttendeeUser", fields: [userId], references: [id])
+  userId String? @map("user_id")
+
+  @@index([talkId])
+  @@index([userId])
+  @@map("toolbox_talk_attendees")
+}
+
+model SafetyForm {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  category    String   @default("INSPECTION") // INSPECTION | JSA | HAZARD_ASSESSMENT | PERMIT | TAILGATE | OTHER
+  content     String   @default("") // form template body (markdown / instructions)
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @map("organization_id")
+
+  createdBy   User   @relation("SafetyFormCreator", fields: [createdById], references: [id])
+  createdById String @map("created_by_id")
+
+  @@index([organizationId])
+  @@index([category])
+  @@index([createdById])
+  @@index([isActive])
+  @@map("safety_forms")
+}
+
+model IncidentReport {
+  id               String   @id @default(cuid())
+  title            String
+  incidentType     String   @map("incident_type") // NEAR_MISS | FIRST_AID | RECORDABLE | PROPERTY_DAMAGE | FATALITY | ENVIRONMENTAL
+  incidentDate     DateTime @map("incident_date")
+  location         String?
+  description      String
+  correctiveAction String?  @map("corrective_action")
+  status           String   @default("OPEN") // OPEN | UNDER_REVIEW | CLOSED
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @map("organization_id")
+
+  project   Project? @relation(fields: [projectId], references: [id])
+  projectId String?  @map("project_id")
+
+  reportedBy   User   @relation("IncidentReporter", fields: [reportedById], references: [id])
+  reportedById String @map("reported_by_id")
+
+  @@index([organizationId])
+  @@index([projectId])
+  @@index([reportedById])
+  @@index([status])
+  @@index([incidentDate])
+  @@map("incident_reports")
 }

@@ -9,6 +9,7 @@ import notificationRoutes from './notifications'
 import organizationRoutes from './organizations'
 import procedureRoutes from './procedures'
 import projectRoutes from './projects'
+import safetyRoutes from './safety'
 import taskRoutes from './tasks'
 import userRoutes from './users'
 
@@ -26,6 +27,7 @@ const routes: FastifyPluginAsync = async (fastify) => {
   fastify.register(organizationRoutes, { prefix: '/organizations' })
   fastify.register(procedureRoutes, { prefix: '/procedures' })
   fastify.register(projectRoutes, { prefix: '/projects' })
+  fastify.register(safetyRoutes, { prefix: '/safety' })
   fastify.register(taskRoutes, { prefix: '/tasks' })
   fastify.register(userRoutes, { prefix: '/users' })
 }

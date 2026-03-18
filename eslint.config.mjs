@@ -1,7 +1,7 @@
 import js from '@eslint/js'
 import tsParser from '@typescript-eslint/parser'
 import tsPlugin from '@typescript-eslint/eslint-plugin'
-import importPlugin from 'eslint-plugin-import'
+import importPlugin from 'eslint-plugin-import-x'
 
 export default [
   {
@@ -17,7 +17,7 @@ export default [
     },
     plugins: {
       '@typescript-eslint': tsPlugin,
-      import: importPlugin,
+      'import-x': importPlugin,
     },
     rules: {
       'no-console': 'warn',
@@ -32,7 +32,7 @@ export default [
         'error',
         { prefer: 'type-imports' },
       ],
-      'import/order': [
+      'import-x/order': [
         'error',
         {
           groups: [

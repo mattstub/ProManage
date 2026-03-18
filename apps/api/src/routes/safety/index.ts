@@ -246,10 +246,10 @@ const safetyRoutes: FastifyPluginAsync = async (fastify) => {
     return success(reply, talk)
   })
 
-  // POST /safety/toolbox-talks — Admin, PM, Superintendent, Foreman
+  // POST /safety/toolbox-talks — Admin, PM, Superintendent, OfficeAdmin (WRITE_ROLES)
   fastify.post(
     '/toolbox-talks',
-    { preHandler: [writeRateLimiter, authenticate, requireRole('Admin', 'ProjectManager', 'Superintendent', 'Foreman')] },
+    { preHandler: [writeRateLimiter, authenticate, requireRole(...WRITE_ROLES)] },
     async (request, reply) => {
       const input = createToolboxTalkSchema.parse(request.body)
       const talk = await safetyService.createToolboxTalk(
@@ -262,10 +262,10 @@ const safetyRoutes: FastifyPluginAsync = async (fastify) => {
     }
   )
 
-  // PATCH /safety/toolbox-talks/:id
+  // PATCH /safety/toolbox-talks/:id — Admin, PM, Superintendent, OfficeAdmin (WRITE_ROLES)
   fastify.patch(
     '/toolbox-talks/:id',
-    { preHandler: [writeRateLimiter, authenticate, requireRole('Admin', 'ProjectManager', 'Superintendent', 'Foreman')] },
+    { preHandler: [writeRateLimiter, authenticate, requireRole(...WRITE_ROLES)] },
     async (request, reply) => {
       const { id } = request.params as { id: string }
       const input = updateToolboxTalkSchema.parse(request.body)

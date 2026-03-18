@@ -234,7 +234,7 @@ describe('POST /api/v1/safety/documents', () => {
       headers: { authorization: adminToken(app), 'content-type': 'application/json' },
       body: JSON.stringify({
         title: 'Fall Protection Policy',
-        fileKey: 'safety/documents/fall-protection.pdf',
+        fileKey: `safety/documents/${ORG_ID}/fall-protection.pdf`,
         fileName: 'fall-protection.pdf',
         fileSize: 204800,
         mimeType: 'application/pdf',

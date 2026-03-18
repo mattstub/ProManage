@@ -90,8 +90,8 @@ import {
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const WRITE_ROLES: RoleName[] = ['Admin', 'ProjectManager', 'Superintendent', 'OfficeAdmin']
-const MANAGE_ROLES: RoleName[] = ['Admin', 'OfficeAdmin']
+const WRITE_ROLES: RoleName[] = ['Admin', 'ProjectManager', 'OfficeAdmin']
+const MANAGE_ROLES: RoleName[] = ['Admin', 'ProjectManager', 'Superintendent']
 
 const INCIDENT_STATUS_VARIANT: Record<IncidentStatus, BadgeProps['variant']> = {
   OPEN: 'danger',

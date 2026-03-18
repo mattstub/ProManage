@@ -123,7 +123,7 @@ Root tooling:          COMPLETE (Sub-phase A)
 - **Sidebar**: Dashboard, Projects, Tasks, Procedures, Calendar, Channels, Contacts, Licenses, Safety, Messages, Organization, Settings
 - **Header**: NotificationBell with live badge + dropdown (SSE-powered)
 - **packages/core**: CommonJS output (fixed ESM seed issue; web/bundler still works fine)
-- **Tests**: 383 total (97 core + 302 API... wait: 383 = prev 302 + 81 safety), web type-check clean
+- **Tests**: 383 total (core + API, including safety); web type-check clean
 - **Infrastructure**: COMPLETE and merged — Dockerfiles, CI/CD, structured logging, Sentry scaffold, Fastify 5 upgrade
 - **Next**: Phase 4 — Project Management Core (project detail pages, Gantt/timeline, RFIs, submittals, change orders)
 

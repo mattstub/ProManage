@@ -22,6 +22,7 @@ import { created, noContent, paginated, success } from '../../lib/response'
 import { authenticate } from '../../middleware/authenticate'
 import { requireRole } from '../../middleware/authorize'
 import * as safetyService from '../../services/safety.service'
+import { v4 as uuidv4 } from 'uuid'
 
 import type { FastifyPluginAsync } from 'fastify'
 
@@ -60,6 +61,25 @@ const safetyRoutes: FastifyPluginAsync = async (fastify) => {
     return success(reply, doc)
   })
 
+  // GET /safety/documents/:id/download-url — all authenticated users
+  fastify.get(
+    '/documents/:id/download-url',
+    { preHandler: [readRateLimiter, authenticate] },
+    async (request, reply) => {
+      const { id } = request.params as { id: string }
+      const doc = await safetyService.getSafetyDocument(fastify, id, request.user.organizationId)
+
+      // Expect the SafetyDocument record to contain the storage key and file name
+      const { fileKey, fileName } = doc as { fileKey: string; fileName: string }
+      if (!fileKey) {
+        throw new ValidationError('Document file is not available for download')
+      }
+
+      const downloadUrl = await fastify.minio.presignedGetObject(MINIO_BUCKET_NAME, fileKey, 900)
+      return success(reply, { downloadUrl, fileName })
+    }
+  )
+
   // POST /safety/documents/upload-url — request presigned upload URL
   fastify.post(
     '/documents/upload-url',
@@ -77,7 +97,9 @@ const safetyRoutes: FastifyPluginAsync = async (fastify) => {
       if (fileSize > MAX_ATTACHMENT_SIZE_BYTES) {
         throw new ValidationError(`File exceeds maximum size of ${MAX_ATTACHMENT_SIZE_BYTES} bytes`)
       }
-      const fileKey = `safety/documents/${Date.now()}-${fileName.replace(/[^a-zA-Z0-9._-]/g, '_')}`
+      const organizationId = request.user.organizationId
+      const safeFileName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_')
+      const fileKey = `safety/documents/${organizationId}/${Date.now()}-${uuidv4()}-${safeFileName}`
       const uploadUrl = await fastify.minio.presignedPutObject(MINIO_BUCKET_NAME, fileKey, 900)
       return success(reply, { uploadUrl, fileKey, fileName, mimeType, fileSize })
     }
@@ -89,7 +111,7 @@ const safetyRoutes: FastifyPluginAsync = async (fastify) => {
     { preHandler: [writeRateLimiter, authenticate, requireRole(...WRITE_ROLES)] },
     async (request, reply) => {
       const input = createSafetyDocumentSchema.parse(request.body)
-      const expectedPrefix = 'safety/documents/'
+      const expectedPrefix = `safety/documents/${request.user.organizationId}/`
       if (!input.fileKey.startsWith(expectedPrefix) || input.fileKey.length <= expectedPrefix.length) {
         throw new ValidationError('Invalid file key')
       }
@@ -246,10 +268,10 @@ const safetyRoutes: FastifyPluginAsync = async (fastify) => {
     return success(reply, talk)
   })
 
-  // POST /safety/toolbox-talks — Admin, PM, Superintendent, Foreman
+  // POST /safety/toolbox-talks — Admin, PM, Superintendent, OfficeAdmin (WRITE_ROLES)
   fastify.post(
     '/toolbox-talks',
-    { preHandler: [writeRateLimiter, authenticate, requireRole('Admin', 'ProjectManager', 'Superintendent', 'Foreman')] },
+    { preHandler: [writeRateLimiter, authenticate, requireRole(...WRITE_ROLES)] },
     async (request, reply) => {
       const input = createToolboxTalkSchema.parse(request.body)
       const talk = await safetyService.createToolboxTalk(
@@ -262,10 +284,10 @@ const safetyRoutes: FastifyPluginAsync = async (fastify) => {
     }
   )
 
-  // PATCH /safety/toolbox-talks/:id
+  // PATCH /safety/toolbox-talks/:id — Admin, PM, Superintendent, OfficeAdmin (WRITE_ROLES)
   fastify.patch(
     '/toolbox-talks/:id',
-    { preHandler: [writeRateLimiter, authenticate, requireRole('Admin', 'ProjectManager', 'Superintendent', 'Foreman')] },
+    { preHandler: [writeRateLimiter, authenticate, requireRole(...WRITE_ROLES)] },
     async (request, reply) => {
       const { id } = request.params as { id: string }
       const input = updateToolboxTalkSchema.parse(request.body)

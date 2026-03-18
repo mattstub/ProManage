@@ -45,7 +45,7 @@ export const createSafetyDocumentSchema = z.object({
 
 export const updateSafetyDocumentSchema = z.object({
   title: z.string().min(1).max(200).optional(),
-  description: z.string().max(1000).optional(),
+  description: z.string().max(1000).nullable().optional(),
   category: z.enum(SAFETY_DOCUMENT_CATEGORIES).optional(),
 })
 

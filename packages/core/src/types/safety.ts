@@ -34,7 +34,7 @@ export interface CreateSafetyDocumentInput {
 
 export interface UpdateSafetyDocumentInput {
   title?: string
-  description?: string
+  description?: string | null
   category?: SafetyDocumentCategory
 }
 

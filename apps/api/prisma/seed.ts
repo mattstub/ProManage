@@ -383,6 +383,163 @@ async function main() {
     },
   })
 
+  // Seed safety data
+  console.log('Creating demo safety data...')
+
+  await prisma.safetyDocument.upsert({
+    where: { id: 'seed-safety-doc-1' },
+    update: {},
+    create: {
+      id: 'seed-safety-doc-1',
+      title: 'Fall Protection Policy',
+      description: 'Company-wide fall protection requirements for work above 6 feet.',
+      category: 'POLICY',
+      fileName: 'fall-protection-policy.pdf',
+      fileKey: 'safety/docs/fall-protection-policy.pdf',
+      fileSize: 204800,
+      mimeType: 'application/pdf',
+      organizationId: org.id,
+      uploadedById: adminUser.id,
+    },
+  })
+
+  await prisma.safetyDocument.upsert({
+    where: { id: 'seed-safety-doc-2' },
+    update: {},
+    create: {
+      id: 'seed-safety-doc-2',
+      title: 'Emergency Evacuation Plan',
+      description: 'Site emergency response and evacuation procedures.',
+      category: 'EMERGENCY_PLAN',
+      fileName: 'emergency-evacuation-plan.pdf',
+      fileKey: 'safety/docs/emergency-evacuation-plan.pdf',
+      fileSize: 153600,
+      mimeType: 'application/pdf',
+      organizationId: org.id,
+      uploadedById: adminUser.id,
+    },
+  })
+
+  await prisma.sdsEntry.upsert({
+    where: { id: 'seed-sds-1' },
+    update: {},
+    create: {
+      id: 'seed-sds-1',
+      productName: 'PVC Primer',
+      manufacturer: 'Oatey Co.',
+      chemicalName: 'Tetrahydrofuran (THF)',
+      notes: 'Used for PVC pipe connections. Store away from heat sources.',
+      organizationId: org.id,
+      createdById: adminUser.id,
+    },
+  })
+
+  const lastWeek = new Date(today); lastWeek.setDate(today.getDate() - 7)
+  const nextWeek = new Date(today); nextWeek.setDate(today.getDate() + 7)
+
+  const talk1 = await prisma.toolboxTalk.upsert({
+    where: { id: 'seed-talk-1' },
+    update: {},
+    create: {
+      id: 'seed-talk-1',
+      title: 'Ladder Safety',
+      content: 'Review proper ladder setup, 3-point contact rule, and weight ratings. Inspect all ladders before use.',
+      scheduledDate: lastWeek,
+      conductedDate: lastWeek,
+      status: 'COMPLETED',
+      organizationId: org.id,
+      projectId: project1.id,
+      conductedById: adminUser.id,
+      createdById: adminUser.id,
+    },
+  })
+
+  await prisma.toolboxTalk.upsert({
+    where: { id: 'seed-talk-2' },
+    update: {},
+    create: {
+      id: 'seed-talk-2',
+      title: 'Heat Illness Prevention',
+      content: 'Hydration requirements, shade rest periods, and signs of heat exhaustion vs. heat stroke.',
+      scheduledDate: nextWeek,
+      status: 'SCHEDULED',
+      organizationId: org.id,
+      createdById: pmUser.id,
+    },
+  })
+
+  await prisma.toolboxTalkAttendee.upsert({
+    where: { id: 'seed-attendee-1' },
+    update: {},
+    create: {
+      id: 'seed-attendee-1',
+      talkId: talk1.id,
+      userId: adminUser.id,
+      name: 'Admin User',
+      signedAt: lastWeek,
+    },
+  })
+
+  await prisma.toolboxTalkAttendee.upsert({
+    where: { id: 'seed-attendee-2' },
+    update: {},
+    create: {
+      id: 'seed-attendee-2',
+      talkId: talk1.id,
+      userId: fieldUser.id,
+      name: 'Field User',
+      signedAt: lastWeek,
+    },
+  })
+
+  await prisma.safetyForm.upsert({
+    where: { id: 'seed-form-1' },
+    update: {},
+    create: {
+      id: 'seed-form-1',
+      title: 'Daily Job Site Inspection',
+      description: 'Pre-work site inspection checklist to be completed each morning.',
+      category: 'INSPECTION',
+      content: '1. Housekeeping and general site conditions\n2. Barricades and warning signs in place\n3. Tools and equipment condition\n4. PPE availability\n5. Emergency contacts posted',
+      isActive: true,
+      organizationId: org.id,
+      createdById: adminUser.id,
+    },
+  })
+
+  await prisma.safetyForm.upsert({
+    where: { id: 'seed-form-2' },
+    update: {},
+    create: {
+      id: 'seed-form-2',
+      title: 'Job Safety Analysis (JSA)',
+      description: 'Step-by-step hazard identification for non-routine tasks.',
+      category: 'JSA',
+      content: '1. Describe the task\n2. Break task into steps\n3. Identify hazards per step\n4. List control measures\n5. Review with crew before starting',
+      isActive: true,
+      organizationId: org.id,
+      createdById: adminUser.id,
+    },
+  })
+
+  await prisma.incidentReport.upsert({
+    where: { id: 'seed-incident-1' },
+    update: {},
+    create: {
+      id: 'seed-incident-1',
+      title: 'Near-Miss: Unsecured Tool at Height',
+      incidentType: 'NEAR_MISS',
+      incidentDate: lastWeek,
+      location: 'Level 3 — east stairwell',
+      description: 'A hammer was left unsecured on scaffolding and fell to the deck below. No injuries. Area was unoccupied at time of incident.',
+      correctiveAction: 'Toolbox talk on tool tethering delivered. Tether kits distributed to all crews.',
+      status: 'CLOSED',
+      organizationId: org.id,
+      projectId: project1.id,
+      reportedById: fieldUser.id,
+    },
+  })
+
   console.log('Seed completed successfully!')
   console.log('  Demo users (password: password123):')
   console.log('    admin@demo.com    - Admin')

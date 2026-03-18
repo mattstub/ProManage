@@ -7,6 +7,7 @@ import { vi } from 'vitest'
 
 import { errorHandler } from '../../middleware/error-handler'
 import authRoutes from '../../routes/auth'
+import safetyRoutes from '../../routes/safety'
 import calendarEventRoutes from '../../routes/calendar-events'
 import channelRoutes from '../../routes/channels'
 import contactRoutes from '../../routes/contacts'
@@ -268,4 +269,29 @@ export async function buildNotificationTestApp(overridePrisma?: MockPrisma) {
   await app.ready()
 
   return { app, prisma }
+}
+
+/**
+ * Builds a minimal Fastify instance for testing safety routes.
+ * Decorates fastify.minio with a mock client (safety document + SDS upload/delete).
+ */
+export async function buildSafetyTestApp(overridePrisma?: MockPrisma) {
+  const prisma = overridePrisma ?? createMockPrisma()
+  const minio = createMockMinio()
+
+  const app = Fastify({ logger: false })
+
+  await app.register(cookie)
+  await app.register(jwt, { secret: process.env['JWT_SECRET']! })
+  await app.register(rateLimit, { max: 1000, timeWindow: '1 minute' })
+
+  app.decorate('prisma', prisma as unknown as PrismaClient)
+  app.decorate('minio', minio)
+
+  app.setErrorHandler(errorHandler)
+
+  await app.register(safetyRoutes, { prefix: '/api/v1/safety' })
+  await app.ready()
+
+  return { app, prisma, minio }
 }

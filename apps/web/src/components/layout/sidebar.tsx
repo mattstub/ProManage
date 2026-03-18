@@ -11,6 +11,7 @@ import {
   HashtagIcon,
   HomeIcon,
   IdentificationIcon,
+  ShieldCheckIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
@@ -70,6 +71,11 @@ const NAV_ITEMS: NavItemConfig[] = [
     href: '/licenses',
     label: 'Licenses',
     icon: <IdentificationIcon className="h-5 w-5" />,
+  },
+  {
+    href: '/safety',
+    label: 'Safety',
+    icon: <ShieldCheckIcon className="h-5 w-5" />,
   },
   {
     href: '/messages',

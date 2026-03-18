@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - Phase 3.3 Safety (Session 20, 2026-03-17)
+
+**Branch: `feat/phase3-subphase-3-safety`**
+
+*apps/api/prisma*
+- `schema.prisma`: 6 new models — SafetyDocument (category enum, MinIO fileKey), SdsEntry (product/manufacturer/chemical, optional SDS PDF), ToolboxTalk (SCHEDULED/COMPLETED/CANCELLED status), ToolboxTalkAttendee (composite talk+user, name + signedAt), SafetyForm (category enum, content/template, isActive toggle), IncidentReport (6 incident types, OPEN/UNDER_REVIEW/CLOSED status, corrective action). Schema now 32 models total.
+- `seed.ts`: Added demo safety data (2 SafetyDocuments, 1 SdsEntry, 2 ToolboxTalks with attendees, 2 SafetyForms, 1 IncidentReport)
+
+*packages/core*
+- `src/types/safety.ts`: TypeScript interfaces and union types for all 5 safety features (SafetyDocument, SdsEntry, ToolboxTalk, ToolboxTalkAttendee, SafetyForm, IncidentReport) + all Create/Update input types
+- `src/schemas/safety.ts`: 11 Zod validation schemas
+- `src/constants/safety.ts`: 5 constant maps with label/color metadata + `_LIST` array exports (SAFETY_DOCUMENT_CATEGORIES, TOOLBOX_TALK_STATUSES, SAFETY_FORM_CATEGORIES, INCIDENT_TYPES, INCIDENT_STATUSES)
+
+*apps/api*
+- `src/services/safety.service.ts`: 23 service functions covering all 5 safety sub-features; MinIO presigned URL generation for document/SDS upload+download; best-effort MinIO cleanup on delete
+- `src/routes/safety/index.ts`: 23 routes. WRITE_ROLES = Admin/PM/Superintendent/OfficeAdmin. Incident POST open to all authenticated. Upload-URL routes registered before `:id` routes to avoid param conflict.
+- `src/__tests__/services/safety.service.test.ts`: 30 service-layer tests
+- `src/__tests__/routes/safety.routes.test.ts`: 37 route-layer tests; `mockRole()` helper for `userRole.findMany` mock per test; RBAC enforcement + schema validation coverage
+- `src/__tests__/helpers/mock-prisma.ts`: Added 6 new model mocks
+- `src/__tests__/helpers/build-app.ts`: Added `buildSafetyTestApp` with minio mock
+- Total: 383 tests passing
+
+*packages/api-client*
+- `src/resources/safety.ts`: `SafetyResource` class — methods for all 23 API endpoints grouped by sub-feature
+- `src/index.ts`: Added `SafetyResource` export, `safety` property to `ApiClient` interface and `createApiClient()`
+
+*apps/web*
+- `src/hooks/use-safety.ts`: 22 TanStack Query hooks (list/get/create/update/delete + file upload for documents and SDS)
+- `src/app/(dashboard)/safety/page.tsx`: 5-tab safety hub — Documents (upload+download+edit), SDS Catalog (file optional), Toolbox Talks (attendee roster in detail dialog), Forms (active/inactive toggle), Incidents (role-gated: FieldUser excluded from list/detail). Tabbed navigation with blue active indicator.
+- `src/components/layout/sidebar.tsx`: Added Safety nav item with ShieldCheckIcon between Licenses and Messages
+
 ### Fixed - Docker web image build (Session 19, 2026-03-17)
 
 **Branch: `fix/dockerignore-nested-node-modules`**

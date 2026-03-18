@@ -151,12 +151,12 @@ Company-level modules that support all downstream project work.
 - [x] Renewal reminder workflow (configurable days-before thresholds; ≤7d daily, >7d once per cycle; SSE bell notifications)
 - [ ] Continuing education tracking — deferred
 
-### 3.3 Safety (Company-Wide)
-- [ ] Company-wide safety document library
-- [ ] SDS catalog management
-- [ ] Toolbox talk records and topic templates
-- [ ] Safety forms library (accessible from field)
-- [ ] Incident/accident report forms
+### 3.3 Safety (Company-Wide) ✅ COMPLETE (Session 20, 2026-03-17)
+- [x] Company-wide safety document library (PDF/doc upload via MinIO, categories: Policy/Procedure/Emergency Plan/Training/Compliance)
+- [x] SDS catalog management (product/manufacturer/chemical name, optional SDS PDF upload, review date)
+- [x] Toolbox talk records (SCHEDULED/COMPLETED/CANCELLED, attendee sign-in roster, project association)
+- [x] Safety forms library (INSPECTION/JSA/Hazard Assessment/Permit/Tailgate/Other, active/inactive toggle)
+- [x] Incident/accident report forms (6 types: Near Miss through Fatality, OPEN/UNDER_REVIEW/CLOSED status, corrective action)
 - [ ] Field communication (email/text notification relay from app)
 
 ---

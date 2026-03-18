@@ -8,6 +8,7 @@ export { DashboardResource } from './resources/dashboard'
 export { HealthResource } from './resources/health'
 export { LicensesResource } from './resources/licenses'
 export { MessagingResource } from './resources/messaging'
+export { SafetyResource } from './resources/safety'
 export { NotificationsResource } from './resources/notifications'
 export { OrganizationsResource } from './resources/organizations'
 export { ProceduresResource } from './resources/procedures'
@@ -19,6 +20,13 @@ export type { ClientConfig, PaginatedResult, PaginationParams, RequestOptions } 
 export type { ListCalendarEventsParams } from './resources/calendar-events'
 export type { ListContactsParams } from './resources/contacts'
 export type { ListLicensesParams, LicenseReminderWithRelations } from './resources/licenses'
+export type {
+  ListSafetyDocumentsParams,
+  ListSdsEntriesParams,
+  ListToolboxTalksParams,
+  ListSafetyFormsParams,
+  ListIncidentReportsParams,
+} from './resources/safety'
 export type { ListChannelMessagesParams } from './resources/channels'
 export type { HealthResponse } from './resources/health'
 export type {
@@ -40,6 +48,7 @@ import { DashboardResource } from './resources/dashboard'
 import { HealthResource } from './resources/health'
 import { LicensesResource } from './resources/licenses'
 import { MessagingResource } from './resources/messaging'
+import { SafetyResource } from './resources/safety'
 import { NotificationsResource } from './resources/notifications'
 import { OrganizationsResource } from './resources/organizations'
 import { ProceduresResource } from './resources/procedures'
@@ -74,6 +83,7 @@ export interface ApiClient {
   licenses: LicensesResource
   health: HealthResource
   messaging: MessagingResource
+  safety: SafetyResource
   notifications: NotificationsResource
   organizations: OrganizationsResource
   procedures: ProceduresResource
@@ -100,6 +110,7 @@ export function createApiClient(config: ClientConfig): ApiClient {
     licenses: new LicensesResource(core),
     health: new HealthResource(core),
     messaging: new MessagingResource(core),
+    safety: new SafetyResource(core),
     notifications: new NotificationsResource(core),
     organizations: new OrganizationsResource(core),
     procedures: new ProceduresResource(core),

@@ -231,6 +231,21 @@ const safetyRoutes: FastifyPluginAsync = async (fastify) => {
         if (!input.sdsFileKey.startsWith(expectedPrefix) || input.sdsFileKey.length <= expectedPrefix.length) {
           throw new ValidationError('Invalid file key')
         }
+        try {
+          // Ensure the referenced SDS file actually exists in MinIO
+          // to avoid creating entries with broken download links.
+          await fastify.minio.statObject(MINIO_BUCKET_NAME, input.sdsFileKey)
+        } catch (err: any) {
+          if (
+            err &&
+            (err.code === 'NotFound' ||
+              err.code === 'NoSuchKey' ||
+              err.statusCode === 404)
+          ) {
+            throw new ValidationError('SDS file not found')
+          }
+          throw err
+        }
       }
       const entry = await safetyService.createSdsEntry(
         fastify,

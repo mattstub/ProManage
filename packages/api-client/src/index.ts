@@ -8,27 +8,20 @@ export { DashboardResource } from './resources/dashboard'
 export { HealthResource } from './resources/health'
 export { LicensesResource } from './resources/licenses'
 export { MessagingResource } from './resources/messaging'
-export { SafetyResource } from './resources/safety'
 export { NotificationsResource } from './resources/notifications'
 export { OrganizationsResource } from './resources/organizations'
 export { ProceduresResource } from './resources/procedures'
 export { ProjectsResource } from './resources/projects'
+export { SafetyResource } from './resources/safety'
 export { TasksResource } from './resources/tasks'
 export { UsersResource } from './resources/users'
 
 export type { ClientConfig, PaginatedResult, PaginationParams, RequestOptions } from './types'
 export type { ListCalendarEventsParams } from './resources/calendar-events'
-export type { ListContactsParams } from './resources/contacts'
-export type { ListLicensesParams, LicenseReminderWithRelations } from './resources/licenses'
-export type {
-  ListSafetyDocumentsParams,
-  ListSdsEntriesParams,
-  ListToolboxTalksParams,
-  ListSafetyFormsParams,
-  ListIncidentReportsParams,
-} from './resources/safety'
 export type { ListChannelMessagesParams } from './resources/channels'
+export type { ListContactsParams } from './resources/contacts'
 export type { HealthResponse } from './resources/health'
+export type { ListLicensesParams, LicenseReminderWithRelations } from './resources/licenses'
 export type {
   ListAnnouncementsParams,
   ListConversationsParams,
@@ -37,6 +30,13 @@ export type {
 export type { ListNotificationsParams } from './resources/notifications'
 export type { ListProceduresParams } from './resources/procedures'
 export type { ListProjectsParams } from './resources/projects'
+export type {
+  ListSafetyDocumentsParams,
+  ListSdsEntriesParams,
+  ListToolboxTalksParams,
+  ListSafetyFormsParams,
+  ListIncidentReportsParams,
+} from './resources/safety'
 export type { ListTasksParams } from './resources/tasks'
 
 import { ProManageClient } from './client'
@@ -48,11 +48,11 @@ import { DashboardResource } from './resources/dashboard'
 import { HealthResource } from './resources/health'
 import { LicensesResource } from './resources/licenses'
 import { MessagingResource } from './resources/messaging'
-import { SafetyResource } from './resources/safety'
 import { NotificationsResource } from './resources/notifications'
 import { OrganizationsResource } from './resources/organizations'
 import { ProceduresResource } from './resources/procedures'
 import { ProjectsResource } from './resources/projects'
+import { SafetyResource } from './resources/safety'
 import { TasksResource } from './resources/tasks'
 import { UsersResource } from './resources/users'
 
@@ -80,14 +80,14 @@ export interface ApiClient {
   channels: ChannelsResource
   contacts: ContactsResource
   dashboard: DashboardResource
-  licenses: LicensesResource
   health: HealthResource
+  licenses: LicensesResource
   messaging: MessagingResource
-  safety: SafetyResource
   notifications: NotificationsResource
   organizations: OrganizationsResource
   procedures: ProceduresResource
   projects: ProjectsResource
+  safety: SafetyResource
   tasks: TasksResource
   users: UsersResource
 }
@@ -107,14 +107,14 @@ export function createApiClient(config: ClientConfig): ApiClient {
     channels: new ChannelsResource(core),
     contacts: new ContactsResource(core),
     dashboard: new DashboardResource(core),
-    licenses: new LicensesResource(core),
     health: new HealthResource(core),
+    licenses: new LicensesResource(core),
     messaging: new MessagingResource(core),
-    safety: new SafetyResource(core),
     notifications: new NotificationsResource(core),
     organizations: new OrganizationsResource(core),
     procedures: new ProceduresResource(core),
     projects: new ProjectsResource(core),
+    safety: new SafetyResource(core),
     tasks: new TasksResource(core),
     users: new UsersResource(core),
   }

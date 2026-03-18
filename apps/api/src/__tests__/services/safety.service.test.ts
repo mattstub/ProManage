@@ -115,13 +115,6 @@ function buildFastify(prisma: MockPrisma) {
   return { prisma, minio, log: { error: vi.fn() } } as unknown as FastifyInstance
 }
 
-const mockPaginated = (items: unknown[]) => ({
-  data: items,
-  total: items.length,
-  page: 1,
-  perPage: 20,
-})
-
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
 describe('safety.service', () => {

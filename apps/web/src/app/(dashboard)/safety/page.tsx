@@ -50,7 +50,16 @@ import {
   type BadgeProps,
 } from '@promanage/ui-components'
 
+import type {
+  SafetyDocument,
+  SdsEntry,
+  ToolboxTalk,
+  SafetyForm,
+  IncidentReport,
+} from '@promanage/core'
+
 import { useAuth } from '@/hooks/use-auth'
+import { useProjects } from '@/hooks/use-projects'
 import {
   useAddTalkAttendee,
   useCreateIncidentReport,
@@ -78,15 +87,6 @@ import {
   useUploadSafetyDocument,
   useUploadSds,
 } from '@/hooks/use-safety'
-import { useProjects } from '@/hooks/use-projects'
-
-import type {
-  SafetyDocument,
-  SdsEntry,
-  ToolboxTalk,
-  SafetyForm,
-  IncidentReport,
-} from '@promanage/core'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 

@@ -5,7 +5,7 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint", "import"],
+  "plugins": ["@typescript-eslint", "import-x"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
@@ -24,7 +24,7 @@
       "error",
       { "prefer": "type-imports" }
     ],
-    "import/order": [
+    "import-x/order": [
       "error",
       {
         "groups": [

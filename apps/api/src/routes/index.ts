@@ -1,5 +1,4 @@
 import authRoutes from './auth'
-import safetyRoutes from './safety'
 import calendarEventRoutes from './calendar-events'
 import channelRoutes from './channels'
 import contactRoutes from './contacts'
@@ -10,6 +9,7 @@ import notificationRoutes from './notifications'
 import organizationRoutes from './organizations'
 import procedureRoutes from './procedures'
 import projectRoutes from './projects'
+import safetyRoutes from './safety'
 import taskRoutes from './tasks'
 import userRoutes from './users'
 

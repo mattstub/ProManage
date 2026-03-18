@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 
 import { buildSafetyTestApp, signTestToken } from '../helpers/build-app'
 import { createMockPrisma } from '../helpers/mock-prisma'

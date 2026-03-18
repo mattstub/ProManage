@@ -1326,8 +1326,10 @@ export default function SafetyPage() {
     { key: 'sds', label: 'SDS Catalog' },
     { key: 'toolbox-talks', label: 'Toolbox Talks' },
     { key: 'forms', label: 'Forms' },
-    ...(canViewIncidents ? [{ key: 'incidents' as Tab, label: 'Incidents' }] : []),
   ]
+  if (canViewIncidents) {
+    tabs.push({ key: 'incidents', label: 'Incidents' })
+  }
 
   return (
     <div className="space-y-6">

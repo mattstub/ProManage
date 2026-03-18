@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto'
+
 import {
   ALLOWED_ATTACHMENT_MIME_TYPES,
   MAX_ATTACHMENT_SIZE_BYTES,
@@ -15,7 +17,6 @@ import {
   updateToolboxTalkSchema,
 } from '@promanage/core'
 
-import { randomUUID } from 'node:crypto'
 import { ValidationError } from '../../lib/errors'
 import { RATE_LIMITS } from '../../lib/rate-limit'
 import { setupRateLimit } from '../../lib/rate-limit-setup'
@@ -25,7 +26,6 @@ import { requireRole } from '../../middleware/authorize'
 import * as safetyService from '../../services/safety.service'
 
 import type { FastifyPluginAsync } from 'fastify'
-import { randomUUID } from 'crypto'
 
 const WRITE_ROLES = ['Admin', 'ProjectManager', 'Superintendent', 'OfficeAdmin'] as const
 const MANAGE_ROLES = ['Admin', 'OfficeAdmin'] as const
@@ -200,8 +200,6 @@ const safetyRoutes: FastifyPluginAsync = async (fastify) => {
         entry.sdsFileKey,
         900
       )
-      const safeFileName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_')
-      const fileKey = `safety/sds/${request.user.organizationId}/${randomUUID()}-${safeFileName}`
       return success(reply, { downloadUrl })
     }
   )
@@ -214,7 +212,7 @@ const safetyRoutes: FastifyPluginAsync = async (fastify) => {
       const { fileName, mimeType, fileSize } = request.body as {
         fileName: string
         mimeType: string
-        const expectedPrefix = `safety/sds/${request.user.organizationId}/`
+        fileSize: number
       }
       if (!(ALLOWED_ATTACHMENT_MIME_TYPES as readonly string[]).includes(mimeType)) {
         throw new ValidationError(`Unsupported file type: ${mimeType}`)
@@ -224,7 +222,7 @@ const safetyRoutes: FastifyPluginAsync = async (fastify) => {
         throw new ValidationError(`File exceeds maximum size of ${MAX_ATTACHMENT_SIZE_BYTES} bytes`)
       }
       const sanitizedFileName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_')
-      const fileKey = `safety/sds/${request.user.organizationId}/${Date.now()}-${uuidv4()}-${sanitizedFileName}`
+      const fileKey = `safety/sds/${request.user.organizationId}/${Date.now()}-${randomUUID()}-${sanitizedFileName}`
       const uploadUrl = await fastify.minio.presignedPutObject(MINIO_BUCKET_NAME, fileKey, 900)
       return success(reply, { uploadUrl, fileKey, fileName, mimeType, fileSize })
     }

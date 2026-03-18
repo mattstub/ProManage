@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-17 (Session 20)
+**Last Updated**: 2026-03-17 (Session 21)
 
 ---
 
@@ -123,7 +123,7 @@ Root tooling:          COMPLETE (Sub-phase A)
 - **Sidebar**: Dashboard, Projects, Tasks, Procedures, Calendar, Channels, Contacts, Licenses, Safety, Messages, Organization, Settings
 - **Header**: NotificationBell with live badge + dropdown (SSE-powered)
 - **packages/core**: CommonJS output (fixed ESM seed issue; web/bundler still works fine)
-- **Tests**: 383 total (core + API, including safety); web type-check clean
+- **Tests**: 7/7 turbo tasks (lint, type-check, test, build) all passing; web type-check clean
 - **Infrastructure**: COMPLETE and merged — Dockerfiles, CI/CD, structured logging, Sentry scaffold, Fastify 5 upgrade
 - **Next**: Phase 4 — Project Management Core (project detail pages, Gantt/timeline, RFIs, submittals, change orders)
 
@@ -224,6 +224,18 @@ DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-d
 - TypeScript project references wired (composite + tsc --build on both packages)
 - Removed .claude/settings.local.json from git tracking
 - PR merged by user
+
+### Session 21 — 2026-03-17
+
+**CI/Lint fixes for Phase 3.3 Safety** (`feat/phase3-subphase-3-safety` branch):
+
+- `eslint-plugin-import` → `eslint-plugin-import-x@4.16.2`: `eslint-plugin-import@2.x` incompatible with ESLint 10 (`getTokenOrCommentBefore` removed). Replaced in `package.json`, `eslint.config.mjs`, `.eslintrc.json`.
+- `apps/api/src/routes/safety/index.ts`: Fixed duplicate `randomUUID` import (removed `crypto`, kept `node:crypto`); fixed import group ordering (built-in first); removed dead `safeFileName`/`fileKey` lines from SDS download-url handler; fixed `const expectedPrefix` erroneously placed inside TypeScript type annotation in SDS upload-url handler; replaced `uuidv4()` with `randomUUID()`.
+- `packages/api-client/src/resources/safety.ts`: Removed duplicate `getDocumentDownloadUrl` implementation; added `getSdsDownloadUrl`.
+- `apps/web/src/hooks/use-safety.ts`: Restored `useDownloadSafetyDocument` to call `getApiClient().safety.getDocumentDownloadUrl(id)`; restored `useDownloadSds` to call `getApiClient().safety.getSdsDownloadUrl(id)`.
+- `apps/web/src/app/(dashboard)/safety/page.tsx`: Added `as Tab` cast on ternary spread element to fix TS2322.
+- `apps/api/src/__tests__/routes/safety.routes.test.ts`: Fixed fileKey fixture to include `organizationId` segment.
+- All 7 turbo tasks (lint, type-check ×3, test ×2, build) passing clean.
 
 ### Session 20 — 2026-03-17
 

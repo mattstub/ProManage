@@ -120,8 +120,8 @@ export function useDeleteSafetyDocument() {
 export function useDownloadSafetyDocument() {
   return useMutation({
     mutationFn: async (id: string) => {
+      const { downloadUrl } = await getApiClient().safety.getDocumentDownloadUrl(id)
       const newWindow = window.open('', '_blank', 'noopener,noreferrer')
-      const downloadUrl = `/api/safety/documents/${encodeURIComponent(id)}/download`
       if (newWindow) {
         newWindow.location.href = downloadUrl
       } else {
@@ -211,10 +211,14 @@ export function useDeleteSdsEntry() {
 
 export function useDownloadSds() {
   return useMutation({
-    mutationFn: async (_id: string) => {
-      // The backend endpoint for generating an SDS download URL is not yet implemented.
-      // Fail fast with a clear error instead of calling a non-existent API route.
-      throw new Error('SDS download is not available: backend endpoint is not implemented.');
+    mutationFn: async (id: string) => {
+      const { downloadUrl } = await getApiClient().safety.getSdsDownloadUrl(id)
+      const newWindow = window.open('', '_blank', 'noopener,noreferrer')
+      if (newWindow) {
+        newWindow.location.href = downloadUrl
+      } else {
+        window.open(downloadUrl, '_blank', 'noopener,noreferrer')
+      }
     },
   })
 }

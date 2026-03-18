@@ -1325,7 +1325,7 @@ export default function SafetyPage() {
     { key: 'sds', label: 'SDS Catalog' },
     { key: 'toolbox-talks', label: 'Toolbox Talks' },
     { key: 'forms', label: 'Forms' },
-    ...(canViewIncidents ? [{ key: 'incidents', label: 'Incidents' }] : []),
+    ...(canViewIncidents ? [{ key: 'incidents' as Tab, label: 'Incidents' }] : []),
   ]
 
   return (

@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed - CI/Lint for Phase 3.3 Safety (Session 21, 2026-03-17)
+
+- Replaced `eslint-plugin-import@2.x` with `eslint-plugin-import-x@4.16.2` — ESLint 10 removed `sourceCode.getTokenOrCommentBefore()`, breaking the old plugin; updated plugin key and rule prefix in `eslint.config.mjs` and `.eslintrc.json`
+- `apps/api/src/routes/safety/index.ts`: removed duplicate `crypto` import, fixed import group ordering, removed dead code in SDS download-url handler, fixed `const expectedPrefix` erroneously inside TypeScript type annotation, replaced `uuidv4()` with `randomUUID()`
+- `packages/api-client/src/resources/safety.ts`: removed duplicate `getDocumentDownloadUrl`; added `getSdsDownloadUrl`
+- `apps/web/src/hooks/use-safety.ts`: restored `useDownloadSafetyDocument` and `useDownloadSds` to call api-client methods
+- `apps/web/src/app/(dashboard)/safety/page.tsx`: added `as Tab` cast to fix TS2322 on ternary spread
+- `apps/api/src/__tests__/routes/safety.routes.test.ts`: fixed fileKey fixture to include `organizationId` path segment
+- All 7 turbo tasks now passing (lint, type-check ×3, test ×2, build)
+
 ### Added - Phase 3.3 Safety (Session 20, 2026-03-17)
 
 **Branch: `feat/phase3-subphase-3-safety`**

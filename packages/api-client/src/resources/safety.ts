@@ -91,14 +91,6 @@ export class SafetyResource {
     return res.data
   }
 
-  /** Request a presigned URL to download a safety document file from MinIO. */
-  async getDocumentDownloadUrl(id: string): Promise<{ downloadUrl: string }> {
-    const res = await this.client.request<ApiResponse<{ downloadUrl: string }>>(
-      `/api/v1/safety/documents/${id}/download-url`
-    )
-    return res.data
-  }
-
   /** Request a presigned URL to upload a safety document to MinIO. */
   async getDocumentUploadUrl(
     file: { fileName: string; mimeType: string; fileSize: number }
@@ -160,6 +152,14 @@ export class SafetyResource {
   async getSds(id: string): Promise<SdsEntry> {
     const res = await this.client.request<ApiResponse<SdsEntry>>(
       `/api/v1/safety/sds/${id}`
+    )
+    return res.data
+  }
+
+  /** Request a presigned download URL for an SDS file from MinIO. */
+  async getSdsDownloadUrl(id: string): Promise<{ downloadUrl: string }> {
+    const res = await this.client.request<ApiResponse<{ downloadUrl: string }>>(
+      `/api/v1/safety/sds/${id}/download-url`
     )
     return res.data
   }

@@ -9,7 +9,7 @@ import type {
 export const SAFETY_DOCUMENT_CATEGORIES: Record<SafetyDocumentCategory, { label: string }> = {
   POLICY:        { label: 'Policy' },
   PROCEDURE:     { label: 'Procedure' },
-  EMERGENCY_PLAN:{ label: 'Emergency Plan' },
+  EMERGENCY_PLAN: { label: 'Emergency Plan' },
   TRAINING:      { label: 'Training' },
   COMPLIANCE:    { label: 'Compliance' },
   OTHER:         { label: 'Other' },

@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *apps/api*
 - `src/services/safety.service.ts`: 23 service functions covering all 5 safety sub-features; MinIO presigned URL generation for document/SDS upload; best-effort MinIO cleanup on delete
-- `src/routes/safety/index.ts`: 23 routes. WRITE_ROLES = Admin/PM/Superintendent (toolbox talk write RBAC excludes OfficeAdmin). Incident POST open to all authenticated. Upload-URL routes registered after `:id` routes.
+- `src/routes/safety/index.ts`: 23 routes. WRITE_ROLES = Admin/PM/Superintendent/OfficeAdmin for safety write endpoints (including toolbox talks). Incident POST open to all authenticated. Upload-URL routes registered after `:id` routes.
 - `src/__tests__/services/safety.service.test.ts`: 30 service-layer tests
 - `src/__tests__/routes/safety.routes.test.ts`: 37 route-layer tests; `mockRole()` helper for `userRole.findMany` mock per test; RBAC enforcement + schema validation coverage
 - `src/__tests__/helpers/mock-prisma.ts`: Added 6 new model mocks

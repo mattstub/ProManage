@@ -24,6 +24,7 @@ import { requireRole } from '../../middleware/authorize'
 import * as safetyService from '../../services/safety.service'
 
 import type { FastifyPluginAsync } from 'fastify'
+import { randomUUID } from 'crypto'
 
 const WRITE_ROLES = ['Admin', 'ProjectManager', 'Superintendent', 'OfficeAdmin'] as const
 const MANAGE_ROLES = ['Admin', 'OfficeAdmin'] as const
@@ -188,7 +189,8 @@ const safetyRoutes: FastifyPluginAsync = async (fastify) => {
         entry.sdsFileKey,
         900
       )
-
+      const safeFileName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_')
+      const fileKey = `safety/sds/${request.user.organizationId}/${randomUUID()}-${safeFileName}`
       return success(reply, { downloadUrl })
     }
   )
@@ -201,7 +203,7 @@ const safetyRoutes: FastifyPluginAsync = async (fastify) => {
       const { fileName, mimeType, fileSize } = request.body as {
         fileName: string
         mimeType: string
-        fileSize: number
+        const expectedPrefix = `safety/sds/${request.user.organizationId}/`
       }
       if (!(ALLOWED_ATTACHMENT_MIME_TYPES as readonly string[]).includes(mimeType)) {
         throw new ValidationError(`Unsupported file type: ${mimeType}`)

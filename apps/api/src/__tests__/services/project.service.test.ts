@@ -198,13 +198,14 @@ describe('projectService.createProject', () => {
       fn(prisma)
     )
     prisma.project.create.mockResolvedValue({ id: 'project-new', ...baseProject })
-    prisma.projectSettings.upsert.mockResolvedValue(baseSettings)
+    prisma.projectSettings.create.mockResolvedValue(baseSettings)
     prisma.project.findFirst.mockResolvedValue(baseProject)
 
     const input = { name: 'New Project', number: 'PRJ-NEW', type: 'Commercial' as const }
     const result = await projectService.createProject(fastify, 'org-1', input)
 
     expect(prisma.$transaction).toHaveBeenCalled()
+    expect(prisma.projectSettings.create).toHaveBeenCalled()
     expect(result.id).toBe('project-1')
   })
 

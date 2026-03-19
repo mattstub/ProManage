@@ -31,7 +31,7 @@ function Toggle({
   return (
     <div className="flex items-start justify-between gap-4">
       <div>
-        <Label htmlFor={id} className="font-medium text-gray-900">{label}</Label>
+        <Label id={`${id}-label`} htmlFor={id} className="font-medium text-gray-900">{label}</Label>
         {description && <p className="text-sm text-gray-500 mt-0.5">{description}</p>}
       </div>
       <button
@@ -39,6 +39,7 @@ function Toggle({
         type="button"
         role="switch"
         aria-checked={checked}
+        aria-labelledby={`${id}-label`}
         disabled={disabled}
         onClick={() => onChange(!checked)}
         className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${

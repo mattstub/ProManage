@@ -13,6 +13,7 @@ import contactRoutes from '../../routes/contacts'
 import licenseRoutes from '../../routes/licenses'
 import messageRoutes from '../../routes/messages'
 import notificationRoutes from '../../routes/notifications'
+import projectRoutes from '../../routes/projects'
 import safetyRoutes from '../../routes/safety'
 import taskRoutes from '../../routes/tasks'
 
@@ -195,6 +196,28 @@ export async function buildChannelTestApp(overridePrisma?: MockPrisma) {
   await app.ready()
 
   return { app, prisma, io, minio }
+}
+
+/**
+ * Builds a minimal Fastify instance for testing project routes.
+ */
+export async function buildProjectTestApp(overridePrisma?: MockPrisma) {
+  const prisma = overridePrisma ?? createMockPrisma()
+
+  const app = Fastify({ logger: false })
+
+  await app.register(cookie)
+  await app.register(jwt, { secret: process.env['JWT_SECRET']! })
+  await app.register(rateLimit, { max: 1000, timeWindow: '1 minute' })
+
+  app.decorate('prisma', prisma as unknown as PrismaClient)
+
+  app.setErrorHandler(errorHandler)
+
+  await app.register(projectRoutes, { prefix: '/api/v1/projects' })
+  await app.ready()
+
+  return { app, prisma }
 }
 
 /**

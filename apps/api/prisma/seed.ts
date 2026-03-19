@@ -155,7 +155,7 @@ async function main() {
     },
   })
 
-  await prisma.project.upsert({
+  const project2 = await prisma.project.upsert({
     where: {
       number_organizationId: { number: 'PRJ-2026-002', organizationId: org.id },
     },
@@ -167,6 +167,7 @@ async function main() {
       status: 'Bidding',
       description: 'New construction of a 12,000 sq ft fire station with 3 bays.',
       address: '789 Emergency Way, Suburb Town, TX 75050',
+      squareFootage: 12000,
       organizationId: org.id,
     },
   })
@@ -297,17 +298,65 @@ async function main() {
     },
   })
 
-  // Associate contacts with the first project
+  // Associate contacts with the first project (Phase 4.1 — role field)
   await prisma.contactProject.upsert({
     where: { contactId_projectId: { contactId: contact1.id, projectId: project1.id } },
     update: {},
-    create: { contactId: contact1.id, projectId: project1.id },
+    create: { contactId: contact1.id, projectId: project1.id, role: 'Electrical Subcontractor' },
   })
 
   await prisma.contactProject.upsert({
     where: { contactId_projectId: { contactId: contact2.id, projectId: project1.id } },
     update: {},
-    create: { contactId: contact2.id, projectId: project1.id },
+    create: { contactId: contact2.id, projectId: project1.id, role: 'Building Inspector' },
+  })
+
+  // Phase 4.1 — ProjectSettings (auto-created with defaults per project)
+  console.log('Creating demo project settings and scopes...')
+
+  await prisma.projectSettings.upsert({
+    where: { projectId: project1.id },
+    update: {},
+    create: { projectId: project1.id, enableSafetyModule: true, notifyOnIncident: true },
+  })
+
+  await prisma.projectSettings.upsert({
+    where: { projectId: project2.id },
+    update: {},
+    create: { projectId: project2.id },
+  })
+
+  // ProjectScopes for project1
+  await prisma.projectScope.upsert({
+    where: { id: 'seed-scope-1' },
+    update: {},
+    create: {
+      id: 'seed-scope-1',
+      name: 'Phase 1 — Demolition & Rough-In',
+      description: 'Interior demolition, framing, MEP rough-in.',
+      status: 'Completed',
+      sequence: 0,
+      startDate: new Date('2026-03-01'),
+      endDate: new Date('2026-05-31'),
+      projectId: project1.id,
+      organizationId: org.id,
+    },
+  })
+
+  await prisma.projectScope.upsert({
+    where: { id: 'seed-scope-2' },
+    update: {},
+    create: {
+      id: 'seed-scope-2',
+      name: 'Phase 2 — Finishes & Fit-Out',
+      description: 'Drywall, flooring, millwork, MEP trim-out.',
+      status: 'Active',
+      sequence: 1,
+      startDate: new Date('2026-06-01'),
+      endDate: new Date('2026-09-30'),
+      projectId: project1.id,
+      organizationId: org.id,
+    },
   })
 
   // Seed licenses

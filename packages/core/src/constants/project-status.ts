@@ -1,4 +1,4 @@
-import type { ProjectStatus, ProjectType } from '../types/project'
+import type { ProjectScopeStatus, ProjectStatus, ProjectType } from '../types/project'
 
 export const PROJECT_STATUSES: Record<
   ProjectStatus,
@@ -47,3 +47,14 @@ export const PROJECT_STATUS_LIST = Object.keys(
   PROJECT_STATUSES
 ) as ProjectStatus[]
 export const PROJECT_TYPE_LIST = Object.keys(PROJECT_TYPES) as ProjectType[]
+
+export const PROJECT_SCOPE_STATUSES: Record<ProjectScopeStatus, { label: string }> = {
+  Active: { label: 'Active' },
+  Completed: { label: 'Completed' },
+  OnHold: { label: 'On Hold' },
+  Cancelled: { label: 'Cancelled' },
+}
+
+export const PROJECT_SCOPE_STATUS_LIST = Object.keys(
+  PROJECT_SCOPE_STATUSES
+) as ProjectScopeStatus[]

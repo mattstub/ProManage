@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -35,6 +36,7 @@ model Organization {
   channels       Channel[]
   contacts       Contact[]
   licenses       License[]
+  projectScopes  ProjectScope[]
   safetyDocuments SafetyDocument[]
   sdsEntries      SdsEntry[]
   toolboxTalks    ToolboxTalk[]
@@ -181,36 +183,90 @@ model RefreshToken {
 }
 
 // ===========================================
-// PROJECT (Basic — expanded in Phase 4)
+// PROJECT (Phase 4.1)
 // ===========================================
 
 model Project {
-  id          String    @id @default(cuid())
-  name        String
-  number      String
-  type        String    @default("Commercial")
-  status      String    @default("Bidding")
-  description String?
-  address     String?
-  startDate   DateTime? @map("start_date")
-  endDate     DateTime? @map("end_date")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
+  id                 String    @id @default(cuid())
+  name               String
+  number             String
+  type               String    @default("Commercial")
+  status             String    @default("Bidding")
+  description        String?
+  address            String?
+  startDate          DateTime? @map("start_date")
+  endDate            DateTime? @map("end_date")
+  // Extended metadata (Phase 4.1)
+  ownerName          String?   @map("owner_name")
+  ownerPhone         String?   @map("owner_phone")
+  ownerEmail         String?   @map("owner_email")
+  architectName      String?   @map("architect_name")
+  contractorLicense  String?   @map("contractor_license")
+  permitNumber       String?   @map("permit_number")
+  budget             Decimal?  @db.Decimal(15, 2)
+  squareFootage      Int?      @map("square_footage")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
 
   organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId String       @map("organization_id")
 
-  tasks          Task[]
-  procedures     Procedure[]
-  calendarEvents CalendarEvent[]
-  channels       Channel[]
+  tasks           Task[]
+  procedures      Procedure[]
+  calendarEvents  CalendarEvent[]
+  channels        Channel[]
   contactProjects ContactProject[]
   toolboxTalks    ToolboxTalk[]
   incidentReports IncidentReport[]
+  scopes          ProjectScope[]
+  settings        ProjectSettings?
 
   @@unique([number, organizationId])
   @@index([organizationId])
+  @@index([status])
+  @@index([type])
   @@map("projects")
+}
+
+model ProjectScope {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  status      String    @default("Active") // Active | Completed | OnHold | Cancelled
+  sequence    Int       @default(0)
+  startDate   DateTime? @map("start_date")
+  endDate     DateTime? @map("end_date")
+  budget      Decimal?  @db.Decimal(15, 2)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  project        Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId      String       @map("project_id")
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String       @map("organization_id")
+
+  @@index([projectId])
+  @@index([organizationId])
+  @@map("project_scopes")
+}
+
+model ProjectSettings {
+  id                    String   @id @default(cuid())
+  requireDailyReports   Boolean  @default(false) @map("require_daily_reports")
+  requireTimeTracking   Boolean  @default(false) @map("require_time_tracking")
+  enableSafetyModule    Boolean  @default(true)  @map("enable_safety_module")
+  enableDocumentsModule Boolean  @default(false) @map("enable_documents_module")
+  defaultView           String   @default("dashboard") @map("default_view")
+  notifyOnIncident      Boolean  @default(true)  @map("notify_on_incident")
+  notifyOnDailyReport   Boolean  @default(false) @map("notify_on_daily_report")
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String  @unique @map("project_id")
+
+  @@map("project_settings")
 }
 
 // ===========================================
@@ -557,6 +613,7 @@ model Contact {
 
 model ContactProject {
   assignedAt DateTime @default(now()) @map("assigned_at")
+  role       String?  // project-specific role label (e.g. "Site Superintendent")
 
   contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
   contactId String  @map("contact_id")

@@ -14,6 +14,8 @@ export {
   PROJECT_TYPES,
   PROJECT_STATUS_LIST,
   PROJECT_TYPE_LIST,
+  PROJECT_SCOPE_STATUSES,
+  PROJECT_SCOPE_STATUS_LIST,
 } from './project-status'
 
 export {

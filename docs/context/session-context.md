@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-17 (Session 21)
+**Last Updated**: 2026-03-18 (Session 23)
 
 ---
 
@@ -103,7 +103,7 @@ Root tooling:          COMPLETE (Sub-phase A)
 
 ---
 
-## Current State (2026-03-17)
+## Current State (2026-03-18)
 
 - **Phase 1, Sub-phases A-G**: COMPLETE (~150 source files)
 - **Phase 2.1 Dashboard**: COMPLETE — real data, projects list, stats widgets, role-aware sidebar
@@ -116,16 +116,17 @@ Root tooling:          COMPLETE (Sub-phase A)
 - **Phase 3.1 Contact Management**: COMPLETE — 8-type contact directory, search/filter, project associations, org-scoped email uniqueness
 - **Phase 3.2 Licensing**: COMPLETE — org + individual license tracking, freeform types, multi-doc upload (MinIO), configurable renewal reminders (≤7d daily / >7d once), SSE bell notifications
 - **Phase 3.3 Safety**: COMPLETE — 5-tab safety hub (document library, SDS catalog, toolbox talks + attendee roster, safety forms, incident reports); all layers complete (Prisma, core, API service+routes+tests, api-client, web hooks+page+sidebar)
-- **API**: Runs on http://localhost:3001 | Routes: /auth, /calendar-events, /channels, /contacts, /dashboard, /licenses, /messages, /notifications, /organizations, /procedures, /projects, /safety, /tasks, /users
-- **DB**: PostgreSQL in Docker. 32 models. `prisma db push` applied. Seed includes safety demo data.
-- **api-client**: Built — all resource namespaces including SafetyResource
+- **Phase 4.1 Project Entity Expansion**: COMPLETE — Project detail pages (Overview, Team, Scopes, Settings); 18 new API routes; ProjectScope + ProjectSettings models; dashboard metrics; 63 new tests (463 total)
+- **API**: Runs on http://localhost:3001 | Routes: /auth, /calendar-events, /channels, /contacts, /dashboard, /licenses, /messages, /notifications, /organizations, /procedures, /projects (18 routes), /safety, /tasks, /users
+- **DB**: PostgreSQL in Docker. 34 models (added ProjectScope + ProjectSettings). `prisma db push` applied. Seed includes project settings and scopes demo data.
+- **api-client**: Built — all resource namespaces including extended ProjectsResource (11 new methods)
 - **ui-components**: Built (tsc --build, zero errors), 26 Radix+Tailwind components
 - **Sidebar**: Dashboard, Projects, Tasks, Procedures, Calendar, Channels, Contacts, Licenses, Safety, Messages, Organization, Settings
 - **Header**: NotificationBell with live badge + dropdown (SSE-powered)
 - **packages/core**: CommonJS output (fixed ESM seed issue; web/bundler still works fine)
-- **Tests**: 7/7 turbo tasks (lint, type-check, test, build) all passing; web type-check clean
+- **Tests**: 5/5 turbo tasks (lint, type-check, test) all passing; 463 API tests, web type-check clean
 - **Infrastructure**: COMPLETE and merged — Dockerfiles, CI/CD, structured logging, Sentry scaffold, Fastify 5 upgrade
-- **Next**: Phase 4 — Project Management Core (project detail pages, Gantt/timeline, RFIs, submittals, change orders)
+- **Next**: Phase 4.2 — Construction Documents, or Phase 4.3 — Safety (Job-Specific)
 
 ### Seed Credentials
 
@@ -224,6 +225,32 @@ DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-d
 - TypeScript project references wired (composite + tsc --build on both packages)
 - Removed .claude/settings.local.json from git tracking
 - PR merged by user
+
+### Session 23 — 2026-03-18
+
+**Phase 4.1 follow-up fixes** (continuing on `feat/phase4-subphase-1-project-entity`):
+
+- **Tailwind CSS broken** — all styles dropped due to mismatch: CI commit 9169fa8 switched PostCSS to `@tailwindcss/postcss` (v4 plugin) but `globals.css` still used v3 `@tailwind base/components/utilities` directives which v4 ignores. Fixed by updating globals.css to `@import "tailwindcss"` + `@source "../../packages/ui-components/src"`.
+- **Next.js 15 `params` warning** — all 5 project detail pages (`[id]/layout.tsx`, `[id]/page.tsx`, `[id]/team/page.tsx`, `[id]/scopes/page.tsx`, `[id]/settings/page.tsx`) used `params.id` directly. Fixed by typing `params` as `Promise<{ id: string }>` and unwrapping with `React.use(params)`.
+- **Radix `SelectItem value=""` crash** — projects/page.tsx filter selects used `value=""` which Radix forbids. Changed to `"ALL"` sentinel; updated filter logic accordingly.
+- **UI styling regression** — filter/search bar used icon-inside-input pattern and raw `<button>`; rewrote to match `contacts/page.tsx` pattern exactly (Label + plain Input, fixed-width selects, Button component, 300ms debounced search).
+- **ROADMAP.md** — added Project Channels tab to Phase 4.1; cross-linked from Phase 2.3B deferred item; updated status + date.
+
+### Session 22 — 2026-03-18
+
+**Phase 4.1 Project Entity Expansion COMPLETE** (`feat/phase4-subphase-1-project-entity` branch):
+
+Layer 1 — Prisma: Extended `Project` model with 8 new optional fields (ownerName, ownerPhone, ownerEmail, architectName, contractorLicense, permitNumber, budget, squareFootage). Added `role String?` to `ContactProject`. Added `ProjectScope` and `ProjectSettings` models (34 models total). `prisma db push` applied; seed updated with demo project settings + scopes.
+
+Layer 2 — packages/core: Extended `CreateProjectInput` (added optional `status`), `UpdateProjectInput`. New types: `ProjectScope`, `ProjectSettings`, `ProjectContactAssignment`, `ProjectWithRelations`, `ProjectDashboardMetrics`, `ProjectDashboard`, `ProjectScopeStatus`. New schemas: `createProjectScopeSchema`, `updateProjectScopeSchema`, `updateProjectSettingsSchema`, `assignContactToProjectSchema`. New constants: `PROJECT_SCOPE_STATUSES`, `PROJECT_SCOPE_STATUS_LIST`.
+
+Layer 3 — API (service + routes + tests): `project.service.ts` rewritten with 14 functions (listProjects with search/type filter, getProject with relations, createProject via `$transaction`, getProjectDashboard with 6 parallel queries, listProjectContacts, assignContact, removeContact, listScopes, createScope, updateScope, deleteScope, getSettings upsert-defaults, updateSettings). `routes/projects/index.ts` rewritten with 18 routes across 4 groups. Fixed `requireRole`/`mockRole` pattern in tests (was missing throughout — safety routes had it, project routes didn't). 63 new tests (30 service + 33 route), 463 total. Fixed `projectSettings.create` mock.
+
+Layer 4 — api-client: `ProjectsResource` extended with 11 new methods (getDashboard, listContacts, assignContact, updateContactAssignment, removeContact, listScopes, createScope, updateScope, deleteScope, getSettings, updateSettings). `ListProjectsParams` extended with `type` and `search`. New type exports from core added to api-client index.
+
+Layer 5 — Web: `use-projects.ts` extended with 12 new hooks (useProjectDashboard, useProjectContacts, useProjectScopes, useProjectSettings, useCreateProject, useUpdateProject, useArchiveProject, useAssignContact, useRemoveProjectContact, useCreateProjectScope, useUpdateProjectScope, useDeleteProjectScope, useUpdateProjectSettings). Projects list page: clickable rows → detail, search input, status+type filters, working create form. New project detail pages: `[id]/layout.tsx` (tab nav: Overview, Team, Scopes, Settings), `[id]/page.tsx` (metrics cards + project details + scope progress), `[id]/team/page.tsx` (assign/remove contacts with roles), `[id]/scopes/page.tsx` (CRUD scope list), `[id]/settings/page.tsx` (toggle-based settings panel).
+
+Docker fix (from previous session): API Dockerfile CMD fixed (`node apps/api/dist/server.js`), OpenSSL 3 added for Alpine Prisma.
 
 ### Session 21 — 2026-03-17
 

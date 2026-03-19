@@ -36,11 +36,11 @@ import {
 
 const WRITE_ROLES: RoleName[] = ['Admin', 'ProjectManager']
 
-const SCOPE_STATUS_VARIANT: Record<string, BadgeProps['variant']> = {
+const SCOPE_STATUS_VARIANT: Record<ProjectScopeStatus, BadgeProps['variant']> = {
   Active: 'success',
-  Pending: 'primary',
-  Complete: 'default',
+  Completed: 'default',
   OnHold: 'warning',
+  Cancelled: 'default',
 }
 
 function ScopeFormDialog({

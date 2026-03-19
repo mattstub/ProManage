@@ -6,19 +6,21 @@ Usage: `/new-branch` — Claude will ask for the branch details and create it.
 
 ## Branch Naming Convention
 
-```
+```bash
 feat/phase{N}-subphase-{letter}-{short-kebab-description}
 ```
 
 Examples:
+
 - `feat/phase1-subphase-g-apps-web`
 - `feat/phase2-dashboard-widgets`
 - `fix/phase1-auth-refresh-race`
 - `docs/update-roadmap-phase2`
 
-**Prefixes**:
+Prefixes:
+
 | Prefix | When to use |
-|---|---|
+| --- | --- |
 | `feat/` | New sub-phase or feature work |
 | `fix/` | Bug fix targeting a specific area |
 | `docs/` | Documentation-only changes |
@@ -38,6 +40,7 @@ git checkout -b feat/phase{N}-subphase-{letter}-{description}
 ```
 
 Verify:
+
 ```bash
 git branch
 git log --oneline -3
@@ -57,6 +60,7 @@ git log --oneline -3
 ## During the Sub-phase
 
 Commit at logical checkpoints (not just at the end):
+
 - After scaffold / initial file structure
 - After each major feature area (e.g., auth pages done, then layout done)
 - Before any risky refactor

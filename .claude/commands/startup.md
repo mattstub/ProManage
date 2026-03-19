@@ -8,12 +8,13 @@ Run this at the beginning of every coding session to orient and verify the envir
 
 Read the context files to understand current project state:
 
-```
+```bash
 Read: docs/context/session-context.md
 Read: docs/context/implementation-progress.md
 ```
 
 Confirm:
+
 - Which sub-phase is currently active or next
 - What the last session log entry says
 - Any open branches or pending PRs
@@ -41,6 +42,7 @@ ls packages/core/dist packages/api-client/dist packages/ui-components/dist 2>/de
 ```
 
 If rebuild is needed (build order matters — core first):
+
 ```bash
 source ~/.nvm/nvm.sh && nvm use 20
 pnpm --filter @promanage/core build
@@ -49,6 +51,7 @@ pnpm --filter @promanage/ui-components build
 ```
 
 If incremental build seems stuck or wrong (stale .tsbuildinfo):
+
 ```bash
 rm -rf packages/core/dist packages/core/tsconfig.tsbuildinfo
 pnpm --filter @promanage/core build
@@ -75,7 +78,7 @@ If starting a new sub-phase, run `/new-branch` next.
 source ~/.nvm/nvm.sh && nvm use 20 && cd apps/api && pnpm dev
 ```
 
-Verify: http://localhost:3001/health → `{"status":"ok"}`
+Verify: `http://localhost:3001/health` → `{"status":"ok"}`
 
 > WSL note: background processes don't persist across shell sessions. Keep a dedicated terminal for the server.
 

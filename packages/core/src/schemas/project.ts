@@ -31,6 +31,7 @@ export const createProjectSchema = z.object({
     .min(1, 'Project number is required')
     .max(50, 'Project number must be 50 characters or less'),
   type: z.enum(projectTypes).default('Commercial'),
+  status: z.enum(projectStatuses).optional(),
   description: z.string().max(2000).optional(),
   address: z.string().max(500).optional(),
   startDate: z.coerce.date().optional(),

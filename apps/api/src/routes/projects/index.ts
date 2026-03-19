@@ -251,10 +251,10 @@ const projectRoutes: FastifyPluginAsync = async (fastify) => {
 
   // ─── Settings ────────────────────────────────────────────────────────────────
 
-  // GET /projects/:id/settings — any authenticated user; write restricted below
+  // GET /projects/:id/settings — Admin, PM only
   fastify.get(
     '/:id/settings',
-    { preHandler: [readRateLimiter, authenticate] },
+    { preHandler: [readRateLimiter, authenticate, requireRole(...SETTINGS_ROLES)] },
     async (request, reply) => {
       const { id } = request.params as { id: string }
       const settings = await projectService.getProjectSettings(

@@ -1,7 +1,7 @@
 'use client'
 
 import { PencilSquareIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
-import { useState } from 'react'
+import { use, useState } from 'react'
 
 import { PROJECT_SCOPE_STATUSES, type ProjectScopeStatus, type RoleName } from '@promanage/core'
 import {
@@ -23,6 +23,8 @@ import {
   type BadgeProps,
 } from '@promanage/ui-components'
 
+import type { ProjectScope } from '@promanage/api-client'
+
 import { useAuth } from '@/hooks/use-auth'
 import {
   useCreateProjectScope,
@@ -31,7 +33,6 @@ import {
   useUpdateProjectScope,
 } from '@/hooks/use-projects'
 
-import type { ProjectScope } from '@promanage/api-client'
 
 const WRITE_ROLES: RoleName[] = ['Admin', 'ProjectManager']
 
@@ -141,9 +142,10 @@ function ScopeFormDialog({
   )
 }
 
-export default function ProjectScopesPage({ params }: { params: { id: string } }) {
+export default function ProjectScopesPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const { user } = useAuth()
-  const { data: scopes, isLoading } = useProjectScopes(params.id)
+  const { data: scopes, isLoading } = useProjectScopes(id)
   const deleteScope = useDeleteProjectScope()
   const [addOpen, setAddOpen] = useState(false)
   const [editScope, setEditScope] = useState<ProjectScope | null>(null)
@@ -151,7 +153,7 @@ export default function ProjectScopesPage({ params }: { params: { id: string } }
   const canManage = WRITE_ROLES.some((r) => user?.roles.includes(r))
 
   async function handleDelete(scopeId: string) {
-    await deleteScope.mutateAsync({ projectId: params.id, scopeId })
+    await deleteScope.mutateAsync({ projectId: id, scopeId })
   }
 
   return (
@@ -226,14 +228,14 @@ export default function ProjectScopesPage({ params }: { params: { id: string } }
       )}
 
       <ScopeFormDialog
-        projectId={params.id}
+        projectId={id}
         open={addOpen}
         onOpenChange={setAddOpen}
       />
 
       {editScope && (
         <ScopeFormDialog
-          projectId={params.id}
+          projectId={id}
           scope={editScope}
           open={Boolean(editScope)}
           onOpenChange={(open) => { if (!open) setEditScope(null) }}

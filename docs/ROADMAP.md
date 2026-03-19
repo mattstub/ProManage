@@ -106,7 +106,7 @@ The central landing page where managers access all tools, view reports, and comm
 - [x] Real-time delivery via Socket.io (JWT auth in handshake, org/user rooms)
 - [x] File/image sharing (PDF, photo, video via MinIO presigned PUT/GET URLs)
 - [x] Message threading (parentId reply model, thread panel UI)
-- [ ] Template projects: standardized channels created with project (deferred to Phase 4)
+- [ ] Template projects: standardized channels created with project (deferred to Phase 4.1 — Project Channels tab)
 
 ### 2.4 Company Calendar
 - [x] Calendar view (month, week, day)
@@ -174,6 +174,7 @@ The central entity that all construction modules connect to.
 - [ ] Project team assignment (from Contact Management)
 - [ ] Project-level settings and configuration
 - [ ] Project dashboard (health overview, key metrics)
+- [ ] Project Channels tab — surface project-scoped channels (projectId already on Channel model) within the project detail page; create/manage channels from inside the project file rather than only from global nav (deferred from Phase 2.3B)
 
 ### 4.2 Construction Documents
 - [ ] Drawing log with version control (git-style revision tracking)
@@ -453,6 +454,6 @@ Each module follows a consistent pattern from the canvas:
 
 ---
 
-**Last Updated**: 2026-03-15
-**Status**: Active — Phase 3 in progress (3.1 + 3.2 complete, 3.3 Safety next)
+**Last Updated**: 2026-03-18
+**Status**: Active — Phase 4 in progress (4.1 Project Entity underway)
 **Source**: `notes/ProManage Suite.canvas`

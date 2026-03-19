@@ -1,8 +1,8 @@
 'use client'
 
-import { MagnifyingGlassIcon, PlusIcon } from '@heroicons/react/24/outline'
+import { PlusIcon } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   PROJECT_STATUS_LIST,
@@ -96,20 +96,24 @@ function CreateProjectDialog({
 }) {
   const createProject = useCreateProject()
   const router = useRouter()
-  const [form, setForm] = useState<Partial<CreateProjectInput>>({})
+  const [name, setName] = useState('')
+  const [number, setNumber] = useState('')
+  const [type, setType] = useState<ProjectType>('Commercial')
+  const [status, setStatus] = useState<ProjectStatus>('Active')
+  const [address, setAddress] = useState('')
   const [error, setError] = useState<string | null>(null)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
     try {
-      const project = await createProject.mutateAsync(form as CreateProjectInput)
+      const input: CreateProjectInput = { name, number, type, status, address: address || undefined }
+      const project = await createProject.mutateAsync(input)
       onOpenChange(false)
-      setForm({})
+      setName(''); setNumber(''); setType('Commercial'); setStatus('Active'); setAddress('')
       router.push(`/projects/${project.id}`)
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Failed to create project'
-      setError(msg)
+      setError(err instanceof Error ? err.message : 'Failed to create project')
     }
   }
 
@@ -122,61 +126,39 @@ function CreateProjectDialog({
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           <div className="space-y-1">
             <Label htmlFor="proj-name">Name *</Label>
-            <Input
-              id="proj-name"
-              value={form.name ?? ''}
-              onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-              required
-            />
+            <Input id="proj-name" value={name} onChange={(e) => setName(e.target.value)} required />
           </div>
           <div className="space-y-1">
             <Label htmlFor="proj-number">Number *</Label>
-            <Input
-              id="proj-number"
-              value={form.number ?? ''}
-              onChange={(e) => setForm((f) => ({ ...f, number: e.target.value }))}
-              required
-            />
+            <Input id="proj-number" value={number} onChange={(e) => setNumber(e.target.value)} required />
           </div>
-          <div className="space-y-1">
-            <Label htmlFor="proj-type">Type *</Label>
-            <Select
-              value={form.type ?? ''}
-              onValueChange={(v) => setForm((f) => ({ ...f, type: v as ProjectType }))}
-            >
-              <SelectTrigger id="proj-type">
-                <SelectValue placeholder="Select type" />
-              </SelectTrigger>
-              <SelectContent>
-                {PROJECT_TYPE_LIST.map((t) => (
-                  <SelectItem key={t} value={t}>{t}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="proj-status">Status</Label>
-            <Select
-              value={form.status ?? 'Active'}
-              onValueChange={(v) => setForm((f) => ({ ...f, status: v as ProjectStatus }))}
-            >
-              <SelectTrigger id="proj-status">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {PROJECT_STATUS_LIST.map((s) => (
-                  <SelectItem key={s} value={s}>{STATUS_LABEL[s]}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <Label htmlFor="proj-type">Type *</Label>
+              <Select value={type} onValueChange={(v) => setType(v as ProjectType)}>
+                <SelectTrigger id="proj-type"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {PROJECT_TYPE_LIST.map((t) => (
+                    <SelectItem key={t} value={t}>{t}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="proj-status">Status</Label>
+              <Select value={status} onValueChange={(v) => setStatus(v as ProjectStatus)}>
+                <SelectTrigger id="proj-status"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {PROJECT_STATUS_LIST.map((s) => (
+                    <SelectItem key={s} value={s}>{STATUS_LABEL[s]}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <div className="space-y-1">
             <Label htmlFor="proj-address">Address</Label>
-            <Input
-              id="proj-address"
-              value={form.address ?? ''}
-              onChange={(e) => setForm((f) => ({ ...f, address: e.target.value || undefined }))}
-            />
+            <Input id="proj-address" value={address} onChange={(e) => setAddress(e.target.value)} />
           </div>
           {error && <p className="text-sm text-red-600">{error}</p>}
           <div className="flex justify-end gap-2 pt-2">
@@ -197,14 +179,20 @@ export default function ProjectsPage() {
   const { user } = useAuth()
   const router = useRouter()
   const [createOpen, setCreateOpen] = useState(false)
+  const [statusFilter, setStatusFilter] = useState('ALL')
+  const [typeFilter, setTypeFilter] = useState('ALL')
   const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState<ProjectStatus | ''>('')
-  const [typeFilter, setTypeFilter] = useState<ProjectType | ''>('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search), 300)
+    return () => clearTimeout(timer)
+  }, [search])
 
   const { data: result, isLoading } = useProjects({
-    search: search || undefined,
-    status: statusFilter || undefined,
-    type: typeFilter || undefined,
+    search: debouncedSearch || undefined,
+    status: statusFilter !== 'ALL' ? (statusFilter as ProjectStatus) : undefined,
+    type: typeFilter !== 'ALL' ? (typeFilter as ProjectType) : undefined,
   })
 
   const projects = result?.data ?? []
@@ -223,55 +211,49 @@ export default function ProjectsPage() {
           <h1 className="text-2xl font-bold text-gray-900 mt-2">Projects</h1>
         </div>
         {canCreate && (
-          <button
-            onClick={() => setCreateOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
-          >
-            <PlusIcon className="h-4 w-4" />
+          <Button onClick={() => setCreateOpen(true)}>
+            <PlusIcon className="h-4 w-4 mr-2" />
             New Project
-          </button>
+          </Button>
         )}
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-3">
-        <div className="relative flex-1 min-w-48">
-          <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <Label htmlFor="filter-status" className="text-sm text-gray-600">Status:</Label>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-36" id="filter-status"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">All Statuses</SelectItem>
+              {PROJECT_STATUS_LIST.map((s) => (
+                <SelectItem key={s} value={s}>{STATUS_LABEL[s]}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex items-center gap-2">
+          <Label htmlFor="filter-type" className="text-sm text-gray-600">Type:</Label>
+          <Select value={typeFilter} onValueChange={setTypeFilter}>
+            <SelectTrigger className="w-36" id="filter-type"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">All Types</SelectItem>
+              {PROJECT_TYPE_LIST.map((t) => (
+                <SelectItem key={t} value={t}>{t}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex items-center gap-2">
+          <Label htmlFor="search" className="text-sm text-gray-600">Search:</Label>
           <Input
-            className="pl-9"
-            placeholder="Search projects…"
+            id="search"
+            className="w-64"
+            placeholder="Name or number…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <Select
-          value={statusFilter}
-          onValueChange={(v) => setStatusFilter(v as ProjectStatus | '')}
-        >
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="All statuses" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="">All statuses</SelectItem>
-            {PROJECT_STATUS_LIST.map((s) => (
-              <SelectItem key={s} value={s}>{STATUS_LABEL[s]}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select
-          value={typeFilter}
-          onValueChange={(v) => setTypeFilter(v as ProjectType | '')}
-        >
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="All types" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="">All types</SelectItem>
-            {PROJECT_TYPE_LIST.map((t) => (
-              <SelectItem key={t} value={t}>{t}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
       </div>
 
       <div className="border border-gray-200 rounded-lg overflow-hidden">
@@ -322,12 +304,8 @@ export default function ProjectsPage() {
                       {STATUS_LABEL[project.status as ProjectStatus] ?? project.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-gray-600">
-                    {formatDate(project.startDate)}
-                  </TableCell>
-                  <TableCell className="text-gray-600">
-                    {formatDate(project.endDate)}
-                  </TableCell>
+                  <TableCell className="text-gray-600">{formatDate(project.startDate)}</TableCell>
+                  <TableCell className="text-gray-600">{formatDate(project.endDate)}</TableCell>
                 </TableRow>
               ))
             )}

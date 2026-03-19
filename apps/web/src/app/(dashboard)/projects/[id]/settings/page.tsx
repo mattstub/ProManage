@@ -1,14 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { use, useState } from 'react'
 
-import type { RoleName } from '@promanage/core'
 import { Label, Skeleton } from '@promanage/ui-components'
+
+import type { UpdateProjectSettingsInput } from '@promanage/api-client'
+import type { RoleName } from '@promanage/core'
 
 import { useAuth } from '@/hooks/use-auth'
 import { useProjectSettings, useUpdateProjectSettings } from '@/hooks/use-projects'
 
-import type { UpdateProjectSettingsInput } from '@promanage/api-client'
 
 const SETTINGS_ROLES: RoleName[] = ['Admin', 'ProjectManager']
 
@@ -54,9 +55,10 @@ function Toggle({
   )
 }
 
-export default function ProjectSettingsPage({ params }: { params: { id: string } }) {
+export default function ProjectSettingsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const { user } = useAuth()
-  const { data: settings, isLoading } = useProjectSettings(params.id)
+  const { data: settings, isLoading } = useProjectSettings(id)
   const updateSettings = useUpdateProjectSettings()
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
@@ -69,7 +71,7 @@ export default function ProjectSettingsPage({ params }: { params: { id: string }
     setSaved(false)
     try {
       await updateSettings.mutateAsync({
-        projectId: params.id,
+        projectId: id,
         input: { [field]: value },
       })
       setSaved(true)

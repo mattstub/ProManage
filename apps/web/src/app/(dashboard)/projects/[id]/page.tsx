@@ -7,8 +7,10 @@ import {
   MegaphoneIcon,
   WrenchScrewdriverIcon,
 } from '@heroicons/react/24/outline'
+import { use } from 'react'
 
 import { Badge, Skeleton, type BadgeProps } from '@promanage/ui-components'
+
 import type { ProjectStatus } from '@promanage/core'
 
 import { useProjectDashboard } from '@/hooks/use-projects'
@@ -68,8 +70,9 @@ function formatDate(date: Date | string | null | undefined): string {
   })
 }
 
-export default function ProjectOverviewPage({ params }: { params: { id: string } }) {
-  const { data: dashboard, isLoading } = useProjectDashboard(params.id)
+export default function ProjectOverviewPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
+  const { data: dashboard, isLoading } = useProjectDashboard(id)
 
   const project = dashboard?.project
   const metrics = dashboard?.metrics

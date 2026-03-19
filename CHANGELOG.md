@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed - Phase 4.1 follow-up fixes (Session 23, 2026-03-18)
+
+**Branch: `feat/phase4-subphase-1-project-entity`**
+
+- `apps/web/src/app/globals.css`: Updated from Tailwind v3 `@tailwind` directives to v4 `@import "tailwindcss"` syntax; added `@source` for `packages/ui-components/src`. The CI fix commit (9169fa8) switched the PostCSS plugin to `@tailwindcss/postcss` (v4) without updating globals.css, causing all Tailwind styles to be dropped entirely.
+- `apps/web/src/app/(dashboard)/projects/[id]/layout.tsx`, `page.tsx`, `team/page.tsx`, `scopes/page.tsx`, `settings/page.tsx`: Fixed Next.js 15 `params` Promise warning — typed `params` as `Promise<{ id: string }>` and unwrapped with `React.use(params)` in all 5 project detail page/layout components.
+- `apps/web/src/app/(dashboard)/projects/page.tsx`: Fixed `SelectItem value=""` Radix crash (empty string forbidden); changed filter state to `"ALL"` sentinel. Rewrote filter/search bar to match established `contacts/page.tsx` pattern (plain `Label` + `Input`, fixed-width selects, `Button` component, 300ms debounced search).
+- `docs/ROADMAP.md`: Added Project Channels tab item to Phase 4.1; cross-linked from Phase 2.3B deferred note. Updated status + Last Updated date.
+
 ### Added - Phase 4.1 Project Entity Expansion (Session 22, 2026-03-18)
 
 **Branch: `feat/phase4-subphase-1-project-entity`**

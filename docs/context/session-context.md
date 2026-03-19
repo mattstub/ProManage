@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-18 (Session 22)
+**Last Updated**: 2026-03-18 (Session 23)
 
 ---
 
@@ -126,7 +126,7 @@ Root tooling:          COMPLETE (Sub-phase A)
 - **packages/core**: CommonJS output (fixed ESM seed issue; web/bundler still works fine)
 - **Tests**: 5/5 turbo tasks (lint, type-check, test) all passing; 463 API tests, web type-check clean
 - **Infrastructure**: COMPLETE and merged — Dockerfiles, CI/CD, structured logging, Sentry scaffold, Fastify 5 upgrade
-- **Next**: Phase 4.2 — Gantt/Timeline view, or Phase 4.3 — RFIs &amp; Submittals
+- **Next**: Phase 4.2 — Construction Documents, or Phase 4.3 — Safety (Job-Specific)
 
 ### Seed Credentials
 
@@ -225,6 +225,16 @@ DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-d
 - TypeScript project references wired (composite + tsc --build on both packages)
 - Removed .claude/settings.local.json from git tracking
 - PR merged by user
+
+### Session 23 — 2026-03-18
+
+**Phase 4.1 follow-up fixes** (continuing on `feat/phase4-subphase-1-project-entity`):
+
+- **Tailwind CSS broken** — all styles dropped due to mismatch: CI commit 9169fa8 switched PostCSS to `@tailwindcss/postcss` (v4 plugin) but `globals.css` still used v3 `@tailwind base/components/utilities` directives which v4 ignores. Fixed by updating globals.css to `@import "tailwindcss"` + `@source "../../packages/ui-components/src"`.
+- **Next.js 15 `params` warning** — all 5 project detail pages (`[id]/layout.tsx`, `[id]/page.tsx`, `[id]/team/page.tsx`, `[id]/scopes/page.tsx`, `[id]/settings/page.tsx`) used `params.id` directly. Fixed by typing `params` as `Promise<{ id: string }>` and unwrapping with `React.use(params)`.
+- **Radix `SelectItem value=""` crash** — projects/page.tsx filter selects used `value=""` which Radix forbids. Changed to `"ALL"` sentinel; updated filter logic accordingly.
+- **UI styling regression** — filter/search bar used icon-inside-input pattern and raw `<button>`; rewrote to match `contacts/page.tsx` pattern exactly (Label + plain Input, fixed-width selects, Button component, 300ms debounced search).
+- **ROADMAP.md** — added Project Channels tab to Phase 4.1; cross-linked from Phase 2.3B deferred item; updated status + date.
 
 ### Session 22 — 2026-03-18
 

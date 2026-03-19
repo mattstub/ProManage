@@ -1,9 +1,8 @@
 'use client'
 
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
-import { useState } from 'react'
+import { use, useState } from 'react'
 
-import type { RoleName } from '@promanage/core'
 import {
   Button,
   Dialog,
@@ -21,6 +20,8 @@ import {
   TableHeader,
   TableRow,
 } from '@promanage/ui-components'
+
+import type { RoleName } from '@promanage/core'
 
 import { useAuth } from '@/hooks/use-auth'
 import { useContacts } from '@/hooks/use-contacts'
@@ -111,16 +112,17 @@ function AssignContactDialog({
   )
 }
 
-export default function ProjectTeamPage({ params }: { params: { id: string } }) {
+export default function ProjectTeamPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const { user } = useAuth()
-  const { data: contacts, isLoading } = useProjectContacts(params.id)
+  const { data: contacts, isLoading } = useProjectContacts(id)
   const removeContact = useRemoveProjectContact()
   const [assignOpen, setAssignOpen] = useState(false)
 
   const canManage = WRITE_ROLES.some((r) => user?.roles.includes(r))
 
   async function handleRemove(contactId: string) {
-    await removeContact.mutateAsync({ projectId: params.id, contactId })
+    await removeContact.mutateAsync({ projectId: id, contactId })
   }
 
   return (
@@ -209,7 +211,7 @@ export default function ProjectTeamPage({ params }: { params: { id: string } }) 
       </div>
 
       <AssignContactDialog
-        projectId={params.id}
+        projectId={id}
         open={assignOpen}
         onOpenChange={setAssignOpen}
       />

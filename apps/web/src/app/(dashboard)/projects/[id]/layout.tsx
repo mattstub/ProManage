@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { use } from 'react'
 
 import { Breadcrumbs, Skeleton } from '@promanage/ui-components'
 
@@ -19,9 +20,9 @@ export default function ProjectDetailLayout({
   params,
 }: {
   children: React.ReactNode
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
-  const { id } = params
+  const { id } = use(params)
   const pathname = usePathname()
   const { data: project, isLoading } = useProject(id)
 

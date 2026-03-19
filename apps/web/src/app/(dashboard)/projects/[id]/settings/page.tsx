@@ -66,14 +66,19 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
 
   const canManage = SETTINGS_ROLES.some((r) => user?.roles.includes(r))
 
-  async function handleToggle(field: keyof UpdateProjectSettingsInput, value: boolean) {
+  type BooleanSettingKey = {
+    [K in keyof UpdateProjectSettingsInput]: UpdateProjectSettingsInput[K] extends boolean | undefined ? K : never
+  }[keyof UpdateProjectSettingsInput]
+
+  async function handleToggle(field: BooleanSettingKey, value: boolean) {
     if (!canManage) return
     setError(null)
     setSaved(false)
     try {
+      const input: UpdateProjectSettingsInput = { [field]: value } as UpdateProjectSettingsInput
       await updateSettings.mutateAsync({
         projectId: id,
-        input: { [field]: value },
+        input,
       })
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)

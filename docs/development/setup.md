@@ -113,7 +113,6 @@ cp apps/web/.env.example apps/web/.env
 ```bash
 # apps/api/.env
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/promanage_dev"
-REDIS_URL="redis://localhost:6379"
 S3_ENDPOINT="http://localhost:9000"
 S3_ACCESS_KEY="minioadmin"
 S3_SECRET_KEY="minioadmin"

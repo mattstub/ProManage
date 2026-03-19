@@ -10,7 +10,7 @@
 
 **ProManage** — open-source (AGPL-3.0) construction management platform. Desktop-first web app (90%) + mobile companion (10%).
 
-- **Repo**: https://github.com/mattstub/ProManage
+- **Repo**: `https://github.com/mattstub/ProManage`
 - **Author**: Matt Stubenhofer
 - **Version**: 0.1.0-dev
 
@@ -57,7 +57,7 @@
 
 ## Directory Map (Current State)
 
-```
+```bash
 ProManage/
 apps/api/              COMPLETE through Phase 3.3
   prisma/schema.prisma   32 models (+ SafetyDocument, SdsEntry, ToolboxTalk, ToolboxTalkAttendee, SafetyForm, IncidentReport)
@@ -117,7 +117,7 @@ Root tooling:          COMPLETE (Sub-phase A)
 - **Phase 3.2 Licensing**: COMPLETE — org + individual license tracking, freeform types, multi-doc upload (MinIO), configurable renewal reminders (≤7d daily / >7d once), SSE bell notifications
 - **Phase 3.3 Safety**: COMPLETE — 5-tab safety hub (document library, SDS catalog, toolbox talks + attendee roster, safety forms, incident reports); all layers complete (Prisma, core, API service+routes+tests, api-client, web hooks+page+sidebar)
 - **Phase 4.1 Project Entity Expansion**: COMPLETE — Project detail pages (Overview, Team, Scopes, Settings); 18 new API routes; ProjectScope + ProjectSettings models; dashboard metrics; 63 new tests (463 total)
-- **API**: Runs on http://localhost:3001 | Routes: /auth, /calendar-events, /channels, /contacts, /dashboard, /licenses, /messages, /notifications, /organizations, /procedures, /projects (18 routes), /safety, /tasks, /users
+- **API**: Runs on `http://localhost:3001` | Routes: /auth, /calendar-events, /channels, /contacts, /dashboard, /licenses, /messages, /notifications, /organizations, /procedures, /projects (18 routes), /safety, /tasks, /users
 - **DB**: PostgreSQL in Docker. 34 models (added ProjectScope + ProjectSettings). `prisma db push` applied. Seed includes project settings and scopes demo data.
 - **api-client**: Built — all resource namespaces including extended ProjectsResource (11 new methods)
 - **ui-components**: Built (tsc --build, zero errors), 26 Radix+Tailwind components
@@ -132,9 +132,9 @@ Root tooling:          COMPLETE (Sub-phase A)
 
 | **Email**       | **Password**  | **Role**        |
 | --------------- | ------------- | --------------- |
-| admin@demo.com  | password123   | Admin           |
-| pm@demo.com     | password123   | Project Manager |
-| field@demo.com  | password123   | Field User      |
+| `admin@demo.com`| password123   | Admin           |
+| `pm@demo.com`   | password123   | Project Manager |
+| `field@demo.com`| password123   | Field User      |
 
 ---
 

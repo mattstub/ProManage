@@ -4,7 +4,7 @@
 [![Version 0.1.0](https://img.shields.io/badge/version-0.1.0-lightgray)](package.json)
 [![Docker](https://img.shields.io/badge/docker-required-red.svg)](https://www.docker.com/)
 
-[![Typescript 5.3+](https://img.shields.io/badge/TypeScript-5.3+-blue.svg)](https://www.typescriptlang.org/)
+[![TypeScript 5.3+](https://img.shields.io/badge/TypeScript-5.3+-blue.svg)](https://www.typescriptlang.org/)
 [![Built By: Claude.ai](https://img.shields.io/badge/Built_by-Claude_Code-orange)](https://www.claude.ai)
 
 > Open-source construction management tools for small to mid-sized contractors

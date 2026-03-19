@@ -84,7 +84,6 @@ See `.env.example` for all required environment variables.
 
 - Critical variables:
   - `DATABASE_URL` - PostgreSQL connection string
-  - `REDIS_URL` - Redis connection string
   - `JWT_SECRET` - Secret for signing JWTs
   - `S3_*` - S3 storage configuration
 

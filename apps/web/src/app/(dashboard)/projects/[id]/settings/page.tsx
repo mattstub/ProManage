@@ -67,7 +67,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
   const canManage = SETTINGS_ROLES.some((r) => user?.roles.includes(r))
 
   type BooleanSettingKey = {
-    [K in keyof UpdateProjectSettingsInput]: UpdateProjectSettingsInput[K] extends boolean | undefined ? K : never
+    [K in keyof UpdateProjectSettingsInput]-?: UpdateProjectSettingsInput[K] extends boolean | undefined ? K : never
   }[keyof UpdateProjectSettingsInput]
 
   async function handleToggle(field: BooleanSettingKey, value: boolean) {

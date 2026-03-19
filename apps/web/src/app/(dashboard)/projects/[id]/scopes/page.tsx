@@ -122,7 +122,9 @@ function ScopeFormDialog({
               </SelectTrigger>
               <SelectContent>
                 {Object.keys(PROJECT_SCOPE_STATUSES).map((s) => (
-                  <SelectItem key={s} value={s}>{s}</SelectItem>
+                  <SelectItem key={s} value={s}>
+                    {PROJECT_SCOPE_STATUSES[s as ProjectScopeStatus].label}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>

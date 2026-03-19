@@ -85,7 +85,7 @@ See `.env.example` for all required environment variables.
 - Critical variables:
   - `DATABASE_URL` - PostgreSQL connection string
   - `JWT_SECRET` - Secret for signing JWTs
-  - `S3_*` - S3 storage configuration
+  - `MINIO_ENDPOINT`, `MINIO_PORT`, `MINIO_USE_SSL`, `MINIO_ACCESS_KEY`, `MINIO_SECRET_KEY` - S3-compatible storage (MinIO) configuration
 
 ## Project Structure
 

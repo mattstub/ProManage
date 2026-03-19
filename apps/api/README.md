@@ -82,15 +82,14 @@ pnpm test:coverage # Run tests with coverage
 
 See `.env.example` for all required environment variables.
 
-Critical variables:
-- `DATABASE_URL` - PostgreSQL connection string
-- `REDIS_URL` - Redis connection string
-- `JWT_SECRET` - Secret for signing JWTs
-- `S3_*` - S3 storage configuration
+- Critical variables:
+  - `DATABASE_URL` - PostgreSQL connection string
+  - `JWT_SECRET` - Secret for signing JWTs
+  - `MINIO_ENDPOINT`, `MINIO_PORT`, `MINIO_USE_SSL`, `MINIO_ACCESS_KEY`, `MINIO_SECRET_KEY` - S3-compatible storage (MinIO) configuration
 
 ## Project Structure
 
-```
+```bash
 apps/api/
 ├── src/
 │   ├── routes/            # API route handlers
@@ -114,7 +113,7 @@ apps/api/
 
 ### Authentication
 
-```
+```http
 POST   /api/v1/auth/login       # Login
 POST   /api/v1/auth/register    # Register
 POST   /api/v1/auth/refresh     # Refresh token
@@ -123,7 +122,7 @@ POST   /api/v1/auth/logout      # Logout
 
 ### Projects
 
-```
+```http
 GET    /api/v1/projects         # List projects
 POST   /api/v1/projects         # Create project
 GET    /api/v1/projects/:id     # Get project
@@ -133,7 +132,7 @@ DELETE /api/v1/projects/:id     # Delete project
 
 ### Time Entries
 
-```
+```http
 GET    /api/v1/time-entries     # List time entries
 POST   /api/v1/time-entries     # Create time entry
 GET    /api/v1/time-entries/:id # Get time entry
@@ -170,16 +169,17 @@ pnpm prisma studio
 
 ### Socket.io Events
 
-**Connection:**
+- **Connection:**
+
 ```typescript
 socket.emit('join:project', { projectId: '123' })
 socket.emit('leave:project', { projectId: '123' })
 ```
 
-**Events:**
-- `project:updated`
-- `time-entry:created`
-- `daily-report:submitted`
+- **Events:**
+  - `project:updated`
+  - `time-entry:created`
+  - `daily-report:submitted`
 
 See [docs/development/api-design.md](../../docs/development/api-design.md) for details.
 
@@ -243,7 +243,7 @@ Ensure all production environment variables are set. See [config/production.env.
 
 ### Health Check
 
-```
+```http
 GET /health
 ```
 

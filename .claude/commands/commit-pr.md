@@ -6,7 +6,7 @@ Use this when a sub-phase or logical unit of work is ready to commit and/or PR.
 
 ## Commit Message Format
 
-```
+```bash
 type(scope): short imperative description
 
 - Detail bullet 1
@@ -17,11 +17,11 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 
 **Types**: `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `style`
 
-**Scopes** (use the package or app name):
-- `core`, `api-client`, `ui-components`, `api`, `web`, `root`
+**Scopes** (use the package or app name): `core`, `api-client`, `ui-components`, `api`, `web`, `root`
 
 Examples:
-```
+
+```bash
 feat(web): add Next.js app shell with auth pages and dashboard layout
 docs: update session-context and implementation-progress for sub-phase G
 chore(root): add .claude/commands workflow files
@@ -32,18 +32,21 @@ chore(root): add .claude/commands workflow files
 ## Staging Rules
 
 **Always stage specific files** — never `git add .` or `git add -A`:
+
 ```bash
 git add apps/web/src/app/login/page.tsx apps/web/src/app/dashboard/page.tsx
 git add docs/context/session-context.md
 ```
 
 **Never stage**:
+
 - `.env` files or any secrets
 - `node_modules/`
 - `dist/` or `tsconfig.tsbuildinfo` (these are build artifacts, gitignored)
 - `.claude/settings.local.json`
 
 Check what's staged before committing:
+
 ```bash
 git diff --staged --stat
 ```
@@ -79,7 +82,7 @@ git log --oneline -3
 ## When to Commit vs When to PR
 
 | Situation | Action |
-|---|---|
+| --- | --- |
 | Logical chunk complete (e.g., auth pages done) | Commit on the feature branch |
 | Sub-phase fully complete + docs updated | Commit, then open PR |
 | Discovered a mistake after commit | New commit with fix — never amend a shared commit |
@@ -95,7 +98,7 @@ When a sub-phase is complete:
 2. **Tell the user**: "Ready to push — please run `git push origin {branch}` from your terminal"
 3. **Provide the PR content**:
 
-```
+```bash
 Title: feat(web): Sub-phase G — apps/web Next.js shell
 
 ## Summary
@@ -125,7 +128,7 @@ Title: feat(web): Sub-phase G — apps/web Next.js shell
 Every PR must include documentation updates in the same commit. Check all four:
 
 | File | What to update |
-|---|---|
+| --- | --- |
 | `README.md` | Update feature list / phase status if a new phase or major feature is complete |
 | `CHANGELOG.md` | Add entry under `[Unreleased]` — packages changed, new files, bug fixes |
 | `docs/ROADMAP.md` | Check off completed items (`- [ ]` → `- [x]`), update "Last Updated" + "Status" footer |
@@ -135,6 +138,7 @@ Every PR must include documentation updates in the same commit. Check all four:
 > `docs/context/implementation-progress.md` is deprecated — session-context.md is now authoritative.
 
 Quick check before committing:
+
 ```bash
 # Confirm docs are staged alongside code
 git diff --staged --name-only | grep -E "README|CHANGELOG|ROADMAP|session-context|CLAUDE"

@@ -9,12 +9,12 @@
 
 ProManage is a multi-tenant construction management platform built as a pnpm + Turborepo monorepo. It follows a desktop-first (90%) approach with a mobile companion (10%) for field workers.
 
-```
+```bash
 ┌─────────────────────────────────────────────────────────────────┐
 │                        Client Layer                             │
 │                                                                 │
-│   apps/web (Next.js 14)          apps/mobile (React Native)    │
-│   Desktop-first SPA               Field companion (deferred)   │
+│   apps/web (Next.js 14)          apps/mobile (React Native)     │
+│   Desktop-first SPA               Field companion (deferred)    │
 └────────────────┬────────────────────────────────────────────────┘
                  │ HTTP (REST + JSON)
                  │ JWT Bearer token in Authorization header
@@ -45,7 +45,7 @@ ProManage is a multi-tenant construction management platform built as a pnpm + T
 
 ## Monorepo Structure
 
-```
+```bash
 ProManage/
 ├── apps/
 │   ├── api/          Fastify API server          COMPLETE
@@ -68,7 +68,7 @@ ProManage/
 
 ### Package Dependency Graph
 
-```
+```bash
 @promanage/core
     ↑
 @promanage/api-client    @promanage/ui-components
@@ -85,7 +85,7 @@ ProManage/
 All packages use `tsc --build` with `composite: true` for incremental compilation and project references.
 
 | Package | Build tool | JSX | Key tsconfig options |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | packages/core | tsc --build | — | composite, ES2022, bundler resolution |
 | packages/api-client | tsc --build | — | composite, DOM lib, refs core |
 | packages/ui-components | tsc --build | react-jsx | composite, DOM lib, `**/*.tsx` include |
@@ -100,7 +100,7 @@ All packages use `tsc --build` with `composite: true` for incremental compilatio
 
 ### Auth Flow
 
-```
+```bash
 Client                      API
   │                          │
   ├─── POST /auth/login ────►│
@@ -108,18 +108,18 @@ Client                      API
   │                          │  sign accessToken (15min, JWT)
   │                          │  sign refreshToken (7d, JWT)
   │                          │  store refreshToken hash in DB
-  │◄── { accessToken } ─────┤  Set-Cookie: refreshToken (httpOnly)
+  │◄── { accessToken } ──────┤  Set-Cookie: refreshToken (httpOnly)
   │
   │  Subsequent requests:
   ├─── GET /api/v1/... ─────►│  Authorization: Bearer <accessToken>
   │                          │  authenticate middleware: verify JWT
-  │◄── { data } ────────────┤
+  │◄── { data } ─────────────┤
   │
   │  When accessToken expires:
   ├─── POST /auth/refresh ──►│  reads refreshToken from httpOnly cookie
   │                          │  verifies + revokes old token in DB
   │                          │  issues new accessToken + refreshToken
-  │◄── { accessToken } ─────┤  Set-Cookie: new refreshToken
+  │◄── { accessToken } ──────┤  Set-Cookie: new refreshToken
 ```
 
 ### RBAC
@@ -134,7 +134,7 @@ The `authorize` middleware factory accepts either a role name or a `{ resource, 
 
 ## Database Schema (8 models)
 
-```
+```bash
 Organization ─── User ─── UserRole ─── Role ─── RolePermission ─── Permission
                   │
                   ├── RefreshToken
@@ -158,7 +158,7 @@ All user-facing models include `organizationId` for multi-tenant isolation. Uniq
 ### Current Endpoints
 
 | Method | Path | Auth | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | GET | /health | Public | Health check |
 | POST | /api/v1/auth/register | Public | Create org + admin user |
 | POST | /api/v1/auth/login | Public | Issue tokens |
@@ -176,13 +176,12 @@ All user-facing models include `organizationId` for multi-tenant isolation. Uniq
 
 Built on Radix UI primitives + TailwindCSS. Pattern: thin wrapper + CVA variants + `cn()` (clsx + tailwind-merge).
 
-**Key design choices:**
-- React is a `peerDependency` — consuming app (Next.js) owns the React instance
-- Tailwind is NOT a package dependency — consuming app runs Tailwind and must include `../../packages/ui-components/src/**/*.{ts,tsx}` in its `content` config
-- `Button` uses Radix `Slot` for `asChild` prop — enables `<Button asChild><Link href="...">` without DOM nesting violations
-- `ToastProvider` and `TooltipProvider` must be mounted at the app layout root
-
-**26 components across 5 categories**: Form (8), Layout (5), Navigation (3), Feedback (6), Data Display (4)
+- **Key design choices:**
+  - React is a `peerDependency` — consuming app (Next.js) owns the React instance
+  - Tailwind is NOT a package dependency — consuming app runs Tailwind and must include `../../packages/ui-components/src/**/*.{ts,tsx}` in its `content` config
+  - `Button` uses Radix `Slot` for `asChild` prop — enables `<Button asChild><Link href="...">` without DOM nesting violations
+  - `ToastProvider` and `TooltipProvider` must be mounted at the app layout root
+- **26 components across 5 categories**: Form (8), Layout (5), Navigation (3), Feedback (6), Data Display (4)
 
 ---
 
@@ -191,7 +190,7 @@ Built on Radix UI primitives + TailwindCSS. Pattern: thin wrapper + CVA variants
 Managed via `docker-compose.yml` at the repo root:
 
 | Service | Port | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | PostgreSQL 15 | 5432 | Primary database |
 | MinIO | 9000 | S3-compatible file storage |
 | MinIO Console | 9001 | MinIO admin UI |
@@ -201,7 +200,7 @@ Managed via `docker-compose.yml` at the repo root:
 ## Key Design Decisions
 
 | ID | Decision | Rationale |
-|---|---|---|
+| --- | --- | --- |
 | DD-001 | Desktop-first (90/10 split) | Construction management is office-heavy; field is secondary |
 | DD-002 | pnpm + Turborepo | Efficient disk usage, build caching, great monorepo support |
 | DD-004 | TypeScript everywhere | Type safety across full stack, Prisma schema to TS types |

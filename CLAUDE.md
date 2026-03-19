@@ -1,6 +1,7 @@
 # ProManage — Claude Code Project Instructions
 
 ## What This Is
+
 Open-source construction management platform (AGPL-3.0). Desktop-first web app.
 Monorepo: `pnpm workspaces` + `Turborepo`. Author: Matt Stubenhofer.
 
@@ -60,7 +61,7 @@ cd apps/api && npx prisma db push --force-reset && npx ts-node prisma/seed.ts
 ## Architecture
 
 | Package | Stack | Status |
-|---|---|---|
+| --- | --- | --- |
 | `apps/api` | Fastify + Prisma + PostgreSQL | COMPLETE |
 | `apps/web` | Next.js 14 + React 19 + Tailwind | COMPLETE |
 | `packages/core` | Zod schemas, shared types, utils | COMPLETE |
@@ -95,7 +96,7 @@ pnpm --filter @promanage/api test              # API service + route tests only
 ### Test Infrastructure
 
 | Package | Config | Helpers |
-|---|---|---|
+| --- | --- | --- |
 | `packages/core` | `vitest.config.ts` + `tsconfig.test.json` | — |
 | `apps/api` | `vitest.config.ts` + `tsconfig.test.json` + `src/__tests__/setup.ts` | `build-app.ts`, `mock-prisma.ts` |
 
@@ -115,7 +116,7 @@ pnpm --filter @promanage/api test              # API service + route tests only
 3. **What to test at each layer**
 
    | Layer | What to test | What NOT to test |
-   |---|---|---|
+   | --- | --- | --- |
    | Service | Business rules, error branches (wrong password, revoked token, inactive user) | DB queries in isolation — trust Prisma |
    | Route | Status codes, response shape, cookie set/clear, auth required vs public | Internal service logic |
    | Schema | Regex/length constraints, required fields, type coercion | Implementation details |
@@ -165,7 +166,7 @@ pnpm --filter @promanage/api test              # API service + route tests only
 ## Workflow Slash Commands
 
 | Command | What it does |
-|---|---|
+| --- | --- |
 | `/startup` | Full session startup checklist |
 | `/new-branch` | Create correctly-named branch for a sub-phase |
 | `/commit-pr` | Stage, commit, and prepare PR |
@@ -175,7 +176,7 @@ pnpm --filter @promanage/api test              # API service + route tests only
 ## Key File Locations
 
 | File | Purpose |
-|---|---|
+| --- | --- |
 | `docs/context/session-context.md` | Session quick-ref — READ FIRST |
 | `docs/context/implementation-progress.md` | Detailed sub-phase checklist |
 | `CHANGELOG.md` | Session-by-session change log |
@@ -188,7 +189,7 @@ pnpm --filter @promanage/api test              # API service + route tests only
 ## Seed Credentials
 
 | Email | Password | Role |
-|---|---|---|
-| admin@demo.com | password123 | Admin |
-| pm@demo.com | password123 | ProjectManager |
-| field@demo.com | password123 | FieldUser |
+| --- | --- | --- |
+| `admin@demo.com` | password123 | Admin |
+| `pm@demo.com` | password123 | ProjectManager |
+| `field@demo.com` | password123 | FieldUser |

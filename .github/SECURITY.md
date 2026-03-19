@@ -17,7 +17,7 @@ We take security seriously and appreciate your efforts to responsibly disclose y
 
 ### How to Report
 
-If you discover a security vulnerability, please send an [e-mail](mailto:matt@mattstub.com).    <!-- TODO: security email post develop -->
+If you discover a security vulnerability, please send an [e-mail](mailto:matt@mattstub.com).
 
 Please include the following information:
 
@@ -118,14 +118,7 @@ When deploying ProManage:
 - **Isolated environments** (dev, staging, production)
 
 ## Security Advisories
-
-Security advisories will be published at:
-
-- GitHub Security Advisories: [Link]                        <!-- TODO: link to security advisors, when established -->
-- Project Website: [Link]                                   <!-- TODO: link to website when we have something worth talking about -->
-- Mailing List: [Link]                                      <!-- TODO: link to a mailing list, if applicable, may remove later -->
-
-Subscribe to receive notifications about security updates.
+<!-- Future Information Section to be utilized post Deployment -->
 
 ## Security Update Process
 
@@ -150,12 +143,12 @@ We follow **responsible disclosure**:
 
 For security concerns, contact:
 
-- **Email**: [Security Contact](mailto:matt@mattstub.com)   <!-- TODO: email for security concerns post development -->
+- **Email**: [Security Contact](mailto:matt@mattstub.com)
 - **PGP Key**: [Link to PGP key if available]
 
 For general inquiries, use:
 
-- **Email**: [General](mailto:matt@mattstub.com)            <!-- TODO: email for general items post development -->
+- **Email**: [General](mailto:matt@mattstub.com)
 - **GitHub Issues**: For non-security bugs and features
 
 ## Acknowledgments

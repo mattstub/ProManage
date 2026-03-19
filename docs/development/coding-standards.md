@@ -7,6 +7,7 @@ This document outlines coding standards and best practices for ProManage. Consis
 ## General Principles
 
 ### Code Quality
+
 - Write self-documenting code with clear naming
 - Keep functions small and focused (single responsibility)
 - Prefer composition over inheritance
@@ -14,6 +15,7 @@ This document outlines coding standards and best practices for ProManage. Consis
 - You aren't gonna need it (YAGNI) - don't over-engineer
 
 ### TypeScript First
+
 - Always use TypeScript (never `.js` files in source)
 - Avoid `any` type - use `unknown` if truly needed
 - Prefer type inference when obvious
@@ -21,6 +23,7 @@ This document outlines coding standards and best practices for ProManage. Consis
 - Leverage union types and type guards
 
 ### Code Review
+
 - All code must be reviewed before merging
 - Address feedback constructively
 - Keep PRs focused and reasonably sized
@@ -31,6 +34,7 @@ This document outlines coding standards and best practices for ProManage. Consis
 ### Type Definitions
 
 **Good:**
+
 ```typescript
 interface User {
   id: string
@@ -46,6 +50,7 @@ function getUser(id: string): Promise<User | null> {
 ```
 
 **Bad:**
+
 ```typescript
 function getUser(id: any): any {
   // ...
@@ -55,6 +60,7 @@ function getUser(id: any): any {
 ### Avoid `any`
 
 **Good:**
+
 ```typescript
 function processData(data: unknown): void {
   if (isValidData(data)) {
@@ -65,6 +71,7 @@ function processData(data: unknown): void {
 ```
 
 **Bad:**
+
 ```typescript
 function processData(data: any): void {
   console.log(data.value)
@@ -104,21 +111,24 @@ type ID = string | number
 ### Files & Folders
 
 **Components** (PascalCase):
-```
+
+```bash
 components/
   UserProfile.tsx
   ProjectCard.tsx
 ```
 
 **Utilities** (kebab-case):
-```
+
+```bash
 utils/
   format-date.ts
   calculate-budget.ts
 ```
 
 **Hooks** (camelCase with `use` prefix):
-```
+
+```bash
 hooks/
   useAuth.ts
   useProjects.ts
@@ -127,6 +137,7 @@ hooks/
 ### Variables & Functions
 
 **camelCase** for variables and functions:
+
 ```typescript
 const userEmail = 'user@example.com'
 const projectList = []
@@ -137,6 +148,7 @@ function calculateTotal(items: Item[]): number {
 ```
 
 **PascalCase** for classes and React components:
+
 ```typescript
 class ProjectManager {
   // ...
@@ -148,6 +160,7 @@ function UserProfile() {
 ```
 
 **UPPER_SNAKE_CASE** for constants:
+
 ```typescript
 const MAX_UPLOAD_SIZE = 10 * 1024 * 1024 // 10MB
 const API_BASE_URL = process.env.API_URL
@@ -156,6 +169,7 @@ const API_BASE_URL = process.env.API_URL
 ### Boolean Variables
 
 Prefix with `is`, `has`, `should`, etc.:
+
 ```typescript
 const isLoading = true
 const hasPermission = false
@@ -203,6 +217,7 @@ export function ProjectCard({ project, onEdit }: ProjectCardProps) {
 Always use functional components with hooks:
 
 **Good:**
+
 ```typescript
 export function UserProfile({ userId }: UserProfileProps) {
   const { data: user } = useUser(userId)
@@ -211,6 +226,7 @@ export function UserProfile({ userId }: UserProfileProps) {
 ```
 
 **Bad:**
+
 ```typescript
 export class UserProfile extends React.Component {
   // Don't use class components
@@ -220,6 +236,7 @@ export class UserProfile extends React.Component {
 ### Props
 
 **Destructure props:**
+
 ```typescript
 // Good
 function Button({ label, onClick, variant = 'primary' }: ButtonProps) {
@@ -233,6 +250,7 @@ function Button(props: ButtonProps) {
 ```
 
 **Use explicit types:**
+
 ```typescript
 interface ButtonProps {
   label: string
@@ -244,6 +262,7 @@ interface ButtonProps {
 ### Hooks
 
 **Custom Hooks:**
+
 ```typescript
 // hooks/useProjects.ts
 export function useProjects(organizationId: string) {
@@ -259,6 +278,7 @@ export function useProjects(organizationId: string) {
 ```
 
 **Hook Dependencies:**
+
 ```typescript
 // Good - explicit dependencies
 useEffect(() => {
@@ -274,11 +294,13 @@ useEffect(() => {
 ### State Management
 
 **Local state** for component-specific data:
+
 ```typescript
 const [isOpen, setIsOpen] = useState(false)
 ```
 
 **Zustand** for global client state:
+
 ```typescript
 // stores/auth-store.ts
 import { create } from 'zustand'
@@ -295,6 +317,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 ```
 
 **React Query** for server state:
+
 ```typescript
 export function useProjects() {
   return useQuery({
@@ -429,7 +452,7 @@ await prisma.$transaction([
 ])
 ```
 
-## Error Handling
+## TS Error Handling
 
 ### Frontend
 
@@ -523,6 +546,7 @@ describe('Button', () => {
 ### When to Comment
 
 **Good comments:**
+
 ```typescript
 // Calculate discounted price with tax
 // Formula: (price * (1 - discount)) * (1 + taxRate)
@@ -536,6 +560,7 @@ const date = new Date(dateString.replace(/-/g, '/'))
 ```
 
 **Bad comments (explain the obvious):**
+
 ```typescript
 // Set user name to 'John'
 const userName = 'John'
@@ -569,6 +594,7 @@ export async function calculateProjectCost(
 ### Prettier Configuration
 
 Handled automatically by Prettier (`.prettierrc`):
+
 ```json
 {
   "semi": false,
@@ -582,6 +608,7 @@ Handled automatically by Prettier (`.prettierrc`):
 ### ESLint Configuration
 
 Follow ESLint rules (`.eslintrc`). Key rules:
+
 - No unused variables
 - No console.log (use proper logging)
 - Prefer const over let

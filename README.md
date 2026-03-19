@@ -1,27 +1,19 @@
 # ProManage Suite
 
-> Open-source construction management tools for small contractors
+[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL%203.0-rgb(153,51,153).svg)](https://www.gnu.org/licenses/agpl-3.0)
+[![Version 0.1.0](https://img.shields.io/badge/version-0.1.0-lightgray)](package.json)
+[![Docker](https://img.shields.io/badge/docker-required-red.svg)](https://www.docker.com/)
 
-ProManage is a free, open-source platform designed to help small construction contractors manage their projects without being locked into expensive SaaS platforms. Built desktop-first for office personnel with a mobile companion app for field workers.
+[![TypeScript 5.3+](https://img.shields.io/badge/TypeScript-5.3+-blue.svg)](https://www.typescriptlang.org/)
+[![Built By: Claude.ai](https://img.shields.io/badge/Built_by-Claude_Code-orange)](https://www.claude.ai)
+
+> Open-source construction management tools for small to mid-sized contractors
+
+ProManage is a free, open-source platform designed to help small and mid-sized construction contractors manage their projects without being locked into expensive SaaS platforms. Built desktop-first for office personnel with a mobile companion app for field workers. The idea is to bring all tools into one suite, instead of having to utilize 10 different applications to juggle management.
 
 ## Current Status
 
-> **Phase 3 (Contacts & Company Setup) — In Progress**
->
-> | Module | Status |
-> |---|---|
-> | Phase 1 — Foundation (monorepo, API, auth, packages) | ✅ Complete |
-> | Phase 2.1 — Dashboard (stats, project list) | ✅ Complete |
-> | Phase 2.2 — Notifications (SSE real-time push) | ✅ Complete |
-> | Phase 2.3A — Async Messaging (DMs + Announcements) | ✅ Complete |
-> | Phase 2.3B — Channel Chat (Discord-style, Socket.io) | ✅ Complete |
-> | Phase 2.4 — Company Calendar | ✅ Complete |
-> | Phase 2.5 — Task Management | ✅ Complete |
-> | Phase 2.6 — General Procedures | ✅ Complete |
-> | Phase 3.1 — Contact Management | ✅ Complete |
-> | Infrastructure — Docker, CI/CD, structured logging | ✅ Complete |
-> | Phase 3.2 — Licensing | ✅ Complete |
-> | Phase 3.3 — Safety | 🔜 Next |
+> **Phase 4.1 Project Entity Expansion — In Progress**
 
 ## Features
 
@@ -33,7 +25,6 @@ ProManage is a free, open-source platform designed to help small construction co
 - **Company Calendar** — Custom month-view calendar with event CRUD
 - **Procedures** — Document workflows, safety protocols, and SOPs
 - **Contact Management** — Organization-level contact directory
-- **6 Roles** — Admin, ProjectManager, Superintendent, Foreman, FieldUser, OfficeAdmin
 
 ## Architecture
 
@@ -45,7 +36,7 @@ ProManage is a free, open-source platform designed to help small construction co
 ## Technology Stack
 
 | Layer | Technology |
-|---|---|
+| --- | --- |
 | Web Frontend | Next.js 14, React 19, TailwindCSS, Radix UI, Zustand, TanStack Query |
 | API Server | Node.js 20, Fastify, TypeScript, Prisma |
 | Database | PostgreSQL 15 |
@@ -115,25 +106,29 @@ cd ../..
 
 Open two terminals:
 
-**Terminal 1 — API server**
+- **Terminal 1 — API server**
+
 ```bash
 source ~/.nvm/nvm.sh && nvm use 20
 cd apps/api && pnpm dev
 ```
 
-**Terminal 2 — Web app**
+- **Terminal 2 — Web app**
+  
 ```bash
 source ~/.nvm/nvm.sh && nvm use 20
 pnpm --filter @promanage/web dev
 ```
 
+- **Local Host Routing**
+
 | Service | URL |
-|---|---|
-| Web app | http://localhost:3000 |
-| API server | http://localhost:3001 |
-| API health check | http://localhost:3001/health |
-| Swagger docs | http://localhost:3001/docs |
-| MinIO console | http://localhost:9001 |
+| --- | --- |
+| Web app | `http://localhost:3000` |
+| API server | `http://localhost:3001` |
+| API health check | `http://localhost:3001/health` |
+| Swagger docs | `http://localhost:3001/docs` |
+| MinIO console | `http://localhost:9001` |
 
 ---
 
@@ -141,11 +136,11 @@ pnpm --filter @promanage/web dev
 
 Seeded automatically by `prisma/seed.ts`:
 
-| Email | Password | Role |
-|---|---|---|
-| admin@demo.com | password123 | Admin |
-| pm@demo.com | password123 | ProjectManager |
-| field@demo.com | password123 | FieldUser |
+| **Email**         | **Password**  | **Role**        |
+| ----------------- | ------------- | --------------- |
+| `admin@demo.com`  | password123   | Admin           |
+| `pm@demo.com`     | password123   | ProjectManager  |
+| `field@demo.com`  | password123   | FieldUser       |
 
 ---
 
@@ -188,7 +183,7 @@ pnpm --filter @promanage/core build
 
 ## Project Structure
 
-```
+```bash
 ProManage/
 ├── apps/
 │   ├── api/                # Fastify API server (TypeScript, Prisma, JWT auth)
@@ -263,7 +258,7 @@ docker build -f apps/web/Dockerfile \
 
 ## Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+We welcome contributions! Please see [CONTRIBUTING](CONTRIBUTING.md) for guidelines.
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -277,11 +272,12 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 
 ## License
 
-AGPL-3.0 — see [LICENSE](LICENSE) for details.
+[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL%203.0-rgb(153,51,153).svg)](https://www.gnu.org/licenses/agpl-3.0)
 
-We chose AGPL-3.0 to ensure that all improvements to ProManage remain open source, even when deployed as a SaaS application. This protects the community and prevents proprietary forks that don't give back.
+We chose AGPL-3.0 to ensure that all improvements to ProManage remain open source. This protects the community and prevents proprietary forks that don't give back.
 
 ---
 
-Built for small contractors by the construction community.
-Built with [Claude](https://www.claude.ai).
+[![Built By: Claude.ai](https://img.shields.io/badge/Built_by-Claude_Code-orange)](https://www.claude.ai)
+
+[![Human Guidance: Matt Stubenhofer](https://img.shields.io/badge/Human_Guidance-Matt_Stubenhofer-green)](https://www.mattstub.com).

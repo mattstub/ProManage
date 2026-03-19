@@ -6,7 +6,7 @@ ProManage API follows RESTful principles with consistent patterns for all endpoi
 
 ## Base URL
 
-```
+```bash
 Development: http://localhost:3001/api/v1
 Production: https://api.promanage.app/v1
 ```
@@ -98,7 +98,8 @@ Accept: application/json
 ### URLs
 
 **Use nouns, not verbs:**
-```
+
+```bash
 ✅ GET /projects
 ✅ POST /projects
 ✅ GET /projects/123
@@ -109,7 +110,8 @@ Accept: application/json
 ```
 
 **Use plural nouns:**
-```
+
+```bash
 ✅ /projects
 ✅ /users
 ✅ /time-entries
@@ -119,7 +121,8 @@ Accept: application/json
 ```
 
 **Use kebab-case:**
-```
+
+```bash
 ✅ /daily-reports
 ✅ /time-entries
 ✅ /cost-codes
@@ -130,14 +133,15 @@ Accept: application/json
 
 ### Nested Resources
 
-```
+```http
 GET /projects/123/time-entries
 POST /projects/123/time-entries
 GET /projects/123/daily-reports
 ```
 
 **Limit nesting to 2 levels:**
-```
+
+```bash
 ✅ /projects/123/time-entries
 ❌ /organizations/1/projects/123/time-entries/456/comments
 ```
@@ -175,6 +179,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```http
 HTTP/1.1 201 Created
 Location: /projects/124
@@ -220,6 +225,7 @@ DELETE /projects/123
 ```
 
 **Response:**
+
 ```http
 HTTP/1.1 204 No Content
 ```
@@ -375,12 +381,14 @@ Cache-Control: max-age=3600
 ```
 
 **Client conditional request:**
+
 ```http
 GET /projects/123
 If-None-Match: "33a64df551425fcc55e4d42a148795d9f25f89d4"
 ```
 
 **Not modified response:**
+
 ```http
 HTTP/1.1 304 Not Modified
 ```
@@ -420,11 +428,10 @@ socket.emit('leave:project', { projectId: '123' })
 
 ### Event Naming
 
-```
-<resource>:<action>
-```
+`<resource>:<action>`
 
 Examples:
+
 - `project:created`
 - `project:updated`
 - `project:deleted`
@@ -461,6 +468,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "data": {

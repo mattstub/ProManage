@@ -12,12 +12,12 @@ The design phase is completed by architects, engineers, designers and project st
 
 - **Site Analysis:** is conducted to determine the size of the building or structure,including how much space it’ll take up, the rooms that’ll be in the building and so on. Once these decisions are made, a project initiation document is created.
 - **Construction Documentation and Architectural Drawings:** During this step, all construction documentation will be produced. There are a lot of documents to be produced when planning a construction project. Here’s a quick definition of the most important ones:
-    - **Architectural Drawings:** Provide visual representations of a building or structure with information about dimensions, materials and design intent.
-    - **Scope of Work:** Outlines specific tasks, deliverables and timelines for a project and acts as an agreement between the client and contractor.
-    - **Construction Plan:** The construction plan as a comprehensive guide for all stakeholders and details how the project will be executed.
-    - **Computer-Assisted Designs:** The use of software to create specific drawings, models and specifications for different design projects.
-    - **Construction Budget:** Serves as a detailed financial plan that outlines the estimated costs of a construction project.
-    - **Construction Specifications:** Written descriptions of the materials, standards and procedures needed for a construction project.
+  - **Architectural Drawings:** Provide visual representations of a building or structure with information about dimensions, materials and design intent.
+  - **Scope of Work:** Outlines specific tasks, deliverables and timelines for a project and acts as an agreement between the client and contractor.
+  - **Construction Plan:** The construction plan as a comprehensive guide for all stakeholders and details how the project will be executed.
+  - **Computer-Assisted Designs:** The use of software to create specific drawings, models and specifications for different design projects.
+  - **Construction Budget:** Serves as a detailed financial plan that outlines the estimated costs of a construction project.
+  - **Construction Specifications:** Written descriptions of the materials, standards and procedures needed for a construction project.
 
 ## Procurement Phase (Bidding Phase)
 
@@ -69,7 +69,7 @@ Exterior envelope work often overlaps with interior rough-in, requiring careful 
 
 ### Interior Work (Rough)
 
-The interior rough-in phase is dedicated to the installation of mechanical, electrical and plumbing (MEP) systems, which provide the building’s essential functions. There are also speciality contractors operating in this space at the same time which depend on the buildings requirements. But they include fire suppression, fire controls and audio/visual contractors. 
+The interior rough-in phase is dedicated to the installation of mechanical, electrical and plumbing (MEP) systems, which provide the building’s essential functions. There are also speciality contractors operating in this space at the same time which depend on the buildings requirements. But they include fire suppression, fire controls and audio/visual contractors.
 
 Framing contractors layout the interior structure of the building for these MEP trades to utilize for their work. This stage requires close coordination among all trades, as work that often overlaps and must be synchronized to avoid conflicts and allows for efficient installation. The spaces being left open for these systems gets more condensed every year, requiring more and more time be spent coordinating these specific systems.
 
@@ -77,19 +77,19 @@ On many projects, interior rough-in begins before the structural phase is fully 
 
 ### Interior Finishes (Final)
 
-The interior finishes phase marks the final push to complete the interior spaces and prepare the building for occupancy. This stage involves installing drywall, cabinetry, light fixtures, plumbing fixtures and completing tasks like painting and trim work that give the project its finished look. Many of these tasks require a high level of craftsmanship and attention to detail, as they are among the most visible elements of the build. 
+The interior finishes phase marks the final push to complete the interior spaces and prepare the building for occupancy. This stage involves installing drywall, cabinetry, light fixtures, plumbing fixtures and completing tasks like painting and trim work that give the project its finished look. Many of these tasks require a high level of craftsmanship and attention to detail, as they are among the most visible elements of the build.
 
 While this phase signals that the end of the project is near, it often comes with its own set of challenges. Compressed timelines are common, especially when ownership groups push for early move-in dates. The increased schedule pressure can place heavy demands on these trades, making it difficult to maintain quality while meeting tight deadlines.
 
 ### Turnover and Closeout
 
-The final phase of the project, known as closeout, involves handing over the building to the client and completing any remaining tasks before formal closure. The general contractor transitions the project to the building management team, guaranteeing that all systems are fully operational and that the client is satisfied with the completed work. 
+The final phase of the project, known as closeout, involves handing over the building to the client and completing any remaining tasks before formal closure. The general contractor transitions the project to the building management team, guaranteeing that all systems are fully operational and that the client is satisfied with the completed work.
 
 This stage typically includes obtaining the certificate of occupancy, confirming that the building meets all safety and regulatory requirements for use. Final inspections and walkthroughs are conducted to help identify and resolve punch list items, allowing the project to be officially closed out. The general contractor also provides ongoing support through warranty work, handling any defects or concerns that may arise after the building is occupied.
 
 ### Warranty Period
 
-Depending on the project's requirements there may be a warranty period established after turnover has happened. This stage doesn't usually require active work, but must be tracked internally for cost purposes in case they have to return to the project to address any warranty claims. 
+Depending on the project's requirements there may be a warranty period established after turnover has happened. This stage doesn't usually require active work, but must be tracked internally for cost purposes in case they have to return to the project to address any warranty claims.
 
 ---
 

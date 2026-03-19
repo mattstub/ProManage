@@ -429,6 +429,7 @@ detox test --configuration android.emu.debug
 ### E2E Best Practices
 
 **Use testID:**
+
 ```typescript
 <TextInput
   testID="email-input"
@@ -441,6 +442,7 @@ detox test --configuration android.emu.debug
 ```
 
 **Wait for elements:**
+
 ```typescript
 await waitFor(element(by.id('project-list')))
   .toBeVisible()
@@ -448,6 +450,7 @@ await waitFor(element(by.id('project-list')))
 ```
 
 **Scroll to element:**
+
 ```typescript
 await element(by.id('project-list')).scrollTo('bottom')
 await element(by.id('project-list')).scroll(200, 'down')

@@ -4,12 +4,12 @@ This document records significant architectural and technical decisions made dur
 
 ## Decision Log Format
 
-Each decision follows this structure:
-- **Date**: When the decision was made
-- **Status**: Proposed, Accepted, Deprecated, Superseded
-- **Context**: The situation and forces at play
-- **Decision**: What we decided to do
-- **Consequences**: The results of the decision (positive and negative)
+- Each decision follows this structure:
+  - **Date**: When the decision was made
+  - **Status**: Proposed, Accepted, Deprecated, Superseded
+  - **Context**: The situation and forces at play
+  - **Decision**: What we decided to do
+  - **Consequences**: The results of the decision (positive and negative)
 
 ---
 
@@ -18,33 +18,36 @@ Each decision follows this structure:
 **Date**: 2026-02-02
 **Status**: Accepted
 
-### Context
+### DD001 Context
+
 Construction management involves both office staff (project managers, estimators, administrators) and field staff (superintendents, foremen). Market research indicates:
+
 - 90% of daily work happens in the office
 - 10% of work happens in the field
 - Field users need specific, focused functionality
 - Office users need comprehensive project management tools
 
-### Decision
+### DD001 Decision
+
 Build a desktop-first web application as the primary interface, with a mobile companion app for field-specific tasks.
 
 **Desktop (Web)**: Full-featured project management
 **Mobile**: Focused on field tasks (time tracking, photos, daily reports)
 
-### Consequences
+### DD001 Consequences
 
-**Positive:**
-- Better user experience for majority use case (90%)
-- Optimized performance for desktop workflows
-- Simpler mobile app with focused scope
-- Faster development by prioritizing desktop first
+- **Positive:**
+  - Better user experience for majority use case (90%)
+  - Optimized performance for desktop workflows
+  - Simpler mobile app with focused scope
+  - Faster development by prioritizing desktop first
+- **Negative:**
+  - Mobile users have limited functionality
+  - Requires maintaining two codebases (mitigated by shared packages)
+  - Field users must use desktop for advanced features
 
-**Negative:**
-- Mobile users have limited functionality
-- Requires maintaining two codebases (mitigated by shared packages)
-- Field users must use desktop for advanced features
+### DD001 Alternatives Considered
 
-### Alternatives Considered
 - Mobile-first approach: Would compromise desktop UX for 90% of users
 - Single responsive web app: Would compromise UX on both platforms
 - Desktop-only: Would miss critical field use cases
@@ -56,31 +59,34 @@ Build a desktop-first web application as the primary interface, with a mobile co
 **Date**: 2026-02-02
 **Status**: Accepted
 
-### Context
+### DD002 Context
+
 ProManage consists of multiple applications (web, mobile, API) and shared code (business logic, UI components, utilities). Need to manage dependencies, versioning, and code sharing efficiently.
 
-### Decision
+### DD002 Decision
+
 Use a monorepo with pnpm workspaces and Turborepo for build orchestration.
 
-**Structure:**
+#### DD002 Structure
+
 - `apps/` for applications (web, mobile, api)
 - `packages/` for shared code (core, ui-components, api-client)
 
-### Consequences
+### DD002 Consequences
 
-**Positive:**
-- Atomic commits across multiple packages
-- Easier refactoring across boundaries
-- Simplified dependency management
-- Shared tooling configuration
-- Build caching with Turborepo
+- **Positive:**
+  - Atomic commits across multiple packages
+  - Easier refactoring across boundaries
+  - Simplified dependency management
+  - Shared tooling configuration
+  - Build caching with Turborepo
+- **Negative:**
+  - Larger repository size
+  - Steeper learning curve for new contributors
+  - CI/CD needs monorepo awareness
 
-**Negative:**
-- Larger repository size
-- Steeper learning curve for new contributors
-- CI/CD needs monorepo awareness
+### DD002 Alternatives Considered
 
-### Alternatives Considered
 - Polyrepo: Would create sync issues between packages
 - Lerna/Nx: Turborepo chosen for simpler config and better performance
 
@@ -91,35 +97,37 @@ Use a monorepo with pnpm workspaces and Turborepo for build orchestration.
 **Date**: 2026-02-02
 **Status**: Accepted
 
-### Context
-Field and office teams need real-time updates:
-- Time entries submitted in field should appear immediately in office
-- Daily report updates from office should notify field
-- Photo uploads need instant visibility
+### DD003 Context
 
-### Decision
+- Field and office teams need real-time updates:
+  - Time entries submitted in field should appear immediately in office
+  - Daily report updates from office should notify field
+  - Photo uploads need instant visibility
+
+### DD003 Decision
+
 Use WebSocket (Socket.io) for bidirectional real-time communication, with Server-Sent Events (SSE) as fallback.
 
-**Implementation:**
-- Socket.io for primary connection
-- Room-based broadcasting (per project/organization)
-- Redis adapter for horizontal scaling
-- Optimistic updates on client
+- **Implementation:**
+  - Socket.io for primary connection
+  - Room-based broadcasting (per project/organization)
+  - Redis adapter for horizontal scaling
+  - Optimistic updates on client
 
-### Consequences
+### DD003 Consequences
 
-**Positive:**
-- Instant updates across devices
-- Better user experience
-- Reduced polling overhead
-- Scalable with Redis adapter
+- **Positive:**
+  - Instant updates across devices
+  - Better user experience
+  - Reduced polling overhead
+  - Scalable with Redis adapter
+- **Negative:**
+  - Increased server complexity
+  - Connection management overhead
+  - Requires WebSocket-capable hosting
 
-**Negative:**
-- Increased server complexity
-- Connection management overhead
-- Requires WebSocket-capable hosting
+### DD003 Alternatives Considered
 
-### Alternatives Considered
 - Polling: High latency and server load
 - SSE only: No bidirectional communication
 - GraphQL Subscriptions: Added complexity
@@ -131,26 +139,28 @@ Use WebSocket (Socket.io) for bidirectional real-time communication, with Server
 **Date**: 2026-02-02
 **Status**: Accepted
 
-### Context
+### DD004 Context
+
 Large codebase with multiple developers requires type safety and better tooling.
 
-### Decision
+### DD004 Decision
+
 Use TypeScript for all code: frontend (web, mobile), backend (API), and shared packages.
 
-### Consequences
+### DD004 Consequences
 
-**Positive:**
-- Compile-time error detection
-- Better IDE autocomplete and refactoring
-- Self-documenting code
-- Easier onboarding for new developers
+- **Positive:**
+  - Compile-time error detection
+  - Better IDE autocomplete and refactoring
+  - Self-documenting code
+  - Easier onboarding for new developers
+- **Negative:**
+  - Initial setup time
+  - Learning curve for TypeScript
+  - Slightly slower development initially
 
-**Negative:**
-- Initial setup time
-- Learning curve for TypeScript
-- Slightly slower development initially
+### DD004 Alternatives Considered
 
-### Alternatives Considered
 - JavaScript with JSDoc: Less robust type checking
 - TypeScript for backend only: Would miss frontend benefits
 
@@ -161,27 +171,29 @@ Use TypeScript for all code: frontend (web, mobile), backend (API), and shared p
 **Date**: 2026-02-02
 **Status**: Accepted
 
-### Context
+### DD005 Context
+
 Need a robust, type-safe way to interact with PostgreSQL database.
 
-### Decision
+### DD005 Decision
+
 Use Prisma as the ORM for database access.
 
-### Consequences
+### DD005 Consequences
 
-**Positive:**
-- Type-safe database queries
-- Excellent TypeScript integration
-- Migration management
-- Schema-first approach
-- Great developer experience
+- **Positive:**
+  - Type-safe database queries
+  - Excellent TypeScript integration
+  - Migration management
+  - Schema-first approach
+  - Great developer experience
+- **Negative:**
+  - Learning curve
+  - Potential performance overhead vs raw SQL
+  - Lock-in to Prisma ecosystem
 
-**Negative:**
-- Learning curve
-- Potential performance overhead vs raw SQL
-- Lock-in to Prisma ecosystem
+### DD005 Alternatives Considered
 
-### Alternatives Considered
 - TypeORM: Less type-safe, more complex
 - Kysely: More SQL-like, less feature-rich
 - Raw SQL: No type safety or migration management
@@ -193,26 +205,28 @@ Use Prisma as the ORM for database access.
 **Date**: 2026-02-02
 **Status**: Accepted
 
-### Context
+### DD006 Context
+
 Want to build an open-source project that remains open even when used as SaaS.
 
-### Decision
+### DD006 Decision
+
 License ProManage under AGPL-3.0.
 
-### Consequences
+### DD006 Consequences
 
-**Positive:**
-- Network copyleft ensures SaaS deployments contribute back
-- Encourages community contributions
-- Protects against proprietary forks
-- Builds trust with users
+- **Positive:**
+  - Network copyleft ensures SaaS deployments contribute back
+  - Encourages community contributions
+  - Protects against proprietary forks
+  - Builds trust with users
+- **Negative:**
+  - May deter some commercial adoption
+  - Requires derivative works to be open source
+  - More restrictive than MIT/Apache
 
-**Negative:**
-- May deter some commercial adoption
-- Requires derivative works to be open source
-- More restrictive than MIT/Apache
+### DD006 Alternatives Considered
 
-### Alternatives Considered
 - MIT/Apache: Too permissive for our goals
 - GPL-3.0: Doesn't cover SaaS usage
 - Business Source License: Not truly open source
@@ -224,25 +238,27 @@ License ProManage under AGPL-3.0.
 **Date**: 2026-02-02
 **Status**: Proposed
 
-### Context
+### DD007 Context
+
 Need accessible, customizable UI components for web application.
 
-### Decision
+### DD007 Decision
+
 Use Radix UI primitives with TailwindCSS for styling.
 
-### Consequences
+### DD007 Consequences
 
-**Positive:**
-- Fully accessible (WAI-ARIA)
-- Unstyled primitives (full design control)
-- Works well with TailwindCSS
-- Small bundle size
+- **Positive:**
+  - Fully accessible (WAI-ARIA)
+  - Unstyled primitives (full design control)
+  - Works well with TailwindCSS
+  - Small bundle size
+- **Negative:**
+  - More setup than pre-styled libraries
+  - Need to build custom themes
 
-**Negative:**
-- More setup than pre-styled libraries
-- Need to build custom themes
+### DD007 Alternatives Considered
 
-### Alternatives Considered
 - Material UI: Too opinionated, larger bundle
 - Chakra UI: Good but less flexible
 - shadcn/ui: Built on Radix, could be considered
@@ -254,27 +270,29 @@ Use Radix UI primitives with TailwindCSS for styling.
 **Date**: 2026-02-02
 **Status**: Accepted
 
-### Context
+### DD008 Context
+
 Need cross-platform mobile app for iOS and Android with limited development resources.
 
-### Decision
+### DD008 Decision
+
 Use React Native with Expo for mobile development.
 
-### Consequences
+### DD008 Consequences
 
-**Positive:**
-- Code sharing with web (React)
-- Single codebase for iOS and Android
-- Managed build process with EAS
-- Over-the-air updates
-- Large ecosystem
+- **Positive:**
+  - Code sharing with web (React)
+  - Single codebase for iOS and Android
+  - Managed build process with EAS
+  - Over-the-air updates
+  - Large ecosystem
+- **Negative:**
+  - Performance limitations vs native
+  - Expo limitations (mitigated with custom dev clients)
+  - Bridge overhead
 
-**Negative:**
-- Performance limitations vs native
-- Expo limitations (mitigated with custom dev clients)
-- Bridge overhead
+### DD008 Alternatives Considered
 
-### Alternatives Considered
 - Native (Swift/Kotlin): 2x development effort
 - Flutter: Different language (Dart), no code sharing with web
 - Ionic/Capacitor: Web-based, performance concerns
@@ -286,29 +304,31 @@ Use React Native with Expo for mobile development.
 **Date**: 2026-02-02
 **Status**: Proposed
 
-### Context
+### DD009 Context
+
 Need secure authentication across web and mobile platforms.
 
-### Decision
-Use JWT with refresh token rotation:
-- Short-lived access tokens (15 min)
-- Long-lived refresh tokens (7 days)
-- httpOnly cookies for web
-- Secure storage for mobile
+### DD009 Decision
 
-### Consequences
+- Use JWT with refresh token rotation:
+  - Short-lived access tokens (15 min)
+  - Long-lived refresh tokens (7 days)
+  - httpOnly cookies for web
+  - Secure storage for mobile
 
-**Positive:**
-- Stateless authentication
-- Secure token handling
-- Mobile-friendly
-- Standard approach
+### DD009 Consequences
 
-**Negative:**
-- Token management complexity
-- Refresh flow overhead
+- **Positive:**
+  - Stateless authentication
+  - Secure token handling
+  - Mobile-friendly
+  - Standard approach
+- **Negative:**
+  - Token management complexity
+  - Refresh flow overhead
 
-### Alternatives Considered
+### DD009 Alternatives Considered
+
 - Sessions: Requires shared state, scaling issues
 - OAuth only: Would require third-party dependency
 
@@ -319,30 +339,32 @@ Use JWT with refresh token rotation:
 **Date**: 2026-02-02
 **Status**: Proposed
 
-### Context
+### DD010 Context
+
 Need comprehensive testing across all applications and packages.
 
-### Decision
-Multi-level testing approach:
-- **Unit**: Vitest for business logic
-- **Component**: Testing Library for React components
-- **Integration**: Supertest for API
-- **E2E**: Playwright (web), Detox (mobile)
+### DD010 Decision
 
-### Consequences
+- Multi-level testing approach:
+  - **Unit**: Vitest for business logic
+  - **Component**: Testing Library for React components
+  - **Integration**: Supertest for API
+  - **E2E**: Playwright (web), Detox (mobile)
 
-**Positive:**
-- Comprehensive coverage
-- Fast unit tests
-- Confidence in deployments
-- Regression prevention
+### DD010 Consequences
 
-**Negative:**
-- Test maintenance overhead
-- Slower CI/CD pipeline
-- Learning curve for contributors
+- **Positive:**
+  - Comprehensive coverage
+  - Fast unit tests
+  - Confidence in deployments
+  - Regression prevention
+- **Negative:**
+  - Test maintenance overhead
+  - Slower CI/CD pipeline
+  - Learning curve for contributors
 
-### Alternatives Considered
+### DD010 Alternatives Considered
+
 - Jest: Vitest is faster and better DX
 - Cypress: Playwright is more modern
 - E2E only: Would miss unit-level issues
@@ -354,42 +376,43 @@ Multi-level testing approach:
 **Date**: 2026-02-03
 **Status**: Accepted
 
-### Context
+### DD011 Context
+
 The original technology stack called for four separate storage technologies: PostgreSQL (relational data), Redis (caching, sessions, Socket.io pub/sub), WatermelonDB (mobile offline database), and S3-compatible storage (files/blobs). This introduces significant infrastructure complexity before any code has been written.
 
-Key observations:
-- JWT authentication is stateless — no shared session store is needed
-- Socket.io works fine on a single instance without a Redis adapter
-- The mobile app serves 10% of users with focused tasks (time tracking, photos, daily reports) — a full offline relational database is overkill at launch
-- PostgreSQL natively supports LISTEN/NOTIFY for lightweight pub/sub
-- Redis-level caching is premature optimization before we have measured performance
+- Key observations:
+  - JWT authentication is stateless — no shared session store is needed
+  - Socket.io works fine on a single instance without a Redis adapter
+  - The mobile app serves 10% of users with focused tasks (time tracking, photos, daily reports) — a full offline relational database is overkill at launch
+  - PostgreSQL natively supports LISTEN/NOTIFY for lightweight pub/sub
+  - Redis-level caching is premature optimization before we have measured performance
 
-### Decision
+### DD011 Decision
+
 Launch with **PostgreSQL as the single database** and S3-compatible storage for files. Defer Redis and WatermelonDB until concrete scaling or offline requirements justify them.
 
-**Storage at launch:**
-- **PostgreSQL 15+** — all relational data, sessions (if needed), pub/sub via LISTEN/NOTIFY
-- **S3-compatible** (MinIO locally, AWS S3 in production) — photos, documents, file uploads
+- **Storage at launch:**
+  - **PostgreSQL 15+** — all relational data, sessions (if needed), pub/sub via LISTEN/NOTIFY
+  - **S3-compatible** (MinIO locally, AWS S3 in production) — photos, documents, file uploads
+- **Deferred (add when needed):**
+  - **Redis** — add when horizontal scaling requires a Socket.io adapter, or when measured query performance demands a caching layer
+  - **WatermelonDB** — add if mobile offline requirements grow beyond what React Query persistence + AsyncStorage can handle
 
-**Deferred (add when needed):**
-- **Redis** — add when horizontal scaling requires a Socket.io adapter, or when measured query performance demands a caching layer
-- **WatermelonDB** — add if mobile offline requirements grow beyond what React Query persistence + AsyncStorage can handle
+### DD011 Consequences
 
-### Consequences
+- **Positive:**
+  - Simpler infrastructure (one database to manage, back up, and monitor)
+  - Faster local development (fewer Docker containers)
+  - Lower cognitive overhead for contributors
+  - No premature optimization
+  - Clear upgrade path when scaling demands it
+- **Negative:**
+  - PostgreSQL LISTEN/NOTIFY is less capable than Redis pub/sub (no message persistence, no pattern matching)
+  - No query-level caching at launch (acceptable — optimize when measured)
+  - Mobile offline is limited to React Query cache + AsyncStorage (acceptable for 10% field usage scope)
 
-**Positive:**
-- Simpler infrastructure (one database to manage, back up, and monitor)
-- Faster local development (fewer Docker containers)
-- Lower cognitive overhead for contributors
-- No premature optimization
-- Clear upgrade path when scaling demands it
+### DD011 Alternatives Considered
 
-**Negative:**
-- PostgreSQL LISTEN/NOTIFY is less capable than Redis pub/sub (no message persistence, no pattern matching)
-- No query-level caching at launch (acceptable — optimize when measured)
-- Mobile offline is limited to React Query cache + AsyncStorage (acceptable for 10% field usage scope)
-
-### Alternatives Considered
 - Keep all four storage systems from day one: Unnecessary complexity before first user
 - Drop S3 and store files in PostgreSQL: Bad practice for binary blobs, poor scalability
 - Use SQLite instead of PostgreSQL: Would limit query capabilities and scaling options

@@ -5,12 +5,14 @@
 ### Main Branches
 
 **`main`**
+
 - Production-ready code
 - Protected branch (requires PR and reviews)
 - Auto-deploys to production (when ready)
 - Always stable and deployable
 
 **`develop`** (Optional - if using Git Flow)
+
 - Integration branch for features
 - Deploys to staging environment
 - Merge to `main` for releases
@@ -18,7 +20,8 @@
 ### Feature Branches
 
 **Naming Convention:**
-```
+
+```bash
 feature/short-description
 fix/issue-description
 chore/task-description
@@ -27,7 +30,8 @@ refactor/what-is-being-refactored
 ```
 
 **Examples:**
-```
+
+```bash
 feature/add-time-tracking
 fix/daily-report-submission
 chore/upgrade-dependencies
@@ -119,6 +123,7 @@ git push
 ### 7. Merge PR
 
 After approval:
+
 - **Squash and merge** (preferred for feature branches)
 - **Merge commit** (for important feature branches with meaningful history)
 - **Rebase and merge** (for clean linear history)
@@ -137,7 +142,7 @@ git push origin --delete feature/add-project-filter
 
 ### Format
 
-```
+```bash
 <type>(<scope>): <subject>
 
 <body>
@@ -160,12 +165,14 @@ git push origin --delete feature/add-project-filter
 ### Examples
 
 **Simple commit:**
-```
+
+```bash
 feat(projects): add filter by status
 ```
 
 **With body:**
-```
+
+```bash
 fix(time-tracking): correct overtime calculation
 
 The overtime calculation was using wrong threshold.
@@ -175,7 +182,8 @@ Fixes #123
 ```
 
 **Breaking change:**
-```
+
+```bash
 feat(api): change authentication endpoint
 
 BREAKING CHANGE: /auth/login now returns different response format.
@@ -185,7 +193,8 @@ The token is now in response.data.token instead of response.token.
 ### Guidelines
 
 **Good commits:**
-```
+
+```bash
 feat(daily-reports): add photo upload capability
 fix(auth): resolve token expiration issue
 docs(api): update endpoint documentation
@@ -193,7 +202,8 @@ test(projects): add unit tests for project service
 ```
 
 **Bad commits:**
-```
+
+```bash
 fix stuff
 updates
 WIP
@@ -215,7 +225,8 @@ asdfasdf
 ### PR Title
 
 Follow same format as commit messages:
-```
+
+```bash
 feat(projects): add advanced filtering
 fix(mobile): resolve photo upload on iOS
 ```
@@ -261,6 +272,7 @@ Closes #123
 ### PR Best Practices
 
 **Do:**
+
 - ✅ Keep PRs focused and small
 - ✅ Write clear description
 - ✅ Link related issues
@@ -270,6 +282,7 @@ Closes #123
 - ✅ Keep PR up-to-date with main
 
 **Don't:**
+
 - ❌ Create massive PRs (500+ lines)
 - ❌ Mix unrelated changes
 - ❌ Leave PR description empty

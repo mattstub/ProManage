@@ -46,22 +46,15 @@ Small to mid sized construction contractors that need to dissiminate materials t
 
 ## Core Principles
 
-### Desktop-First Approach
-90% of work happens in the office, so the web application is the primary interface with full functionality.
-
-### Mobile Companion
-10% field usage focused on critical mobile scenarios: time tracking, photo uploads, daily reports, and real-time updates.
-
-### Real-Time Sync
-Bidirectional updates between field and office using WebSockets/SSE ensure everyone has the latest information.
-
-### Open Source Commitment
-AGPL-3.0 license ensures all SaaS improvements remain open source and benefit the community.
+1. Desktop-First Approach: 90% of work happens in the office, so the web application is the primary interface with full functionality.
+2. Mobile Companion: 10% field usage focused on critical mobile scenarios: time tracking, photo uploads, daily reports, and real-time updates.
+3. Real-Time Sync: Bidirectional updates between field and office using WebSockets/SSE ensure everyone has the latest information.
+4. Open Source Commitment: AGPL-3.0 license ensures all SaaS improvements remain open source and benefit the community.
 
 ## Target Market
 
 ### Primary Market
-<!-- TODO: Dress this up -- Who are your ideal first users? -->
+<!-- Who are your ideal first users? -->
 
 - Company size: 1-50 employees
 - Project types: commercial construction
@@ -79,76 +72,62 @@ AGPL-3.0 license ensures all SaaS improvements remain open source and benefit th
 <!-- What tools exist today? What are their limitations? -->
 <!-- TODO: Existing solutions -->
 
-**Procore:**
-- Strengths: Good version control, document management and creation in one place, offers an API marketplace with loads of 3rd party add-in's
-- Weaknesses: Not intuitive for navigation, silos between different stages of construction, internal communication is difficult, pricey
-
-**Knowify:**
-- Strengths: AIA billing capability, some document control and creation
-- Weaknesses: Designed for service contractors or residential contractors in mind
+1. **Procore:**
+    - Strengths: Good version control, document management and creation in one place, offers an API marketplace with loads of 3rd party add-in's
+    - Weaknesses: Not intuitive for navigation, silos between different stages of construction, internal communication is difficult, pricey
+2. **Knowify:**
+    - Strengths: AIA billing capability, some document control and creation
+    - Weaknesses: Designed for service contractors or residential contractors in mind
 
 ### Our Differentiators
-<!-- TODO: What makes ProManage unique? -->
+<!-- What makes ProManage unique? -->
 
 1. **Open Source**: AGPL-3.0 licensed, community-driven
 2. **Desktop-First**: Optimized for office workflows
 3. **Real-Time**: Instant field-office synchronization
 4. **Modern Stack**: Built with latest web technologies
+5. **Complete Solution**: An attempt to bring all tools under 1 software suite
 
 ## Risks & Challenges
 
-### Technical Risks
-
-- Complexity of construction workflows
-- Real-time sync at scale
-- Mobile offline capabilities
-
-### Market Risks
-
-- Competition from established players
-- User adoption and training
-- Feature scope creep
-
-### Mitigation Strategies
-<!-- TODO: How will you address these risks? -->
-
-## Timeline & Milestones
-<!-- TODO: High-level timeline - details go in ROADMAP.md -->
-
-**Phase 1: Foundation** (Months 1-3)
-- Core infrastructure
-- Basic project management
-- User authentication
-
-**Phase 2: Essential Features** (Months 4-6)
-- Time tracking
-- Daily reports
-- Photo management
-
-**Phase 3: Advanced Features** (Months 7-12)
-- Budgeting and cost tracking
-- Scheduling
-- Document management
+1. Technical Risks
+    - Complexity of construction workflows
+    - Real-time sync at scale
+    - Mobile offline capabilities
+2. Market Risks
+    - Competition from established players
+    - User adoption and training
+    - Feature scope creep
+3. Mitigation Strategies
+    <!-- TODO: How will you address these risks? -->
+4. Timeline & Milestones
+    <!-- TODO: High-level timeline - details go in ROADMAP.md -->
+    - **Phase 1: Foundation** (Months 1-3)
+        - Core infrastructure
+        - Basic project management
+        - User authentication
+    - **Phase 2: Essential Features** (Months 4-6)
+        - Time tracking
+        - Daily reports
+        - Photo management
+    - **Phase 3: Advanced Features** (Months 7-12)
+        - Budgeting and cost tracking
+        - Scheduling
+        - Document management
 
 ## Community & Contribution
 
-### Open Source Philosophy
-
-Why we're open source:
-- Transparency and trust
-- Community contributions
-- Faster innovation
-- Industry-wide benefit
-
-### Contribution Areas
-
-Where we need help:
-- Construction industry expertise
-- Feature development
-- Testing and QA
-- Documentation
+1. Open Source Philosophy (Why we're open source):
+    - Transparency and trust
+    - Community contributions
+    - Faster innovation
+    - Industry-wide benefit
+2. Contribution Areas (Where we need help):
+    - Construction industry expertise
+    - Feature development
+    - Testing and QA
+    - Documentation
 
 ---
 
-**Last Updated**: 2026-02-03
-**Status**: Draft - 50% complete in identifying information, needs to be more fleshed out nad professional
+**Last Updated**: 2026-03-19

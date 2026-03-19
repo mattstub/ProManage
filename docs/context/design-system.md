@@ -7,23 +7,27 @@ ProManage's design system ensures consistency across web and mobile applications
 ## Design Principles
 
 ### 1. Desktop-First, Mobile-Optimized
+
 - Primary focus on desktop usability (90% use case)
 - Mobile app provides focused, task-specific interface
 - Responsive design for tablets and smaller screens
 
 ### 2. Clarity Over Aesthetics
+
 - Construction management requires clear, actionable information
 - Minimize visual clutter
 - Emphasize readability and scannability
 - Use data visualization where appropriate
 
 ### 3. Efficiency for Power Users
+
 - Keyboard shortcuts for common actions
 - Quick filters and search
 - Bulk operations support
 - Minimal clicks to complete tasks
 
 ### 4. Accessible by Default
+
 - WCAG 2.1 AA compliance
 - Semantic HTML
 - Keyboard navigation
@@ -31,6 +35,7 @@ ProManage's design system ensures consistency across web and mobile applications
 - Color contrast ratios
 
 ### 5. Feedback & Confirmation
+
 - Clear loading states
 - Success/error messages
 - Confirmation for destructive actions
@@ -41,6 +46,7 @@ ProManage's design system ensures consistency across web and mobile applications
 ### Primary Colors
 
 **Brand Primary** (To be defined)
+
 ```css
 --color-primary-50: #...;
 --color-primary-100: #...;
@@ -49,6 +55,7 @@ ProManage's design system ensures consistency across web and mobile applications
 ```
 
 **Neutrals** (Grays for UI)
+
 ```css
 --color-gray-50: #f9fafb;
 --color-gray-100: #f3f4f6;
@@ -65,6 +72,7 @@ ProManage's design system ensures consistency across web and mobile applications
 ### Semantic Colors
 
 **Success** (Green)
+
 ```css
 --color-success-50: #f0fdf4;
 --color-success-500: #22c55e;
@@ -72,6 +80,7 @@ ProManage's design system ensures consistency across web and mobile applications
 ```
 
 **Warning** (Yellow/Orange)
+
 ```css
 --color-warning-50: #fffbeb;
 --color-warning-500: #f59e0b;
@@ -79,6 +88,7 @@ ProManage's design system ensures consistency across web and mobile applications
 ```
 
 **Error** (Red)
+
 ```css
 --color-error-50: #fef2f2;
 --color-error-500: #ef4444;
@@ -86,6 +96,7 @@ ProManage's design system ensures consistency across web and mobile applications
 ```
 
 **Info** (Blue)
+
 ```css
 --color-info-50: #eff6ff;
 --color-info-500: #3b82f6;
@@ -95,6 +106,7 @@ ProManage's design system ensures consistency across web and mobile applications
 ### Construction-Specific Colors
 
 **Safety** (High-visibility colors)
+
 ```css
 --color-safety-yellow: #fbbf24;
 --color-safety-orange: #fb923c;
@@ -106,18 +118,21 @@ ProManage's design system ensures consistency across web and mobile applications
 ### Font Families
 
 **Primary Font** (UI Text)
+
 ```css
 --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 ```
 
 **Monospace Font** (Code, Numbers)
+
 ```css
 --font-mono: 'JetBrains Mono', 'Courier New', monospace;
 ```
 
 ### Font Scales
 
-**Desktop Scale**
+- **Desktop Scale**
+
 ```css
 --text-xs: 0.75rem;    /* 12px */
 --text-sm: 0.875rem;   /* 14px */
@@ -129,7 +144,8 @@ ProManage's design system ensures consistency across web and mobile applications
 --text-4xl: 2.25rem;   /* 36px */
 ```
 
-**Mobile Scale** (Slightly larger for touchability)
+- **Mobile Scale** (Slightly larger for touchability)
+
 ```css
 --text-mobile-xs: 0.875rem;   /* 14px */
 --text-mobile-sm: 1rem;        /* 16px */
@@ -138,6 +154,7 @@ ProManage's design system ensures consistency across web and mobile applications
 ```
 
 ### Font Weights
+
 ```css
 --font-normal: 400;
 --font-medium: 500;
@@ -166,8 +183,9 @@ Based on 4px grid:
 
 ### Page Structure
 
-**Desktop Layout**
-```
+- **Desktop Layout**
+
+```bash
 ┌─────────────────────────────────────┐
 │         Top Navigation              │
 ├──────┬──────────────────────────────┤
@@ -178,8 +196,9 @@ Based on 4px grid:
 └──────┴──────────────────────────────┘
 ```
 
-**Mobile Layout**
-```
+- **Mobile Layout**
+
+```bash
 ┌─────────────────┐
 │   Top Bar       │
 ├─────────────────┤
@@ -194,199 +213,203 @@ Based on 4px grid:
 
 ### Grid System
 
-**Desktop Grid**
-- 12-column grid
-- Gutter: 24px (var(--space-6))
-- Max width: 1440px
-- Breakpoints:
-  - sm: 640px
-  - md: 768px
-  - lg: 1024px
-  - xl: 1280px
-  - 2xl: 1536px
+- **Desktop Grid**
+  - 12-column grid
+  - Gutter: 24px (var(--space-6))
+  - Max width: 1440px
+  - Breakpoints:
+    - sm: 640px
+    - md: 768px
+    - lg: 1024px
+    - xl: 1280px
+    - 2xl: 1536px
 
-**Mobile Grid**
-- Single column or 2-column
-- Gutter: 16px (var(--space-4))
-- Full-width sections
+- **Mobile Grid**
+  - Single column or 2-column
+  - Gutter: 16px (var(--space-4))
+  - Full-width sections
 
 ## Components
 
 ### Buttons
 
-**Variants:**
-- Primary (brand color, main actions)
-- Secondary (outlined, secondary actions)
-- Ghost (text only, tertiary actions)
-- Danger (red, destructive actions)
+- **Variants:**
+  - Primary (brand color, main actions)
+  - Secondary (outlined, secondary actions)
+  - Ghost (text only, tertiary actions)
+  - Danger (red, destructive actions)
 
-**Sizes:**
-- Small (sm): 32px height
-- Medium (md): 40px height (default)
-- Large (lg): 48px height
+- **Sizes:**
+  - Small (sm): 32px height
+  - Medium (md): 40px height (default)
+  - Large (lg): 48px height
 
-**States:**
-- Default
-- Hover
-- Active
-- Disabled
-- Loading
+- **States:**
+  - Default
+  - Hover
+  - Active
+  - Disabled
+  - Loading
 
 ### Forms
 
-**Input Fields**
-- Height: 40px (desktop), 48px (mobile)
-- Border radius: 6px
-- Focus ring: 2px brand color
-- Error state: Red border + error message
-- Disabled state: Gray background
+- **Input Fields**
+  - Height: 40px (desktop), 48px (mobile)
+  - Border radius: 6px
+  - Focus ring: 2px brand color
+  - Error state: Red border + error message
+  - Disabled state: Gray background
 
-**Labels**
-- Above input (preferred)
-- Inline for checkboxes/radios
-- Required indicator: Red asterisk
+- **Labels**
+  - Above input (preferred)
+  - Inline for checkboxes/radios
+  - Required indicator: Red asterisk
 
-**Validation**
-- Real-time validation on blur
-- Display errors below input
-- Success state (green checkmark)
+- **Validation**
+  - Real-time validation on blur
+  - Display errors below input
+  - Success state (green checkmark)
 
 ### Cards
 
-**Default Card**
-- Background: White
-- Border: 1px gray-200
-- Border radius: 8px
-- Padding: 16px-24px
-- Shadow: subtle (0 1px 3px rgba(0,0,0,0.1))
+- **Default Card**
+  - Background: White
+  - Border: 1px gray-200
+  - Border radius: 8px
+  - Padding: 16px-24px
+  - Shadow: subtle (0 1px 3px rgba(0,0,0,0.1))
 
-**Hover State** (clickable cards)
-- Border: brand color
-- Shadow: medium (0 4px 6px rgba(0,0,0,0.1))
+- **Hover State** (clickable cards)
+  - Border: brand color
+  - Shadow: medium (0 4px 6px rgba(0,0,0,0.1))
 
 ### Tables
 
-**Desktop Tables**
-- Sticky header
-- Zebra striping (optional)
-- Row hover state
-- Sortable columns
-- Pagination or infinite scroll
+- **Desktop Tables**
+  - Sticky header
+  - Zebra striping (optional)
+  - Row hover state
+  - Sortable columns
+  - Pagination or infinite scroll
 
-**Mobile Tables**
-- Card-based list view
-- Swipeable actions
-- Tap to expand details
+- **Mobile Tables**
+  - Card-based list view
+  - Swipeable actions
+  - Tap to expand details
 
 ### Modals/Dialogs
 
-**Desktop Modal**
-- Max width: 640px (default)
-- Centered on screen
-- Overlay: rgba(0,0,0,0.5)
-- Close on overlay click or ESC key
+- **Desktop Modal**
+  - Max width: 640px (default)
+  - Centered on screen
+  - Overlay: rgba(0,0,0,0.5)
+  - Close on overlay click or ESC key
 
-**Mobile Modal**
-- Full screen or bottom sheet
-- Swipe down to dismiss
-- Fixed header with close button
+- **Mobile Modal**
+  - Full screen or bottom sheet
+  - Swipe down to dismiss
+  - Fixed header with close button
 
 ### Navigation
 
-**Desktop Top Nav**
-- Height: 64px
-- Logo + main navigation items
-- User menu (right aligned)
-- Search (if applicable)
+- **Desktop Top Nav**
+  - Height: 64px
+  - Logo + main navigation items
+  - User menu (right aligned)
+  - Search (if applicable)
 
-**Desktop Sidebar**
-- Width: 240px (default)
-- Collapsible to 64px (icon only)
-- Nested navigation support
-- Active state indicator
+- **Desktop Sidebar**
+  - Width: 240px (default)
+  - Collapsible to 64px (icon only)
+  - Nested navigation support
+  - Active state indicator
 
-**Mobile Bottom Nav**
-- Height: 56px
-- 4-5 primary items
-- Active state indicator
-- Icon + label
+- **Mobile Bottom Nav**
+  - Height: 56px
+  - 4-5 primary items
+  - Active state indicator
+  - Icon + label
 
 ## Icons
 
 **Icon Library**: Heroicons (or similar)
 
-**Sizes:**
-- xs: 16px
-- sm: 20px
-- md: 24px
-- lg: 32px
-- xl: 48px
+- **Sizes:**
+  - xs: 16px
+  - sm: 20px
+  - md: 24px
+  - lg: 32px
+  - xl: 48px
 
-**Usage:**
-- Always include accessible labels
-- Use consistent icon set
-- Align with text baseline
+- **Usage:**
+  - Always include accessible labels
+  - Use consistent icon set
+  - Align with text baseline
 
 ## Data Visualization
 
 ### Charts & Graphs
 
-**Types:**
-- Bar charts (budget comparisons)
-- Line charts (progress over time)
-- Pie/donut charts (cost breakdowns)
-- Gantt charts (schedules)
+- **Types:**
+  - Bar charts (budget comparisons)
+  - Line charts (progress over time)
+  - Pie/donut charts (cost breakdowns)
+  - Gantt charts (schedules)
 
-**Colors:**
-- Use semantic colors consistently
-- Accessible color combinations
-- Patterns for colorblind users
+- **Colors:**
+  - Use semantic colors consistently
+  - Accessible color combinations
+  - Patterns for colorblind users
 
 ### Status Indicators
 
-**Project Status:**
-- On Track: Green
-- At Risk: Yellow
-- Delayed: Red
-- Completed: Blue
-- Not Started: Gray
+- **Project Status:**
+  - On Track: Green
+  - At Risk: Yellow
+  - Delayed: Red
+  - Completed: Blue
+  - Not Started: Gray
 
-**Time Entry Status:**
-- Pending: Yellow
-- Approved: Green
-- Rejected: Red
+- **Time Entry Status:**
+  - Pending: Yellow
+  - Approved: Green
+  - Rejected: Red
 
 ### Progress Indicators
 
-**Progress Bars**
-- Height: 8px
-- Border radius: 4px
-- Background: gray-200
-- Fill: brand color or semantic color
+- **Progress Bars**
+  - Height: 8px
+  - Border radius: 4px
+  - Background: gray-200
+  - Fill: brand color or semantic color
 
-**Spinners**
-- Size: 24px-48px
-- Color: brand or context-specific
-- Full-page loading: centered with overlay
+- **Spinners**
+  - Size: 24px-48px
+  - Color: brand or context-specific
+  - Full-page loading: centered with overlay
 
 ## Mobile-Specific Patterns
 
 ### Touch Targets
+
 - Minimum: 44x44px (iOS), 48x48px (Android)
 - Spacing between targets: 8px minimum
 
 ### Gestures
+
 - Swipe to delete (lists)
 - Pull to refresh
 - Swipe between tabs
 - Pinch to zoom (photos)
 
 ### Bottom Sheets
+
 - For contextual actions
 - Swipe down to dismiss
 - Handle indicator at top
 
 ### FAB (Floating Action Button)
+
 - For primary mobile actions
 - Position: bottom-right
 - Size: 56x56px
@@ -394,21 +417,25 @@ Based on 4px grid:
 ## Accessibility
 
 ### Color Contrast
+
 - Body text: 4.5:1 minimum
 - Large text: 3:1 minimum
 - UI components: 3:1 minimum
 
 ### Focus Indicators
+
 - Visible focus ring (2px brand color)
 - Never remove outline without replacement
 
 ### Screen Readers
+
 - Semantic HTML
 - ARIA labels where needed
 - Skip navigation links
 - Descriptive link text
 
 ### Keyboard Navigation
+
 - Tab order follows visual layout
 - All interactive elements keyboard-accessible
 - Escape key closes modals/dropdowns
@@ -416,17 +443,20 @@ Based on 4px grid:
 ## Animation & Transitions
 
 ### Principles
+
 - Subtle and purposeful
 - Fast (200-300ms typical)
 - Easing: ease-in-out
 
 ### Common Animations
+
 - Page transitions: fade or slide
 - Modal open/close: scale + fade
 - Dropdown: slide down
 - Notification: slide in from top/bottom
 
 ### Reduce Motion
+
 - Respect `prefers-reduced-motion`
 - Disable decorative animations
 - Keep functional animations simple
@@ -444,13 +474,12 @@ Based on 4px grid:
 
 ## Dark Mode
 
-**Status**: Future consideration
-
-When implementing:
-- Follow system preference
-- Manual toggle option
-- Update all colors for dark background
-- Ensure accessibility in both modes
+- **Status**: Future consideration
+  - When implementing:
+    - Follow system preference
+    - Manual toggle option
+    - Update all colors for dark background
+    - Ensure accessibility in both modes
 
 ---
 

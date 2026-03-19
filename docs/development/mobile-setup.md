@@ -8,22 +8,26 @@ ProManage mobile app is built with React Native and Expo for iOS and Android pla
 
 ### Required Software
 
-**Node.js** (v20+)
+- **Node.js** (v20+)
+
 ```bash
 node --version
 ```
 
-**pnpm** (v8+)
+- **pnpm** (v8+)
+
 ```bash
 pnpm --version
 ```
 
-**Expo CLI**
+- **Expo CLI**
+
 ```bash
 npm install -g expo-cli eas-cli
 ```
 
-**Watchman** (macOS/Linux)
+- **Watchman** (macOS/Linux)
+
 ```bash
 # macOS
 brew install watchman
@@ -34,48 +38,50 @@ brew install watchman
 
 ### iOS Development (macOS only)
 
-**Xcode** (latest version)
-- Install from Mac App Store
-- Open Xcode and accept license agreement
-- Install Command Line Tools:
+- **Xcode** (latest version)
+  - Install from Mac App Store
+  - Open Xcode and accept license agreement
+  - Install Command Line Tools:
+  
   ```bash
   xcode-select --install
   ```
 
-**iOS Simulator**
-- Included with Xcode
-- Open Xcode > Preferences > Components > Download simulators
+- **iOS Simulator**
+  - Included with Xcode
+  - Open Xcode > Preferences > Components > Download simulators
+- **CocoaPods**
 
-**CocoaPods**
-```bash
-sudo gem install cocoapods
-```
+  ```bash
+  sudo gem install cocoapods
+  ```
 
 ### Android Development
 
-**Android Studio**
-- Download from: https://developer.android.com/studio
-- Install Android SDK
-- Install Android Virtual Device (AVD)
+- **Android Studio**
+  - Download from: `https://developer.android.com/studio`
+  - Install Android SDK
+  - Install Android Virtual Device (AVD)
+- **Environment Variables**
+  Add to `~/.zshrc` or `~/.bashrc`:
 
-**Environment Variables**
-Add to `~/.zshrc` or `~/.bashrc`:
-```bash
-export ANDROID_HOME=$HOME/Library/Android/sdk
-export PATH=$PATH:$ANDROID_HOME/emulator
-export PATH=$PATH:$ANDROID_HOME/tools
-export PATH=$PATH:$ANDROID_HOME/tools/bin
-export PATH=$PATH:$ANDROID_HOME/platform-tools
-```
+  ```bash
+  export ANDROID_HOME=$HOME/Library/Android/sdk
+  export PATH=$PATH:$ANDROID_HOME/emulator
+  export PATH=$PATH:$ANDROID_HOME/tools
+  export PATH=$PATH:$ANDROID_HOME/tools/bin
+  export PATH=$PATH:$ANDROID_HOME/platform-tools
+  ```
 
-**Java Development Kit (JDK)**
-```bash
-# macOS
-brew install openjdk@17
+- **Java Development Kit (JDK)**
 
-# Verify
-java --version
-```
+  ```bash
+  # macOS
+  brew install openjdk@17
+
+  # Verify
+  java --version
+  ```
 
 ## Project Setup
 
@@ -104,6 +110,7 @@ cp .env.example .env
 ```
 
 Edit `.env`:
+
 ```bash
 EXPO_PUBLIC_API_URL=http://localhost:3001
 EXPO_PUBLIC_WS_URL=ws://localhost:3001
@@ -128,6 +135,7 @@ pnpm start --clear
 ```
 
 **Options:**
+
 - Press `i` to open iOS simulator
 - Press `a` to open Android emulator
 - Scan QR code with Expo Go app on physical device
@@ -154,21 +162,21 @@ pnpm android --device "Pixel_7_Pro"
 
 ### Physical Devices
 
-**iOS:**
-1. Install Expo Go from App Store
-2. Ensure device on same WiFi network
-3. Scan QR code from terminal
-
-**Android:**
-1. Install Expo Go from Play Store
-2. Ensure device on same WiFi network
-3. Scan QR code from terminal
+- **iOS:**
+  - Install Expo Go from App Store
+  - Ensure device on same WiFi network
+  - Scan QR code from terminal
+- **Android:**
+  - Install Expo Go from Play Store
+  - Ensure device on same WiFi network
+  - Scan QR code from terminal
 
 ## Development Workflow
 
 ### Hot Reload
 
 Changes automatically reload in app:
+
 - Fast Refresh for React components
 - Full reload for native code changes
 
@@ -180,16 +188,20 @@ Press 'r' in terminal
 ### Debug Menu
 
 **iOS Simulator:**
+
 - Cmd + D
 
 **Android Emulator:**
+
 - Cmd + M (macOS)
 - Ctrl + M (Windows/Linux)
 
 **Physical Device:**
+
 - Shake device
 
 **Options:**
+
 - Reload
 - Open Debugger
 - Toggle Element Inspector
@@ -198,12 +210,14 @@ Press 'r' in terminal
 ### Debugging
 
 **React DevTools:**
+
 ```bash
 # Terminal
 Press 'j' to open debugger
 ```
 
 **Flipper:**
+
 ```bash
 # Install Flipper
 brew install --cask flipper
@@ -213,6 +227,7 @@ brew install --cask flipper
 ```
 
 **Chrome DevTools:**
+
 1. Open debug menu
 2. Select "Debug Remote JS"
 3. Open `chrome://inspect` in Chrome
@@ -220,6 +235,7 @@ brew install --cask flipper
 ### Logs
 
 **View logs:**
+
 ```bash
 # iOS
 pnpm ios --device-log
@@ -234,7 +250,7 @@ npx react-native log-android
 
 ## Project Structure
 
-```
+```bash
 apps/mobile/
 ├── app/                    # Expo Router pages
 │   ├── (auth)/            # Auth-related screens

@@ -8,95 +8,85 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 
 ### Web Application (apps/web)
 
-**Framework**: Next.js 14+ (React 18+)
-- App Router for modern routing
-- Server Components for performance
-- Built-in API routes for BFF pattern
-- Optimized for desktop-first usage (90% of users)
-
-**UI & Styling**:
-- TailwindCSS for utility-first styling
-- Radix UI for accessible components
-- Framer Motion for animations
-- React Hook Form for form management
-- Zod for schema validation
-
-**State Management**:
-- Zustand for client state
-- TanStack Query (React Query) for server state
-- Context API for theme and auth
-
-**Real-Time**:
-- Socket.io client for WebSocket connections
-- EventSource for SSE fallback
-- Optimistic updates with React Query
+- **Framework**: Next.js 14+ (React 18+)
+  - App Router for modern routing
+  - Server Components for performance
+  - Built-in API routes for BFF pattern
+  - Optimized for desktop-first usage (90% of users)
+- **UI & Styling**:
+  - TailwindCSS for utility-first styling
+  - Radix UI for accessible components
+  - Framer Motion for animations
+  - React Hook Form for form management
+  - Zod for schema validation
+- **State Management**:
+  - Zustand for client state
+  - TanStack Query (React Query) for server state
+  - Context API for theme and auth
+- **Real-Time**:
+  - Socket.io client for WebSocket connections
+  - EventSource for SSE fallback
+  - Optimistic updates with React Query
 
 ### Mobile Application (apps/mobile)
 
-**Framework**: React Native (Expo)
-- Expo SDK for managed workflow
-- Expo Router for file-based routing
-- Optimized for field use (10% of users)
-
-**UI & Styling**:
-- React Native Paper or NativeBase
-- Tailwind CSS (NativeWind)
-- React Native Reanimated for animations
-
-**Offline Capabilities**:
-- React Query persistence with AsyncStorage for offline caching
-- NetInfo for connection status
-- Background sync with queue
-- No dedicated offline database at launch — add WatermelonDB only if offline requirements grow
-
-**Mobile-Specific Features**:
-- Camera for photo capture
-- Location services
-- Push notifications
-- Biometric authentication
+- **Framework**: React Native (Expo)
+  - Expo SDK for managed workflow
+  - Expo Router for file-based routing
+  - Optimized for field use (10% of users)
+- **UI & Styling**:
+  - React Native Paper or NativeBase
+  - Tailwind CSS (NativeWind)
+  - React Native Reanimated for animations
+- **Offline Capabilities**:
+  - React Query persistence with AsyncStorage for offline caching
+  - NetInfo for connection status
+  - Background sync with queue
+  - No dedicated offline database at launch — add WatermelonDB only if offline requirements grow
+- **Mobile-Specific Features**:
+  - Camera for photo capture
+  - Location services
+  - Push notifications
+  - Biometric authentication
 
 ## Backend Technologies
 
 ### API Server (apps/api)
 
-**Runtime**: Node.js 20+ with TypeScript
-**Framework**: Fastify
-- High performance, schema-based validation
-- Plugin ecosystem (Prisma plugin, Swagger plugin)
-- TypeScript-first with full type augmentation
-
-**Database**:
-- PostgreSQL 15+ as the single data store
-- Prisma ORM for type-safe queries
-- Migrations with Prisma Migrate
-- PostgreSQL LISTEN/NOTIFY for basic pub/sub
-- No Redis at launch — add only if horizontal scaling demands it
-
-**Real-Time**:
-- Socket.io for WebSocket server (single-instance, no Redis adapter initially)
-- Event-driven architecture
-- PostgreSQL LISTEN/NOTIFY as lightweight pub/sub channel
-
-**File Storage**:
-- S3-compatible storage (AWS S3, MinIO, etc.)
-- Presigned URLs for uploads
-- Image processing with Sharp
-
-**Authentication & Authorization**:
-- JWT for stateless auth
-- Refresh token rotation
-- Role-based access control (RBAC)
-- OAuth 2.0 for third-party integrations
-
-**Validation & Security**:
-- Zod for runtime validation
-- Helmet for security headers
-- Rate limiting
-- CORS configuration
+- **Runtime**: Node.js 20+ with TypeScript
+- **Framework**: Fastify
+  - High performance, schema-based validation
+  - Plugin ecosystem (Prisma plugin, Swagger plugin)
+  - TypeScript-first with full type augmentation
+- **Database**:
+  - PostgreSQL 15+ as the single data store
+  - Prisma ORM for type-safe queries
+  - Migrations with Prisma Migrate
+  - PostgreSQL LISTEN/NOTIFY for basic pub/sub
+  - No Redis at launch — add only if horizontal scaling demands it
+- **Real-Time**:
+  - Socket.io for WebSocket server (single-instance, no Redis adapter initially)
+  - Event-driven architecture
+  - PostgreSQL LISTEN/NOTIFY as lightweight pub/sub channel
+- **File Storage**:
+  - S3-compatible storage (AWS S3, MinIO, etc.)
+  - Presigned URLs for uploads
+  - Image processing with Sharp
+- **Authentication & Authorization**:
+  - JWT for stateless auth
+  - Refresh token rotation
+  - Role-based access control (RBAC)
+  - OAuth 2.0 for third-party integrations
+- **Validation & Security**:
+  - Zod for runtime validation
+  - Helmet for security headers
+  - Rate limiting
+  - CORS configuration
 
 ## Shared Packages
 
 ### packages/core
+
 - Business logic and domain models
 - Validation schemas (Zod)
 - Type definitions
@@ -104,21 +94,25 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 - Shared between web, mobile, and API
 
 ### packages/ui-components
+
 - React component library
 - Shared between web and future admin interfaces
 - Storybook for component development
 
 ### packages/mobile-components
+
 - React Native components
 - Shared mobile UI patterns
 
 ### packages/api-client
+
 - Type-safe fetch wrapper (handcrafted, not OpenAPI-generated)
 - Auto-refresh on 401: retries with new accessToken before calling onAuthError
 - Resource namespaces: auth, users, organizations, health
 - Used by web and mobile apps
 
 ### packages/real-time
+
 - WebSocket client/server logic
 - Event types and handlers
 - Shared real-time utilities
@@ -126,11 +120,13 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 ## Development Tools
 
 ### Monorepo Management
+
 - **pnpm**: Fast, efficient package manager
 - **Turborepo**: Build orchestration and caching
 - Shared configs across workspace
 
 ### Code Quality
+
 - **TypeScript**: Type safety across entire stack
 - **ESLint**: Linting with recommended configs
 - **Prettier**: Code formatting
@@ -138,6 +134,7 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 - **lint-staged**: Run linters on staged files
 
 ### Testing
+
 - **Vitest**: Unit and integration testing
 - **Testing Library**: Component testing
 - **Playwright**: E2E testing for web
@@ -145,6 +142,7 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 - **Supertest**: API testing
 
 ### Build & Deployment
+
 - **Docker**: Containerization
 - **Docker Compose**: Local development
 - **GitHub Actions**: CI/CD pipelines
@@ -152,6 +150,7 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 - **EAS Build**: Mobile app builds
 
 ### Monitoring & Observability
+
 - **Sentry**: Error tracking
 - **Pino**: Structured logging
 - **Prometheus**: Metrics (optional)
@@ -160,11 +159,13 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 ## Infrastructure
 
 ### Development Environment
+
 - Docker Compose for local services
 - PostgreSQL container
 - MinIO for local S3
 
 ### Production Considerations
+
 - Horizontal scaling for API servers
 - Database connection pooling
 - CDN for static assets
@@ -173,11 +174,13 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 ## Database Schema
 
 ### ORM & Migrations
+
 - Prisma for schema definition
 - Automatic migration generation
 - Seeding for development data
 
 ### Key Entities
+
 - Users & Authentication
 - Projects & Organizations
 - Time Tracking
@@ -189,17 +192,20 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 ## API Design
 
 ### RESTful API
+
 - Resource-based endpoints
 - Standard HTTP methods
 - JSON request/response
 - OpenAPI/Swagger documentation
 
 ### GraphQL (Future Consideration)
+
 - Could replace REST for complex queries
 - Better for mobile bandwidth optimization
 - Real-time subscriptions alternative
 
 ### Real-Time Events
+
 - Socket.io namespaces for isolation
 - Room-based broadcasting
 - Event-driven updates
@@ -207,17 +213,20 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 ## Security Considerations
 
 ### Authentication Flow
+
 1. Login with credentials
 2. Issue JWT access token (short-lived)
 3. Issue refresh token (long-lived, stored in httpOnly cookie)
 4. Token rotation on refresh
 
 ### Authorization
+
 - RBAC with roles: Admin, Project Manager, Field User, etc.
 - Resource-based permissions
 - Organization/project isolation
 
 ### Data Protection
+
 - Encryption at rest (database)
 - Encryption in transit (TLS/HTTPS)
 - Sensitive data hashing (bcrypt for passwords)
@@ -228,6 +237,7 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 ## Performance Optimization
 
 ### Frontend
+
 - Code splitting
 - Lazy loading
 - Image optimization (next/image)
@@ -235,6 +245,7 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 - Service Workers (PWA)
 
 ### Backend
+
 - Database indexing
 - Query optimization
 - Connection pooling
@@ -242,6 +253,7 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 - CDN for static files
 
 ### Real-Time
+
 - Room-based broadcasting (avoid global events)
 - Event debouncing
 - Compression for WebSocket messages
@@ -249,15 +261,18 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 ## Scalability Strategy
 
 ### Horizontal Scaling
+
 - Stateless API servers (JWT — no shared session state needed)
 - Add Redis for Socket.io adapter and caching only when scaling beyond a single instance
 
 ### Database Scaling
+
 - Read replicas for queries
 - Connection pooling (PgBouncer or Prisma connection pooling)
 - Efficient indexing
 
 ### Monitoring & Alerts
+
 - Error tracking
 - Performance monitoring
 - Resource usage alerts
@@ -265,18 +280,21 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 ## Technology Decision Rationale
 
 ### Why Next.js?
+
 - Desktop-first approach benefits from SSR/SSG
 - Built-in optimization
 - Large ecosystem
 - Easy deployment
 
 ### Why React Native + Expo?
+
 - Code sharing with web (React)
 - Managed build process
 - Over-the-air updates
 - Strong mobile ecosystem
 
 ### Why PostgreSQL as the Single Database?
+
 - ACID compliance for financial and scheduling data
 - Complex queries and joins for construction workflows
 - JSONB support for flexible/semi-structured fields
@@ -285,12 +303,14 @@ ProManage follows a monorepo architecture with separate applications for web, mo
 - Eliminates Redis as a dependency until horizontal scaling is needed
 
 ### Why Prisma?
+
 - Type safety
 - Great DX
 - Migration management
 - Works well with monorepo
 
 ### Why pnpm + Turborepo?
+
 - Efficient disk usage
 - Fast installs
 - Great monorepo support

@@ -6,7 +6,8 @@ This guide will help you set up your local development environment for ProManage
 
 ### Required Software
 
-**Node.js** (v20+)
+- **Node.js** (v20+)
+
 ```bash
 # Check version
 node --version
@@ -16,7 +17,8 @@ nvm install 20
 nvm use 20
 ```
 
-**pnpm** (v8+)
+- **pnpm** (v8+)
+
 ```bash
 # Install pnpm globally
 npm install -g pnpm
@@ -25,13 +27,15 @@ npm install -g pnpm
 pnpm --version
 ```
 
-**Git**
+- **Git**
+
 ```bash
 # Check version
 git --version
 ```
 
-**Docker & Docker Compose** (for local services)
+- **Docker & Docker Compose** (for local services)
+
 ```bash
 # Check versions
 docker --version
@@ -88,10 +92,10 @@ docker-compose up -d
 docker-compose ps
 ```
 
-**Services:**
-- PostgreSQL: `localhost:5432`
-- Redis: `localhost:6379`
-- MinIO: `localhost:9000` (Console: `localhost:9001`)
+- **Services:**
+  - PostgreSQL: `localhost:5432`
+  - Redis: `localhost:6379`
+  - MinIO: `localhost:9000` (Console: `localhost:9001`)
 
 ### 4. Environment Configuration
 
@@ -157,28 +161,31 @@ pnpm lint
 pnpm dev
 ```
 
-This starts:
-- Web app: `http://localhost:3000`
-- API server: `http://localhost:3001`
-- Mobile app: Expo DevTools
+- This starts:
+  - Web app: `http://localhost:3000`
+  - API server: `http://localhost:3001`
+  - Mobile app: Expo DevTools
 
 ### Individual Services
 
-**Web Application:**
+- **Web Application:**
+
 ```bash
 cd apps/web
 pnpm dev
 # Opens at http://localhost:3000
 ```
 
-**API Server:**
+- **API Server:**
+
 ```bash
 cd apps/api
 pnpm dev
 # Running on http://localhost:3001
 ```
 
-**Mobile Application:**
+- **Mobile Application:**
+
 ```bash
 cd apps/mobile
 pnpm start
@@ -275,12 +282,14 @@ pnpm prisma generate
 ### Typical Day
 
 1. **Pull latest changes**
+
    ```bash
    git pull origin main
    pnpm install  # Update dependencies if needed
    ```
 
 2. **Start services**
+
    ```bash
    docker-compose up -d  # Start databases
    pnpm dev              # Start all dev servers
@@ -292,6 +301,7 @@ pnpm prisma generate
    - Test in browser/simulator
 
 4. **Before committing**
+
    ```bash
    pnpm typecheck  # Type checking
    pnpm lint       # Linting
@@ -452,7 +462,6 @@ For iOS and Android development setup, see [mobile-setup.md](mobile-setup.md).
 ## Getting Help
 
 - Check existing [GitHub Issues](https://github.com/yourusername/ProManage/issues)
-- Join our [Discord community](#) (if applicable)
 - Read the [CONTRIBUTING.md](/CONTRIBUTING.md) guide
 
 ---

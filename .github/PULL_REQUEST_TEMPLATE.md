@@ -17,21 +17,10 @@
 - [ ] Dependency updates
 
 ## Related Issues
-<!-- Link to related issues using keywords: Fixes #123, Closes #456, Related to #789 -->
-
-Fixes #
-Closes #
-Related to #
+<!-- Link to related issues using keywords -->
 
 ## Changes Made
 <!-- List the main changes in this PR -->
-
--
--
--
-
-## Technical Details (if applicable)
-<!-- Provide technical context about the implementation -->
 
 ### Manual Testing
 
@@ -61,16 +50,12 @@ Related to #
 ### Documentation
 
 - [ ] Updated relevant documentation
-- [ ] Added/updated code comments where necessary
-- [ ] Updated API documentation (if applicable)
 - [ ] Added/updated README if needed
 - [ ] Updated CHANGELOG.md
 
 ### Testing & Quality
 
 - [ ] Added tests for new functionality
-- [ ] All existing tests still pass
-- [ ] No new TypeScript errors
 - [ ] Performed accessibility check (web/mobile UI changes)
 - [ ] Checked for performance impacts
 
@@ -98,12 +83,6 @@ Related to #
 ## Deployment Notes
 <!-- Special instructions for deployment -->
 
-- [ ] Requires database migration
-- [ ] Requires environment variable changes
-- [ ] Requires cache clearing
-- [ ] Requires service restart
-- [ ] Other: <!-- specify -->
-
 **Environment Variables:**
 <!-- List any new or changed environment variables -->
 
@@ -124,26 +103,3 @@ NEW_VAR=value
 
 ## Reviewer Notes
 <!-- Any specific areas you'd like reviewers to focus on -->
-
----
-
-## For Reviewers
-
-### Review Focus Areas
-
-- [ ] Code quality and best practices
-- [ ] Test coverage and test quality
-- [ ] Security implications
-- [ ] Performance impact
-- [ ] Documentation accuracy
-- [ ] Breaking changes properly handled
-- [ ] Error handling
-- [ ] Accessibility (if UI changes)
-
-### Review Checklist
-
-- [ ] Code changes reviewed
-- [ ] Tests reviewed and verified
-- [ ] Documentation reviewed
-- [ ] No security concerns
-- [ ] Approved for merge

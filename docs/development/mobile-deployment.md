@@ -158,6 +158,7 @@ Update `app.json`:
 ### 1. Apple Developer Setup
 
 **Create App ID:**
+
 1. Go to [developer.apple.com](https://developer.apple.com)
 2. Certificates, IDs & Profiles > Identifiers
 3. Create new App ID
@@ -165,6 +166,7 @@ Update `app.json`:
 5. Enable capabilities: Push Notifications, Sign in with Apple (if needed)
 
 **Create App Store Connect App:**
+
 1. Go to [appstoreconnect.apple.com](https://appstoreconnect.apple.com)
 2. My Apps > + > New App
 3. Fill in app information
@@ -181,6 +183,7 @@ eas build --platform ios --profile production
 ```
 
 **Build Process:**
+
 1. EAS uploads your code
 2. Builds on EAS servers
 3. Signs with Apple certificates (auto-managed)
@@ -188,7 +191,8 @@ eas build --platform ios --profile production
 
 ### 3. TestFlight Distribution
 
-**Option 1: EAS Submit**
+- **Option 1: EAS Submit**
+
 ```bash
 # Submit to TestFlight
 eas submit --platform ios
@@ -197,21 +201,21 @@ eas submit --platform ios
 eas build --platform ios --profile production --auto-submit
 ```
 
-**Option 2: Manual Upload**
-1. Download IPA from EAS
-2. Open Transporter app (macOS)
-3. Upload IPA to App Store Connect
-4. Wait for processing
-5. Add to TestFlight
-
-**Add Testers:**
-1. App Store Connect > TestFlight
-2. Internal Testing or External Testing
-3. Add testers by email
+- **Option 2: Manual Upload**
+  1. Download IPA from EAS
+  2. Open Transporter app (macOS)
+  3. Upload IPA to App Store Connect
+  4. Wait for processing
+  5. Add to TestFlight
+- **Add Testers:**
+  1. App Store Connect > TestFlight
+  2. Internal Testing or External Testing
+  3. Add testers by email
 
 ### 4. App Store Submission
 
 **Prepare App Store Listing:**
+
 1. App Store Connect > App Information
 2. Fill in:
    - Name
@@ -225,6 +229,7 @@ eas build --platform ios --profile production --auto-submit
    - Privacy Policy URL
 
 **Submit for Review:**
+
 1. Create new version
 2. Upload build from TestFlight
 3. Fill in "What's New in This Version"
@@ -232,6 +237,7 @@ eas build --platform ios --profile production --auto-submit
 5. Submit for review
 
 **Review Time:**
+
 - Usually 24-48 hours
 - Can take up to 1 week
 
@@ -240,11 +246,13 @@ eas build --platform ios --profile production --auto-submit
 ### 1. Google Play Console Setup
 
 **Create App:**
+
 1. Go to [play.google.com/console](https://play.google.com/console)
 2. Create app
 3. Fill in app details
 
 **Create Service Account:**
+
 1. Google Cloud Console
 2. IAM & Admin > Service Accounts
 3. Create service account
@@ -263,6 +271,7 @@ eas build --platform android --profile production
 ```
 
 **Build Types:**
+
 - **APK**: For direct installation/testing
 - **AAB** (Android App Bundle): For Play Store (recommended)
 
@@ -277,12 +286,14 @@ eas submit --platform android --track internal
 ```
 
 **Tracks:**
+
 - `internal`: Internal testing (up to 100 testers)
 - `alpha`: Closed testing
 - `beta`: Open or closed testing
 - `production`: Production release
 
 **Add Testers:**
+
 1. Google Play Console > Testing > Internal testing
 2. Create email list
 3. Add tester emails
@@ -291,6 +302,7 @@ eas submit --platform android --track internal
 ### 4. Production Release
 
 **Prepare Store Listing:**
+
 1. Store Listing section
 2. Fill in:
    - App name
@@ -302,10 +314,12 @@ eas submit --platform android --track internal
    - Privacy Policy URL
 
 **Content Rating:**
+
 1. Complete questionnaire
 2. Get rating (Everyone, Teen, etc.)
 
 **Submit for Review:**
+
 1. Release > Production
 2. Create new release
 3. Upload AAB
@@ -313,6 +327,7 @@ eas submit --platform android --track internal
 5. Review and rollout
 
 **Review Time:**
+
 - Initial review: Can take several days
 - Updates: Usually within hours
 
@@ -336,6 +351,7 @@ eas secret:delete --name API_KEY
 ```
 
 **Use in app.json:**
+
 ```json
 {
   "expo": {
@@ -348,6 +364,7 @@ eas secret:delete --name API_KEY
 ```
 
 **Access in app:**
+
 ```typescript
 import Constants from 'expo-constants'
 
@@ -361,6 +378,7 @@ const apiUrl = Constants.expoConfig?.extra?.apiUrl
 Follow semantic versioning: `MAJOR.MINOR.PATCH`
 
 **iOS (app.json):**
+
 ```json
 {
   "expo": {
@@ -373,6 +391,7 @@ Follow semantic versioning: `MAJOR.MINOR.PATCH`
 ```
 
 **Android (app.json):**
+
 ```json
 {
   "expo": {
@@ -385,6 +404,7 @@ Follow semantic versioning: `MAJOR.MINOR.PATCH`
 ```
 
 **Incrementing:**
+
 - `version`: User-facing version (1.0.0 → 1.0.1)
 - `buildNumber` (iOS): Auto-increment each build
 - `versionCode` (Android): Must increase each build
@@ -423,6 +443,7 @@ eas update --channel production --message "New feature"
 ```
 
 **Limitations:**
+
 - Only JS and assets
 - Native code changes require new build
 - Users must reopen app
@@ -502,17 +523,20 @@ jobs:
 ### Requirements
 
 **App Icon:**
+
 - Size: 1024x1024px
 - Format: PNG
 - No transparency
 - No rounded corners (iOS handles this)
 
 **Splash Screen:**
+
 - Size: 1242x2688px (largest iPhone)
 - Format: PNG
 - Will be resized for different devices
 
 **Generate Assets:**
+
 ```bash
 # Using figma-export or similar
 # Or manually create in assets/
@@ -536,16 +560,19 @@ eas build --platform ios --clear-cache
 ### Common Issues
 
 **iOS Code Signing:**
+
 - EAS handles automatically
 - Check Apple Developer account status
 - Verify bundle ID matches
 
 **Android Build Errors:**
+
 - Check `versionCode` is incrementing
 - Verify service account permissions
 - Check package name is unique
 
 **OTA Update Not Working:**
+
 - Verify runtime version compatibility
 - Check update channel configuration
 - Ensure app is reopened (not backgrounded)
@@ -603,23 +630,27 @@ Analytics.logEvent('project_created', {
 ### Store Optimization (ASO)
 
 **App Name:**
+
 - Clear and descriptive
 - Include primary keyword if possible
 - Max 30 characters (iOS), 50 (Android)
 
 **Keywords (iOS):**
+
 - Comma-separated
 - No spaces after commas
 - 100 character limit
 - Research competitor keywords
 
 **Description:**
+
 - Front-load important information
 - Use bullet points
 - Include keywords naturally
 - Call to action
 
 **Screenshots:**
+
 - Show key features
 - Use captions
 - Consistent branding

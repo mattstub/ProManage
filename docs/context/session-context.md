@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-18 (Session 23)
+**Last Updated**: 2026-03-19 (MDS cleanup)
 
 ---
 
@@ -18,15 +18,15 @@
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Web frontend | Next.js 14+, React 18+, TailwindCSS, Radix UI, Zustand, TanStack Query |
-| Mobile | React Native + Expo (deferred) |
-| API server | Node.js 20+, Fastify, TypeScript |
-| Database | PostgreSQL 15+ via Prisma ORM |
-| File storage | MinIO (local), AWS S3 (prod) |
-| Auth | JWT 15min + refresh token rotation 7d (httpOnly cookie) |
-| Monorepo | pnpm workspaces + Turborepo |
+| **Layer**     | **Technology**                                                          |
+| ------------- | ----------------------------------------------------------------------- |
+| Web frontend  | Next.js 14+, React 18+, TailwindCSS, Radix UI, Zustand, TanStack Query  |
+| Mobile        | React Native + Expo (deferred)                                          |
+| API server    | Node.js 20+, Fastify, TypeScript                                        |
+| Database      | PostgreSQL 15+ via Prisma ORM                                           |
+| File storage  | MinIO (local), AWS S3 (prod)                                            |
+| Auth          | JWT 15min + refresh token rotation 7d (httpOnly cookie)                 |
+| Monorepo      | pnpm workspaces + Turborepo                                             |
 
 **Deferred**: Redis, WatermelonDB
 
@@ -42,16 +42,16 @@
 
 ## Key Decisions
 
-| ID | Decision | Status |
-|---|---|---|
-| DD-001 | Desktop-first (90/10 split) | Accepted |
-| DD-002 | pnpm + Turborepo monorepo | Accepted |
-| DD-004 | TypeScript everywhere | Accepted |
-| DD-005 | Prisma ORM | Accepted |
-| DD-006 | AGPL-3.0 | Accepted |
-| DD-007 | Radix UI + TailwindCSS | Proposed |
-| DD-009 | JWT + refresh token rotation | Accepted |
-| DD-011 | PostgreSQL only, defer Redis/WatermelonDB | Accepted |
+| **ID** | **Decision**                               | **Status**  |
+| ------ | ------------------------------------------ | ----------- |
+| DD-001 | Desktop-first (90/10 split)                | Accepted    |
+| DD-002 | pnpm + Turborepo monorepo                  | Accepted    |
+| DD-004 | TypeScript everywhere                      | Accepted    |
+| DD-005 | Prisma ORM                                 | Accepted    |
+| DD-006 | AGPL-3.0                                   | Accepted    |
+| DD-007 | Radix UI + TailwindCSS                     | Proposed    |
+| DD-009 | JWT + refresh token rotation               | Accepted    |
+| DD-011 | PostgreSQL only, defer Redis/WatermelonDB  | Accepted    |
 
 ---
 
@@ -130,32 +130,28 @@ Root tooling:          COMPLETE (Sub-phase A)
 
 ### Seed Credentials
 
-| Email | Password | Role |
-|---|---|---|
-| admin@demo.com | password123 | Admin |
-| pm@demo.com | password123 | ProjectManager |
-| field@demo.com | password123 | FieldUser |
+| **Email**       | **Password**  | **Role**        |
+| --------------- | ------------- | --------------- |
+| admin@demo.com  | password123   | Admin           |
+| pm@demo.com     | password123   | Project Manager |
+| field@demo.com  | password123   | Field User      |
 
 ---
 
 ## Infrastructure (COMPLETE — Session 16)
 
-All items shipped on `chore/infrastructure` branch. See Session 16 log for full details.
-
-**Deployment**: `docker compose up -d` starts all 4 services (postgres, minio, api, web). `JWT_SECRET` must be set. Images pushed to GHCR on every merge to main.
-
-**Sentry**: Env var scaffolded (`SENTRY_DSN`). Install `@sentry/node` / `@sentry/nextjs` to activate — see `.env.example` for instructions.
-
-**Log aggregation** (still deferred): Self-hosted: Loki + Grafana. Managed: any platform log drain. App logs JSON to stdout — no app changes needed.
+- All items shipped on `chore/infrastructure` branch. See Session 16 log for full details.
+- **Deployment**: `docker compose up -d` starts all 4 services (postgres, minio, api, web). `JWT_SECRET` must be set. Images pushed to GHCR on every merge to main.
+- **Sentry**: Env var scaffolded (`SENTRY_DSN`). Install `@sentry/node` / `@sentry/nextjs` to activate — see `.env.example` for instructions.
+- **Log aggregation** (still deferred): Self-hosted: Loki + Grafana. Managed: any platform log drain. App logs JSON to stdout — no app changes needed.
 
 ---
 
 ## Branch Protection (as of Session 10)
 
-**`main` is branch-protected on GitHub** — direct pushes are blocked.
-
-- Run `/new-branch` at the start of every session before any coding begins
-- All work ships via PR; never commit directly to `main`
+- **`main` is branch-protected on GitHub** — direct pushes are blocked.
+  - Run `/new-branch` at the start of every session before any coding begins
+  - All work ships via PR; never commit directly to `main`
 
 ---
 
@@ -163,11 +159,11 @@ All items shipped on `chore/infrastructure` branch. See Session 16 log for full 
 
 Three slash commands live in `.claude/commands/` — invoke them in any Claude Code session:
 
-| Command | Purpose |
-|---|---|
-| `/startup` | Full session startup checklist (infra, builds, git state) |
+| **Command**   | **Purpose**                                               |
+| ------------- | --------------------------------------------------------- |
+| `/startup`    | Full session startup checklist (infra, builds, git state) |
 | `/new-branch` | Create a properly-named branch for a sub-phase or feature |
-| `/commit-pr` | Stage, commit, and prepare a PR with correct format |
+| `/commit-pr`  | Stage, commit, and prepare a PR with correct format       |
 
 ---
 
@@ -208,95 +204,63 @@ See: docs/ROADMAP.md
 
 ## Session Log
 
-### Session 1 - 2026-02-02
-Created 42 foundation files (docs, config, scripts, templates), monorepo structure.
-
-### Session 2 - 2026-02-03
-DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-decisions docs.
-
-### Session 3 - 2026-02-28
-- Parsed Obsidian canvas (17+ modules), built ROADMAP.md (10 phases)
-- Installed Node 20 + pnpm via nvm, Docker Engine in WSL
-- Sub-phase A-D: root tooling, packages/core, database, Fastify API server
-- Verified: health check + login returning JWT working
-
-### Session 4 - 2026-03-01
-- Sub-phase E: packages/api-client (10 files) - ProManageClient, resources, ApiClientError, createApiClient()
-- TypeScript project references wired (composite + tsc --build on both packages)
-- Removed .claude/settings.local.json from git tracking
-- PR merged by user
-
 ### Session 23 — 2026-03-18
 
-**Phase 4.1 follow-up fixes** (continuing on `feat/phase4-subphase-1-project-entity`):
-
-- **Tailwind CSS broken** — all styles dropped due to mismatch: CI commit 9169fa8 switched PostCSS to `@tailwindcss/postcss` (v4 plugin) but `globals.css` still used v3 `@tailwind base/components/utilities` directives which v4 ignores. Fixed by updating globals.css to `@import "tailwindcss"` + `@source "../../packages/ui-components/src"`.
-- **Next.js 15 `params` warning** — all 5 project detail pages (`[id]/layout.tsx`, `[id]/page.tsx`, `[id]/team/page.tsx`, `[id]/scopes/page.tsx`, `[id]/settings/page.tsx`) used `params.id` directly. Fixed by typing `params` as `Promise<{ id: string }>` and unwrapping with `React.use(params)`.
-- **Radix `SelectItem value=""` crash** — projects/page.tsx filter selects used `value=""` which Radix forbids. Changed to `"ALL"` sentinel; updated filter logic accordingly.
-- **UI styling regression** — filter/search bar used icon-inside-input pattern and raw `<button>`; rewrote to match `contacts/page.tsx` pattern exactly (Label + plain Input, fixed-width selects, Button component, 300ms debounced search).
-- **ROADMAP.md** — added Project Channels tab to Phase 4.1; cross-linked from Phase 2.3B deferred item; updated status + date.
+- **Phase 4.1 follow-up fixes** (continuing on `feat/phase4-subphase-1-project-entity`):
+  - **Tailwind CSS broken** — all styles dropped due to mismatch: CI commit 9169fa8 switched PostCSS to `@tailwindcss/postcss` (v4 plugin) but `globals.css` still used v3 `@tailwind base/components/utilities` directives which v4 ignores. Fixed by updating globals.css to `@import "tailwindcss"` + `@source "../../packages/ui-components/src"`.
+  - **Next.js 15 `params` warning** — all 5 project detail pages (`[id]/layout.tsx`, `[id]/page.tsx`, `[id]/team/page.tsx`, `[id]/scopes/page.tsx`, `[id]/settings/page.tsx`) used `params.id` directly. Fixed by typing `params` as `Promise<{ id: string }>` and unwrapping with `React.use(params)`.
+  - **Radix `SelectItem value=""` crash** — projects/page.tsx filter selects used `value=""` which Radix forbids. Changed to `"ALL"` sentinel; updated filter logic accordingly.
+  - **UI styling regression** — filter/search bar used icon-inside-input pattern and raw `<button>`; rewrote to match `contacts/page.tsx` pattern exactly (Label + plain Input, fixed-width selects, Button component, 300ms debounced search).
+  - **ROADMAP.md** — added Project Channels tab to Phase 4.1; cross-linked from Phase 2.3B deferred item; updated status + date.
 
 ### Session 22 — 2026-03-18
 
-**Phase 4.1 Project Entity Expansion COMPLETE** (`feat/phase4-subphase-1-project-entity` branch):
-
-Layer 1 — Prisma: Extended `Project` model with 8 new optional fields (ownerName, ownerPhone, ownerEmail, architectName, contractorLicense, permitNumber, budget, squareFootage). Added `role String?` to `ContactProject`. Added `ProjectScope` and `ProjectSettings` models (34 models total). `prisma db push` applied; seed updated with demo project settings + scopes.
-
-Layer 2 — packages/core: Extended `CreateProjectInput` (added optional `status`), `UpdateProjectInput`. New types: `ProjectScope`, `ProjectSettings`, `ProjectContactAssignment`, `ProjectWithRelations`, `ProjectDashboardMetrics`, `ProjectDashboard`, `ProjectScopeStatus`. New schemas: `createProjectScopeSchema`, `updateProjectScopeSchema`, `updateProjectSettingsSchema`, `assignContactToProjectSchema`. New constants: `PROJECT_SCOPE_STATUSES`, `PROJECT_SCOPE_STATUS_LIST`.
-
-Layer 3 — API (service + routes + tests): `project.service.ts` rewritten with 14 functions (listProjects with search/type filter, getProject with relations, createProject via `$transaction`, getProjectDashboard with 6 parallel queries, listProjectContacts, assignContact, removeContact, listScopes, createScope, updateScope, deleteScope, getSettings upsert-defaults, updateSettings). `routes/projects/index.ts` rewritten with 18 routes across 4 groups. Fixed `requireRole`/`mockRole` pattern in tests (was missing throughout — safety routes had it, project routes didn't). 63 new tests (30 service + 33 route), 463 total. Fixed `projectSettings.create` mock.
-
-Layer 4 — api-client: `ProjectsResource` extended with 11 new methods (getDashboard, listContacts, assignContact, updateContactAssignment, removeContact, listScopes, createScope, updateScope, deleteScope, getSettings, updateSettings). `ListProjectsParams` extended with `type` and `search`. New type exports from core added to api-client index.
-
-Layer 5 — Web: `use-projects.ts` extended with 12 new hooks (useProjectDashboard, useProjectContacts, useProjectScopes, useProjectSettings, useCreateProject, useUpdateProject, useArchiveProject, useAssignContact, useRemoveProjectContact, useCreateProjectScope, useUpdateProjectScope, useDeleteProjectScope, useUpdateProjectSettings). Projects list page: clickable rows → detail, search input, status+type filters, working create form. New project detail pages: `[id]/layout.tsx` (tab nav: Overview, Team, Scopes, Settings), `[id]/page.tsx` (metrics cards + project details + scope progress), `[id]/team/page.tsx` (assign/remove contacts with roles), `[id]/scopes/page.tsx` (CRUD scope list), `[id]/settings/page.tsx` (toggle-based settings panel).
-
-Docker fix (from previous session): API Dockerfile CMD fixed (`node apps/api/dist/server.js`), OpenSSL 3 added for Alpine Prisma.
+- **Phase 4.1 Project Entity Expansion COMPLETE** (`feat/phase4-subphase-1-project-entity` branch):
+  - Layer 1 — Prisma: Extended `Project` model with 8 new optional fields (ownerName, ownerPhone, ownerEmail, architectName, contractorLicense, permitNumber, budget, squareFootage). Added `role String?` to `ContactProject`. Added `ProjectScope` and `ProjectSettings` models (34 models total). `prisma db push` applied; seed updated with demo project settings + scopes.
+  - Layer 2 — packages/core: Extended `CreateProjectInput` (added optional `status`), `UpdateProjectInput`. New types: `ProjectScope`, `ProjectSettings`, `ProjectContactAssignment`, `ProjectWithRelations`, `ProjectDashboardMetrics`, `ProjectDashboard`, `ProjectScopeStatus`. New schemas: `createProjectScopeSchema`, `updateProjectScopeSchema`, `updateProjectSettingsSchema`, `assignContactToProjectSchema`. New constants: `PROJECT_SCOPE_STATUSES`, `PROJECT_SCOPE_STATUS_LIST`.
+  - Layer 3 — API (service + routes + tests): `project.service.ts` rewritten with 14 functions (listProjects with search/type filter, getProject with relations, createProject via `$transaction`, getProjectDashboard with 6 parallel queries, listProjectContacts, assignContact, removeContact, listScopes, createScope, updateScope, deleteScope, getSettings upsert-defaults, updateSettings). `routes/projects/index.ts` rewritten with 18 routes across 4 groups. Fixed `requireRole`/`mockRole` pattern in tests (was missing throughout — safety routes had it, project routes didn't). 63 new tests (30 service + 33 route), 463 total. Fixed `projectSettings.create` mock.
+  - Layer 4 — api-client: `ProjectsResource` extended with 11 new methods (getDashboard, listContacts, assignContact, updateContactAssignment, removeContact, listScopes, createScope, updateScope, deleteScope, getSettings, updateSettings). `ListProjectsParams` extended with `type` and `search`. New type exports from core added to api-client index.
+  - Layer 5 — Web: `use-projects.ts` extended with 12 new hooks (useProjectDashboard, useProjectContacts, useProjectScopes, useProjectSettings, useCreateProject, useUpdateProject, useArchiveProject, useAssignContact, useRemoveProjectContact, useCreateProjectScope, useUpdateProjectScope, useDeleteProjectScope, useUpdateProjectSettings). Projects list page: clickable rows → detail, search input, status+type filters, working create form. New project detail pages: `[id]/layout.tsx` (tab nav: Overview, Team, Scopes, Settings), `[id]/page.tsx` (metrics cards + project details + scope progress), `[id]/team/page.tsx` (assign/remove contacts with roles), `[id]/scopes/page.tsx` (CRUD scope list), `[id]/settings/page.tsx` (toggle-based settings panel).
+  - Docker fix (from previous session): API Dockerfile CMD fixed (`node apps/api/dist/server.js`), OpenSSL 3 added for Alpine Prisma.
 
 ### Session 21 — 2026-03-17
 
-**CI/Lint fixes for Phase 3.3 Safety** (`feat/phase3-subphase-3-safety` branch):
-
-- `eslint-plugin-import` → `eslint-plugin-import-x@4.16.2`: `eslint-plugin-import@2.x` incompatible with ESLint 10 (`getTokenOrCommentBefore` removed). Replaced in `package.json`, `eslint.config.mjs`, `.eslintrc.json`.
-- `apps/api/src/routes/safety/index.ts`: Fixed duplicate `randomUUID` import (removed `crypto`, kept `node:crypto`); fixed import group ordering (built-in first); removed dead `safeFileName`/`fileKey` lines from SDS download-url handler; fixed `const expectedPrefix` erroneously placed inside TypeScript type annotation in SDS upload-url handler; replaced `uuidv4()` with `randomUUID()`.
-- `packages/api-client/src/resources/safety.ts`: Removed duplicate `getDocumentDownloadUrl` implementation; added `getSdsDownloadUrl`.
-- `apps/web/src/hooks/use-safety.ts`: Restored `useDownloadSafetyDocument` to call `getApiClient().safety.getDocumentDownloadUrl(id)`; restored `useDownloadSds` to call `getApiClient().safety.getSdsDownloadUrl(id)`.
-- `apps/web/src/app/(dashboard)/safety/page.tsx`: Added `as Tab` cast on ternary spread element to fix TS2322.
-- `apps/api/src/__tests__/routes/safety.routes.test.ts`: Fixed fileKey fixture to include `organizationId` segment.
-- All 7 turbo tasks (lint, type-check ×3, test ×2, build) passing clean.
+- **CI/Lint fixes for Phase 3.3 Safety** (`feat/phase3-subphase-3-safety` branch):
+  - `eslint-plugin-import` → `eslint-plugin-import-x@4.16.2`: `eslint-plugin-import@2.x` incompatible with ESLint 10 (`getTokenOrCommentBefore` removed). Replaced in `package.json`, `eslint.config.mjs`, `.eslintrc.json`.
+  - `apps/api/src/routes/safety/index.ts`: Fixed duplicate `randomUUID` import (removed `crypto`, kept `node:crypto`); fixed import group ordering (built-in first); removed dead `safeFileName`/`fileKey` lines from SDS download-url handler; fixed `const expectedPrefix` erroneously placed inside TypeScript type annotation in SDS upload-url handler; replaced `uuidv4()` with `randomUUID()`.
+  - `packages/api-client/src/resources/safety.ts`: Removed duplicate `getDocumentDownloadUrl` implementation; added `getSdsDownloadUrl`.
+  - `apps/web/src/hooks/use-safety.ts`: Restored `useDownloadSafetyDocument` to call `getApiClient().safety.getDocumentDownloadUrl(id)`; restored `useDownloadSds` to call `getApiClient().safety.getSdsDownloadUrl(id)`.
+  - `apps/web/src/app/(dashboard)/safety/page.tsx`: Added `as Tab` cast on ternary spread element to fix TS2322.
+  - `apps/api/src/__tests__/routes/safety.routes.test.ts`: Fixed fileKey fixture to include `organizationId` segment.
+  - All 7 turbo tasks (lint, type-check ×3, test ×2, build) passing clean.
 
 ### Session 20 — 2026-03-17
 
-**Phase 3.3 Safety COMPLETE** (`feat/phase3-subphase-3-safety` branch):
-
-Layer 1 — Prisma: Added 6 new models (SafetyDocument, SdsEntry, ToolboxTalk, ToolboxTalkAttendee, SafetyForm, IncidentReport). Schema now 32 models. `prisma db push` applied; seed updated with demo safety data.
-
-Layer 2 — packages/core: Created `types/safety.ts` (all 5 feature types + input types), `schemas/safety.ts` (11 Zod schemas), `constants/safety.ts` (5 constant maps + list arrays). Wired into index files.
-
-Layer 3 — API (service + routes + tests): `safety.service.ts` (23 functions), `routes/safety/index.ts` (23 routes). WRITE_ROLES = Admin/PM/Superintendent/OfficeAdmin. Incident POST open to all authenticated (FieldUser must be able to report). Mocked `userRole.findMany` per test via `mockRole()` helper. 81 new tests (383 total). Updated mock-prisma + build-app helpers.
-
-Layer 4 — api-client: `SafetyResource` class with methods for all 23 routes. Added to `ApiClient` interface and `createApiClient()` factory. `pnpm --filter @promanage/api-client build` passes clean.
-
-Layer 5 — Web: `use-safety.ts` (22 TanStack Query hooks). `app/(dashboard)/safety/page.tsx` — 5-tab safety hub (Documents, SDS Catalog, Toolbox Talks, Forms, Incidents). IncidentReport tab hidden for FieldUser (INCIDENT_VIEW_ROLES). MinIO 3-step upload pattern for SafetyDocument and SdsEntry. Sidebar: added Safety nav item with ShieldCheckIcon. Web type-check clean.
-
-Docker fix (Session 19) — `fix/dockerignore-nested-node-modules` — merged before this session.
+- **Phase 3.3 Safety COMPLETE** (`feat/phase3-subphase-3-safety` branch):
+  - Layer 1 — Prisma: Added 6 new models (SafetyDocument, SdsEntry, ToolboxTalk, ToolboxTalkAttendee, SafetyForm, IncidentReport). Schema now 32 models. `prisma db push` applied; seed updated with demo safety data.
+  - Layer 2 — packages/core: Created `types/safety.ts` (all 5 feature types + input types), `schemas/safety.ts` (11 Zod schemas), `constants/safety.ts` (5 constant maps + list arrays). Wired into index files.
+  - Layer 3 — API (service + routes + tests): `safety.service.ts` (23 functions), `routes/safety/index.ts` (23 routes). WRITE_ROLES = Admin/PM/Superintendent/OfficeAdmin. Incident POST open to all authenticated (FieldUser must be able to report). Mocked `userRole.findMany` per test via `mockRole()` helper. 81 new tests (383 total). Updated mock-prisma + build-app helpers.
+  - Layer 4 — api-client: `SafetyResource` class with methods for all 23 routes. Added to `ApiClient` interface and `createApiClient()` factory. `pnpm --filter @promanage/api-client build` passes clean.
+  - Layer 5 — Web: `use-safety.ts` (22 TanStack Query hooks). `app/(dashboard)/safety/page.tsx` — 5-tab safety hub (Documents, SDS Catalog, Toolbox Talks, Forms, Incidents). IncidentReport tab hidden for FieldUser (INCIDENT_VIEW_ROLES). MinIO 3-step upload pattern for SafetyDocument and SdsEntry. Sidebar: added Safety nav item with ShieldCheckIcon. Web type-check clean.
+  - Docker fix (Session 19) — `fix/dockerignore-nested-node-modules` — merged before this session.
 
 ### Session 19 — 2026-03-17
 
-**Docker web image build fix** (`fix/dockerignore-nested-node-modules`):
-- `.dockerignore`: added `**/node_modules` — the existing `node_modules` entry only excluded the repo root; nested `apps/web/node_modules` and `packages/*/node_modules` were being sent in the build context (185 MB!) and the `COPY apps/web/` step overwrote pnpm's workspace symlinks, causing `next build` to fail with `Cannot find module 'next/dist/bin/next'`
+- **Docker web image build fix** (`fix/dockerignore-nested-node-modules`):
+  - `.dockerignore`: added `**/node_modules` — the existing `node_modules` entry only excluded the repo root; nested `apps/web/node_modules` and `packages/*/node_modules` were being sent in the build context (185 MB!) and the `COPY apps/web/` step overwrote pnpm's workspace symlinks, causing `next build` to fail with `Cannot find module 'next/dist/bin/next'`
 
 ### Session 18 — 2026-03-15
 
-**Dev environment + live bug sweep** (`fix/dev-env-setup` branch):
-- Fixed API dev server — `tsx watch` doesn't auto-load `.env`; added `dotenv ^17.3.1`, changed script to `tsx watch --import=dotenv/config src/server.ts`
-- Added `apps/web/public/.gitkeep` — was missing, causing web Dockerfile `COPY` to fail
-- Fixed licenses page `SelectItem value=""` → `value="none"` (Radix rejects empty string); added document download button using presigned MinIO URL
-- Fixed announcement unread bubble persisting after mark-as-read: added `onMutate` optimistic update with `wasUnread` guard and `Array.isArray(old.data)` guard to prevent corrupting the drafts query (different data shape, same partial key prefix)
-- Fixed notification bell: `onMutate` optimistic updates for mark-read/delete, click-to-navigate, `stopPropagation` on action buttons
-- Added Messages nav badge: `useUnreadCount` in sidebar, `badge` prop on `NavItem`
-- Fixed DM unread count race condition: removed `unread-count` invalidation from `useSendMessage`/`useStartConversation`; added `syncedConvIdRef` effect in `ThreadPanel` to sync after first fetch per conversation
-- Fixed stale snapshot: `selectedConvId`/`selectedAnnId` now store IDs, derive live objects from query cache
-- Added `useMarkConversationRead` hook for optimistic DM read tracking
+- **Dev environment + live bug sweep** (`fix/dev-env-setup` branch):
+  - Fixed API dev server — `tsx watch` doesn't auto-load `.env`; added `dotenv ^17.3.1`, changed script to `tsx watch --import=dotenv/config src/server.ts`
+  - Added `apps/web/public/.gitkeep` — was missing, causing web Dockerfile `COPY` to fail
+  - Fixed licenses page `SelectItem value=""` → `value="none"` (Radix rejects empty string); added document download button using presigned MinIO URL
+  - Fixed announcement unread bubble persisting after mark-as-read: added `onMutate` optimistic update with `wasUnread` guard and `Array.isArray(old.data)` guard to prevent corrupting the drafts query (different data shape, same partial key prefix)
+  - Fixed notification bell: `onMutate` optimistic updates for mark-read/delete, click-to-navigate, `stopPropagation` on action buttons
+  - Added Messages nav badge: `useUnreadCount` in sidebar, `badge` prop on `NavItem`
+  - Fixed DM unread count race condition: removed `unread-count` invalidation from `useSendMessage`/`useStartConversation`; added `syncedConvIdRef` effect in `ThreadPanel` to sync after first fetch per conversation
+  - Fixed stale snapshot: `selectedConvId`/`selectedAnnId` now store IDs, derive live objects from query cache
+  - Added `useMarkConversationRead` hook for optimistic DM read tracking
 
 ### Session 17 — 2026-03-15
 
@@ -397,6 +361,7 @@ Docker fix (Session 19) — `fix/dockerignore-nested-node-modules` — merged be
 - **Next**: Phase 2.3 Messaging (Socket.io)
 
 ### Session 10 - 2026-03-08
+
 - **Phase 2.6 Procedures COMPLETE** — full CRUD with RBAC across all layers:
   - Prisma: `Procedure` model (10 models total), relations on Organization/User/Project
   - packages/core: `ProcedureStatus`, `ProcedureCategory` types, Zod schemas, `procedure-status` constants
@@ -411,6 +376,7 @@ Docker fix (Session 19) — `fix/dockerignore-nested-node-modules` — merged be
 - **TODO next session**: push branch + open PR, then start Phase 2.2 (Notifications) or 2.4 (Calendar)
 
 ### Session 9 - 2026-03-06
+
 - CodeQL rate-limiting findings FIXED: refactored to use fastify.rateLimit() preHandler pattern
 - Rate limit pattern: local plugin registration with `global: false`, explicit config per route
 - **Phase 2.5 Task Management COMPLETE** — multi-agent build:
@@ -425,6 +391,7 @@ Docker fix (Session 19) — `fix/dockerignore-nested-node-modules` — merged be
 - TODO: run `prisma db push` to apply Task model to database
 
 ### Session 8 - 2026-03-04
+
 - Auth redirect loop bug fixed: logout route made unauthenticated; onAuthError calls logout before redirect
 - Vitest testing infrastructure added: packages/core (35 tests) + apps/api (25 tests) = 60 total, all passing
 - Pre-existing build issues fixed: API tsconfig paths, authenticate.ts jwtVerify typing, error-handler unused param
@@ -432,6 +399,7 @@ Docker fix (Session 19) — `fix/dockerignore-nested-node-modules` — merged be
 - CLAUDE.md updated with Testing section and mocking conventions
 
 ### Session 7 - 2026-03-03
+
 - Phase 2.1 Dashboard module COMPLETE — multi-agent build (Project Manager, API Builder, API Client Builder, Frontend Builder, Code Review, 2× Security Analyst, Testing)
 - API: project.service + dashboard.service, /projects CRUD routes, /dashboard/stats route
 - packages/core: DashboardStats type; packages/api-client: ProjectsResource + DashboardResource, rebuilt zero errors
@@ -440,6 +408,7 @@ Docker fix (Session 19) — `fix/dockerignore-nested-node-modules` — merged be
 - Build: pnpm type-check + pnpm build → zero errors, 6 routes
 
 ### Session 6 - 2026-03-02
+
 - Created .claude/commands/ workflow system: /startup, /new-branch, /commit-pr
 - Sub-phase G: apps/web Next.js 14 App Router shell -- 30 files, build clean (5 routes)
 - Multi-agent: Builder + Security Agent (7 findings) + Testing Agent
@@ -447,6 +416,7 @@ Docker fix (Session 19) — `fix/dockerignore-nested-node-modules` — merged be
 - Phase 1 COMPLETE: All sub-phases A through G done
 
 ### Session 5 - 2026-03-02
+
 - Sub-phase F: packages/ui-components (30 files) - tsc --build, zero errors
 - 26 components: Button, Input, Textarea, Label, Checkbox, RadioGroup, Switch, Select,
   Card, Container, Stack, Grid, Separator, Tabs, Breadcrumbs, Pagination,
@@ -460,3 +430,25 @@ Docker fix (Session 19) — `fix/dockerignore-nested-node-modules` — merged be
   CHANGELOG with Sub-phase F entry
 - Branch feat/phase1-subphase-f-ui-components created, 2 commits staged and ready
   (push pending — run from terminal due to WSL git push hang)
+
+### Session 4 - 2026-03-01
+
+- Sub-phase E: packages/api-client (10 files) - ProManageClient, resources, ApiClientError, createApiClient()
+- TypeScript project references wired (composite + tsc --build on both packages)
+- Removed .claude/settings.local.json from git tracking
+- PR merged by user
+
+### Session 3 - 2026-02-28
+
+- Parsed Obsidian canvas (17+ modules), built ROADMAP.md (10 phases)
+- Installed Node 20 + pnpm via nvm, Docker Engine in WSL
+- Sub-phase A-D: root tooling, packages/core, database, Fastify API server
+- Verified: health check + login returning JWT working
+
+### Session 2 - 2026-02-03
+
+DD-011: PostgreSQL only, defer Redis/WatermelonDB. Updated tech-stack + design-decisions docs.
+
+### Session 1 - 2026-02-02
+
+Created 42 foundation files (docs, config, scripts, templates), monorepo structure.

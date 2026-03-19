@@ -18,9 +18,7 @@ A clear description of the problem. Example: "I'm always frustrated when..."
 
 ## Proposed Solution
 
-**Describe the solution you'd like**
-
-A clear and concise description of what you want to happen.
+**Describe the solution you'd like:** A clear and concise description of what you want to happen.
 
 ## User Story (Optional)
 
@@ -36,9 +34,7 @@ If applicable, add mockups, wireframes, or sketches to help explain your feature
 
 ## Alternatives Considered
 
-**Describe alternatives you've considered**
-
-A clear description of any alternative solutions or features you've considered.
+**Describe alternatives you've considered:** A clear description of any alternative solutions or features you've considered.
 
 ## Affected Components
 

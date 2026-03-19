@@ -7,15 +7,18 @@ ProManage uses a multi-layered testing strategy to ensure code quality and preve
 ## Testing Stack
 
 ### Unit & Integration Tests
+
 - **Vitest**: Fast unit test runner
 - **Testing Library**: React component testing
 - **Supertest**: API endpoint testing
 
 ### E2E Tests
+
 - **Playwright**: Web application E2E
 - **Detox**: Mobile application E2E
 
 ### Code Coverage
+
 - Minimum 80% coverage for business logic
 - Minimum 60% coverage overall
 
@@ -43,7 +46,7 @@ pnpm --filter @promanage/web test
 pnpm --filter @promanage/api test
 ```
 
-### E2E Tests
+### Running E2E Tests
 
 ```bash
 # Web E2E

@@ -59,7 +59,7 @@ function Toggle({
 export default function ProjectSettingsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
   const { user } = useAuth()
-  const { data: settings, isLoading } = useProjectSettings(id)
+  const { data: settings, isLoading, error: settingsError } = useProjectSettings(id)
   const updateSettings = useUpdateProjectSettings()
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
@@ -95,6 +95,19 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
             <Skeleton className="h-6 w-11 rounded-full" />
           </div>
         ))}
+      </div>
+    )
+  }
+
+  if (settingsError) {
+    return (
+      <div className="max-w-lg space-y-2">
+        <p className="text-sm font-medium text-red-600">
+          You can&apos;t view or manage these project settings.
+        </p>
+        <p className="text-sm text-gray-600">
+          {settingsError instanceof Error ? settingsError.message : 'Access to project settings is restricted.'}
+        </p>
       </div>
     )
   }

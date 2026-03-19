@@ -22,8 +22,16 @@ export {
 export {
   createProjectSchema,
   updateProjectSchema,
+  createProjectScopeSchema,
+  updateProjectScopeSchema,
+  updateProjectSettingsSchema,
+  assignContactToProjectSchema,
   type CreateProjectSchemaInput,
   type UpdateProjectSchemaInput,
+  type CreateProjectScopeSchemaInput,
+  type UpdateProjectScopeSchemaInput,
+  type UpdateProjectSettingsSchemaInput,
+  type AssignContactToProjectSchemaInput,
 } from './project'
 
 export {

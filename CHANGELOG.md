@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - Phase 4.1 Project Entity Expansion (Session 22, 2026-03-18)
+
+**Branch: `feat/phase4-subphase-1-project-entity`**
+
+*apps/api/prisma*
+- `schema.prisma`: Extended `Project` with 8 new optional metadata fields (ownerName, ownerPhone, ownerEmail, architectName, contractorLicense, permitNumber, budget, squareFootage). Added `role String?` to `ContactProject`. New `ProjectScope` model (name, description, status, sequence, budget, date range). New `ProjectSettings` model (6 boolean toggles, defaultView). 34 models total.
+- `seed.ts`: Added demo ProjectSettings + ProjectScopes for both seed projects; added `role` to ContactProject associations.
+
+*packages/core*
+- `types/project.ts`: Added `ProjectScopeStatus` type; added `status?` to `CreateProjectInput`; new interfaces: `ProjectScope`, `ProjectSettings`, `ProjectContactAssignment`, `ProjectWithRelations`, `ProjectDashboardMetrics`, `ProjectDashboard`; new input types: `CreateProjectScopeInput`, `UpdateProjectScopeInput`, `UpdateProjectSettingsInput`, `AssignContactToProjectInput`.
+- `schemas/project.ts`: Extended `createProjectSchema`/`updateProjectSchema` with all new fields; added `createProjectScopeSchema`, `updateProjectScopeSchema`, `updateProjectSettingsSchema`, `assignContactToProjectSchema`.
+- `constants/project-status.ts`: Added `PROJECT_SCOPE_STATUSES` and `PROJECT_SCOPE_STATUS_LIST`.
+
+*apps/api*
+- `services/project.service.ts`: Rewritten with 14 functions — `listProjects` (search + type/status filters), `getProject` (with scopes/settings/contacts), `createProject` (transaction: project + settings), `updateProject`, `archiveProject`, `getProjectDashboard` (6 parallel queries → metrics), `listProjectContacts`, `assignContactToProject`, `removeContactFromProject`, `listProjectScopes`, `createProjectScope`, `updateProjectScope`, `deleteProjectScope`, `getProjectSettings` (upsert defaults), `updateProjectSettings`.
+- `routes/projects/index.ts`: 18 routes — Project CRUD (5), Dashboard (1), Team/contacts (4), Scopes (4), Settings (2). WRITE_ROLES = Admin+PM; Archive = Admin only; Settings = Admin+PM.
+- `__tests__/helpers/mock-prisma.ts`: Added `projectScope` (5 methods) and `projectSettings` (3 methods including `create`) mock groups; added `contactProject.findMany`.
+- `__tests__/helpers/build-app.ts`: Added `buildProjectTestApp()` helper.
+- `__tests__/services/project.service.test.ts`: 30 new service tests.
+- `__tests__/routes/project.routes.test.ts`: 33 new route tests; added `mockRole()` helper (seeds `userRole.findMany` so `requireRole` middleware works correctly in tests).
+
+*packages/api-client*
+- `resources/projects.ts`: 11 new methods (getDashboard, listContacts, assignContact, updateContactAssignment, removeContact, listScopes, createScope, updateScope, deleteScope, getSettings, updateSettings). `ListProjectsParams` extended with `type` and `search`.
+- `index.ts`: New type exports from core (ProjectScope, ProjectSettings, ProjectContactAssignment, ProjectDashboard, CreateProjectScopeInput, UpdateProjectScopeInput, UpdateProjectSettingsInput, AssignContactToProjectInput).
+
+*apps/web*
+- `hooks/use-projects.ts`: 12 new hooks (useProjectDashboard, useProjectContacts, useProjectScopes, useProjectSettings, useCreateProject, useUpdateProject, useArchiveProject, useAssignContact, useRemoveProjectContact, useCreateProjectScope, useUpdateProjectScope, useDeleteProjectScope, useUpdateProjectSettings).
+- `app/(dashboard)/projects/page.tsx`: Clickable rows (→ detail page), search input, status+type filter dropdowns, working `CreateProjectDialog` (full form → POST → redirect to detail).
+- `app/(dashboard)/projects/[id]/layout.tsx`: Tab navigation (Overview / Team / Scopes / Settings) with active indicator; project name in breadcrumb.
+- `app/(dashboard)/projects/[id]/page.tsx`: 4 metric cards (open tasks, open incidents, toolbox talks, upcoming events); project details panel; owner/contractor panel; scope progress list.
+- `app/(dashboard)/projects/[id]/team/page.tsx`: Contact assignment table; `AssignContactDialog` (contact picker + role field); remove button for Admin/PM.
+- `app/(dashboard)/projects/[id]/scopes/page.tsx`: Scope list with status badges; `ScopeFormDialog` (create + edit); delete button for Admin/PM.
+- `app/(dashboard)/projects/[id]/settings/page.tsx`: Toggle-based settings panel (Modules, Requirements, Notifications sections); auto-save on toggle; read-only for non-Admin/PM.
+
+*apps/api/Dockerfile (carried from Session 22 startup)*
+- Fixed CMD path: `node dist/server.js` → `node apps/api/dist/server.js`
+- Added `apk add --no-cache openssl` + `binaryTargets = ["native", "linux-musl-openssl-3.0.x"]` for Prisma on Alpine
+
+**Tests**: 463 API tests passing (63 new). 5/5 turbo tasks (lint, type-check ×2, test ×2) passing. Web type-check clean.
+
 ### Fixed - CI/Lint for Phase 3.3 Safety (Session 21, 2026-03-17)
 
 - Replaced `eslint-plugin-import@2.x` with `eslint-plugin-import-x@4.16.2` — ESLint 10 removed `sourceCode.getTokenOrCommentBefore()`, breaking the old plugin; updated plugin key and rule prefix in `eslint.config.mjs` and `.eslintrc.json`

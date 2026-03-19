@@ -31,6 +31,16 @@ export type { ListNotificationsParams } from './resources/notifications'
 export type { ListProceduresParams } from './resources/procedures'
 export type { ListProjectsParams } from './resources/projects'
 export type {
+  AssignContactToProjectInput,
+  CreateProjectScopeInput,
+  ProjectContactAssignment,
+  ProjectDashboard,
+  ProjectScope,
+  ProjectSettings,
+  UpdateProjectScopeInput,
+  UpdateProjectSettingsInput,
+} from '@promanage/core'
+export type {
   ListSafetyDocumentsParams,
   ListSdsEntriesParams,
   ListToolboxTalksParams,

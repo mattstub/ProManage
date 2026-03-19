@@ -39,9 +39,20 @@ export type {
 export type {
   ProjectType,
   ProjectStatus,
+  ProjectScopeStatus,
   Project,
+  ProjectScope,
+  ProjectSettings,
+  ProjectContactAssignment,
+  ProjectWithRelations,
+  ProjectDashboardMetrics,
+  ProjectDashboard,
   CreateProjectInput,
   UpdateProjectInput,
+  CreateProjectScopeInput,
+  UpdateProjectScopeInput,
+  UpdateProjectSettingsInput,
+  AssignContactToProjectInput,
 } from './project'
 
 export type {

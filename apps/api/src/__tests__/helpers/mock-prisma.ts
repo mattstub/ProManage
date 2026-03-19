@@ -134,8 +134,21 @@ export function createMockPrisma() {
       count: vi.fn(),
     },
     contactProject: {
+      findMany: vi.fn(),
       upsert: vi.fn(),
       delete: vi.fn(),
+    },
+    projectScope: {
+      findMany: vi.fn(),
+      findFirst: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+    },
+    projectSettings: {
+      findUnique: vi.fn(),
+      upsert: vi.fn(),
+      create: vi.fn(),
     },
     license: {
       findMany: vi.fn(),

@@ -6,7 +6,8 @@ FROM node:20-alpine
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
-RUN corepack enable && \
+RUN apk add --no-cache openssl && \
+    corepack enable && \
     addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 --ingroup nodejs nodeuser
 
@@ -39,4 +40,4 @@ USER nodeuser
 
 ENV NODE_ENV=production
 EXPOSE 3001
-CMD ["node", "dist/server.js"]
+CMD ["node", "apps/api/dist/server.js"]

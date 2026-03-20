@@ -42,7 +42,7 @@ interface User {
   role: UserRole
 }
 
-type UserRole = 'admin' | 'manager' | 'field_user'
+type UserRole = 'Admin' | 'ProjectManager' | 'Superintendent' | 'Foreman' | 'FieldUser' | 'OfficeAdmin'
 
 function getUser(id: string): Promise<User | null> {
   // ...
@@ -261,35 +261,27 @@ interface ButtonProps {
 
 ### Hooks
 
-**Custom Hooks:**
+Use **TanStack Query** for server state — not manual `useState`/`useEffect`:
 
 ```typescript
-// hooks/useProjects.ts
-export function useProjects(organizationId: string) {
-  const [projects, setProjects] = useState<Project[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+// hooks/use-projects.ts
+export function useProjects(params?: ListProjectsParams) {
+  return useQuery({
+    queryKey: ['projects', params],
+    queryFn: () => getApiClient().projects.list(params),
+  })
+}
 
-  useEffect(() => {
-    // Fetch projects
-  }, [organizationId])
-
-  return { projects, isLoading }
+export function useCreateProject() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (data: CreateProjectInput) => getApiClient().projects.create(data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['projects'] }),
+  })
 }
 ```
 
-**Hook Dependencies:**
-
-```typescript
-// Good - explicit dependencies
-useEffect(() => {
-  fetchData(userId)
-}, [userId])
-
-// Bad - missing dependencies or empty array when not appropriate
-useEffect(() => {
-  fetchData(userId)
-}, []) // userId is missing!
-```
+Use `useState`/`useEffect` only for local UI state (open/closed dialogs, debounced inputs, etc.).
 
 ### State Management
 
@@ -502,44 +494,7 @@ fastify.setErrorHandler((error, request, reply) => {
 
 ## Testing
 
-### Unit Tests
-
-```typescript
-import { describe, it, expect } from 'vitest'
-import { calculateTotal } from './calculate-total'
-
-describe('calculateTotal', () => {
-  it('should sum item prices', () => {
-    const items = [
-      { price: 10, quantity: 2 },
-      { price: 5, quantity: 3 },
-    ]
-    expect(calculateTotal(items)).toBe(35)
-  })
-
-  it('should return 0 for empty array', () => {
-    expect(calculateTotal([])).toBe(0)
-  })
-})
-```
-
-### Component Tests
-
-```typescript
-import { render, screen } from '@testing-library/react'
-import { userEvent } from '@testing-library/user-event'
-import { Button } from './Button'
-
-describe('Button', () => {
-  it('should call onClick when clicked', async () => {
-    const handleClick = vi.fn()
-    render(<Button onClick={handleClick}>Click me</Button>)
-
-    await userEvent.click(screen.getByText('Click me'))
-    expect(handleClick).toHaveBeenCalledTimes(1)
-  })
-})
-```
+See [testing.md](testing.md) for the full testing guide — Vitest patterns, mock-prisma conventions, `buildXxxTestApp()` helpers, and the `requireRole` mock pattern.
 
 ## Comments
 
@@ -552,10 +507,10 @@ describe('Button', () => {
 // Formula: (price * (1 - discount)) * (1 + taxRate)
 const total = calculatePriceWithTax(price, discount, taxRate)
 
-// TODO: Optimize this query for large datasets
+// [ ] TODO: Optimize this query for large datasets
 const projects = await fetchAllProjects()
 
-// HACK: Workaround for Safari date parsing bug
+// [ ] HACK: Workaround for Safari date parsing bug
 const date = new Date(dateString.replace(/-/g, '/'))
 ```
 
@@ -736,23 +691,30 @@ const projects = await prisma.project.findMany({
 
 ## Import Organization
 
+Four groups, blank line between each, alphabetical within each group:
+
 ```typescript
 // 1. External libraries
-import React, { useState, useEffect } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation } from '@tanstack/react-query'
+import React, { useState } from 'react'
 
-// 2. Internal packages
+// 2. Internal monorepo packages (@promanage/*)
 import { Button } from '@promanage/ui-components'
-import { formatDate } from '@promanage/core'
+import { formatDate, PROJECT_STATUSES } from '@promanage/core'
 
-// 3. Relative imports (alphabetical)
-import { useAuth } from '@/hooks/useAuth'
-import { ProjectCard } from '@/components/ProjectCard'
-import { api } from '@/lib/api'
+// 3. Local aliases and relative imports (@/* then ./relative)
+import { useAuthStore } from '@/hooks/use-auth'
+import { getApiClient } from '@/lib/api-client'
+import { ProjectCard } from './project-card'
 
-// 4. Types
-import type { Project } from '@/types'
+// 4. Type imports (always last)
+import type { Project, CreateProjectInput } from '@promanage/core'
 ```
+
+Rules enforced by ESLint (`eslint-plugin-import-x`):
+- `@` sorts before regular letters within a group
+- No mixing of value and type imports — type imports must be last using `import type`
+- Run `npx eslint --fix 'apps/web/src/**/*.{ts,tsx}'` to auto-fix order violations
 
 ## Git Commit Messages
 
@@ -760,5 +722,5 @@ See [git-workflow.md](git-workflow.md) for commit message guidelines.
 
 ---
 
-**Last Updated**: 2026-02-02
+**Last Updated**: 2026-03-19
 **Status**: Living Document

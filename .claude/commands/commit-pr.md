@@ -53,16 +53,29 @@ git diff --staged --stat
 
 ---
 
+## Pre-Commit Checks (automated)
+
+`simple-git-hooks` runs these automatically on every `git commit` — no manual step needed:
+
+- **pre-commit**: `pnpm turbo lint && pnpm turbo type-check` — blocks the commit if either fails
+- **pre-push**: `pnpm turbo test` — blocks the push if tests fail
+
+If the pre-commit hook fails, fix the errors and re-stage before retrying. Do **not** use `SKIP_SIMPLE_GIT_HOOKS=1` to bypass.
+
+> Turbo caches results — if nothing changed in a package, lint/type-check for that package runs in milliseconds.
+
+---
+
 ## Commit Workflow
 
 ```bash
 # 1. Stage specific files
 git add {specific files...}
 
-# 2. Verify staged content
-git diff --staged --stat
+# 2. Verify staged content (check docs are included)
+git diff --staged --name-only
 
-# 3. Commit
+# 3. Commit (pre-commit hook runs lint + type-check automatically)
 git commit -m "$(cat <<'EOF'
 feat(web): short description here
 
@@ -123,26 +136,30 @@ Title: feat(web): Sub-phase G — apps/web Next.js shell
 
 ---
 
-## Documentation Updates (required before final commit)
+## Documentation Updates (required — update BEFORE staging code)
 
-Every PR must include documentation updates in the same commit. Check all four:
+Every commit that changes behavior, adds features, or fixes bugs must include documentation updates **staged in the same commit**. This is not optional.
 
-| File | What to update |
-| --- | --- |
-| `README.md` | Update feature list / phase status if a new phase or major feature is complete |
-| `CHANGELOG.md` | Add entry under `[Unreleased]` — packages changed, new files, bug fixes |
-| `docs/ROADMAP.md` | Check off completed items (`- [ ]` → `- [x]`), update "Last Updated" + "Status" footer |
-| `docs/context/session-context.md` | Update "Last Updated", current state section, directory map, session log |
-| `CLAUDE.md` | Update Phase Status section only if a phase completes |
+Work through this checklist before running `git add` on any code file:
 
-> `docs/context/implementation-progress.md` is deprecated — session-context.md is now authoritative.
+| File | What to update | Always? |
+| --- | --- | --- |
+| `README.md` | Current Status, Features list, test counts, project structure model count + routes/pages | If anything changed |
+| `CHANGELOG.md` | Add entry under `[Unreleased]` — files changed, what was added/fixed/removed | Always |
+| `docs/ROADMAP.md` | Check off completed items (`- [ ]` → `- [x]`), update "Last Updated" + "Status" footer | If phase/sub-phase completes |
+| `docs/context/session-context.md` | "Last Updated", current state section, directory map, session log entry | Always |
+| `CLAUDE.md` | Phase Status section | If a phase completes |
+| `~/.claude/projects/.../memory/` | Update `MEMORY.md` Git State entry; update or create relevant memory files | Always |
 
-Quick check before committing:
+Hard gate — verify all doc files are staged before committing:
 
 ```bash
-# Confirm docs are staged alongside code
-git diff --staged --name-only | grep -E "README|CHANGELOG|ROADMAP|session-context|CLAUDE"
+git diff --staged --name-only
+# Must see at minimum: CHANGELOG.md and docs/context/session-context.md alongside code files
+# README.md required if features, test counts, or structure changed
 ```
+
+If any required doc file is missing from the staged list — stop, update it, and re-stage before committing.
 
 ---
 

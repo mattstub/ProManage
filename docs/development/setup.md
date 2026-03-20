@@ -34,20 +34,20 @@ pnpm --version
 git --version
 ```
 
-- **Docker & Docker Compose** (for local services)
+- **Docker** (v2) — for local PostgreSQL and MinIO
 
 ```bash
-# Check versions
 docker --version
-docker-compose --version
+docker compose version   # must be v2 (note: no hyphen)
 ```
+
+> **WSL users**: Run all commands directly in WSL — do not prefix with `wsl -d Ubuntu -e bash -c`. The `nvm` environment must be sourced each shell: `source ~/.nvm/nvm.sh && nvm use 20`.
 
 ### Recommended Tools
 
 - **VS Code** (or your preferred IDE)
 - **PostgreSQL client** (TablePlus, pgAdmin, or psql CLI)
-- **Redis client** (RedisInsight or redis-cli)
-- **Postman** or **Insomnia** (API testing)
+- **Postman** or **Insomnia** (API testing — or use `http://localhost:3001/docs` Swagger UI)
 
 ### VS Code Extensions
 
@@ -59,7 +59,7 @@ docker-compose --version
     "prisma.prisma",
     "bradlc.vscode-tailwindcss",
     "ms-vscode.vscode-typescript-next",
-    "orta.vscode-jest"
+    "vitest.explorer"
   ]
 }
 ```
@@ -85,113 +85,103 @@ This will install dependencies for all apps and packages in the workspace.
 ### 3. Start Local Services
 
 ```bash
-# Start PostgreSQL, Redis, and MinIO (S3-compatible storage)
-docker-compose up -d
+# Start PostgreSQL and MinIO
+docker compose up -d
 
-# Check services are running
-docker-compose ps
+# Verify both are healthy
+docker compose ps
 ```
+
+Expected: `promanage-postgres` and `promanage-minio` both show as **healthy**.
 
 - **Services:**
   - PostgreSQL: `localhost:5432`
-  - Redis: `localhost:6379`
   - MinIO: `localhost:9000` (Console: `localhost:9001`)
 
 ### 4. Environment Configuration
 
 ```bash
-# Copy environment template
-cp .env.example .env
-
-# Copy app-specific environment files
 cp apps/api/.env.example apps/api/.env
-cp apps/web/.env.example apps/web/.env
+cp apps/web/.env.local.example apps/web/.env.local
 ```
 
-**Edit `.env` files** with your local configuration:
+The default values work out of the box with the Docker services. Key variables to know:
 
 ```bash
 # apps/api/.env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/promanage_dev"
-S3_ENDPOINT="http://localhost:9000"
-S3_ACCESS_KEY="minioadmin"
-S3_SECRET_KEY="minioadmin"
-JWT_SECRET="your-dev-secret-key"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/promanage"
+JWT_SECRET="dev-secret-change-in-production"
+MINIO_ENDPOINT=localhost
+MINIO_PORT=9000
+MINIO_ACCESS_KEY=minioadmin
+MINIO_SECRET_KEY=minioadmin
+MINIO_BUCKET=promanage
 ```
 
 ```bash
-# apps/web/.env
-NEXT_PUBLIC_API_URL="http://localhost:3001"
-NEXT_PUBLIC_WS_URL="ws://localhost:3001"
+# apps/web/.env.local
+NEXT_PUBLIC_API_URL=http://localhost:3001
 ```
 
 ### 5. Database Setup
 
 ```bash
-# Navigate to API directory
 cd apps/api
 
-# Run Prisma migrations
-pnpm prisma migrate dev
+# Apply schema (no interactive prompts)
+npx prisma db push
 
-# Seed database with sample data (optional)
-pnpm prisma db seed
+# Seed with demo data (org, 6 roles, 3 users, projects, safety data, etc.)
+npx ts-node prisma/seed.ts
 ```
 
-### 6. Verify Installation
+> Always use `prisma db push` for dev — `prisma migrate dev` requires interactive confirmation and fails non-interactively.
+
+**Reset database:**
 
 ```bash
-# Build all packages
-pnpm build
+npx prisma db push --force-reset && npx ts-node prisma/seed.ts
+```
 
-# Run type checking
-pnpm typecheck
+### 6. Build Shared Packages
 
-# Run linting
-pnpm lint
+Packages must be built before running the app (build order matters — core first):
+
+```bash
+pnpm --filter @promanage/core build
+pnpm --filter @promanage/api-client build
+pnpm --filter @promanage/ui-components build
+```
+
+### 7. Verify Installation
+
+```bash
+pnpm turbo lint
+pnpm turbo type-check
+pnpm test
 ```
 
 ## Running Development Servers
 
-### All Services (Recommended)
+Open two terminals:
+
+**Terminal 1 — API server:**
 
 ```bash
-# From root directory
-pnpm dev
+source ~/.nvm/nvm.sh && nvm use 20
+cd apps/api && pnpm dev
+# Runs on http://localhost:3001
 ```
 
-- This starts:
-  - Web app: `http://localhost:3000`
-  - API server: `http://localhost:3001`
-  - Mobile app: Expo DevTools
-
-### Individual Services
-
-- **Web Application:**
+**Terminal 2 — Web app:**
 
 ```bash
-cd apps/web
-pnpm dev
-# Opens at http://localhost:3000
+source ~/.nvm/nvm.sh && nvm use 20
+pnpm --filter @promanage/web dev
+# Runs on http://localhost:3000
 ```
 
-- **API Server:**
-
-```bash
-cd apps/api
-pnpm dev
-# Running on http://localhost:3001
-```
-
-- **Mobile Application:**
-
-```bash
-cd apps/mobile
-pnpm start
-# Opens Expo DevTools
-# Press 'i' for iOS simulator
-# Press 'a' for Android emulator
-```
+> **Note**: `git push` hangs in some WSL contexts — always push from your own terminal, not from a script.
 
 ## Database Management
 
@@ -203,16 +193,16 @@ pnpm prisma studio
 # Opens at http://localhost:5555
 ```
 
-### Creating Migrations
+### Applying Schema Changes
 
 ```bash
 cd apps/api
 
-# Create a new migration
-pnpm prisma migrate dev --name add_user_fields
+# Apply schema changes (dev)
+npx prisma db push
 
-# Reset database (WARNING: Deletes all data)
-pnpm prisma migrate reset
+# Reset and re-seed (WARNING: deletes all data)
+npx prisma db push --force-reset && npx ts-node prisma/seed.ts
 ```
 
 ### Updating Schema
@@ -465,4 +455,4 @@ For iOS and Android development setup, see [mobile-setup.md](mobile-setup.md).
 
 ---
 
-**Last Updated**: 2026-02-02
+**Last Updated**: 2026-03-19

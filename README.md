@@ -13,23 +13,26 @@ ProManage is a free, open-source platform designed to help small and mid-sized c
 
 ## Current Status
 
-> **Phase 4.1 Project Entity Expansion — In Progress**
+> **Phase 4.1 Project Entity Expansion — COMPLETE | Working toward Phase 4.2**
 
 ## Features
 
 - **Dashboard** — Stats overview, project summaries, role-aware navigation
-- **Projects** — Create and track construction projects with status and type
+- **Projects** — Full project detail pages with team, scopes, settings, and dashboard metrics
 - **Task Management** — Assign tasks with priority, due dates, and RBAC
+- **Channel Chat** — Socket.io real-time channels with per-role permissions and file uploads
 - **Messaging** — Direct messages between users + role-targeted announcements
 - **Notifications** — Real-time SSE push notifications (task assignments, etc.)
 - **Company Calendar** — Custom month-view calendar with event CRUD
 - **Procedures** — Document workflows, safety protocols, and SOPs
-- **Contact Management** — Organization-level contact directory
+- **Contact Management** — Organization-level contact directory with project associations
+- **Licensing** — Organization and individual license tracking with renewal reminders and document uploads
+- **Safety** — 5-tab safety hub: document library, SDS catalog, toolbox talks, safety forms, incident reports
 
 ## Architecture
 
 - **Desktop-First**: Primary interface optimized for office personnel (90% of usage)
-- **Mobile Companion**: React Native app for field workers (deferred to Phase 3+)
+- **Mobile Companion**: React Native app for field workers (deferred to Phase 5+)
 - **API-First**: Clean backend separation enables future integrations
 - **Multi-Tenant**: All data scoped by organization
 
@@ -161,7 +164,7 @@ npx ts-node prisma/seed.ts
 ```bash
 pnpm test                              # all packages via Turborepo
 pnpm --filter @promanage/core test     # core unit tests only (97 tests)
-pnpm --filter @promanage/api test      # API service + route tests (162 tests)
+pnpm --filter @promanage/api test      # API service + route tests (463 tests)
 ```
 
 ### Type-check the web app
@@ -187,17 +190,18 @@ pnpm --filter @promanage/core build
 ProManage/
 ├── apps/
 │   ├── api/                # Fastify API server (TypeScript, Prisma, JWT auth)
-│   │   ├── prisma/         # Schema (23 models), seed script
+│   │   ├── prisma/         # Schema (34 models), seed script
 │   │   └── src/
 │   │       ├── routes/     # auth, calendar-events, channels, contacts,
-│   │       │               # dashboard, messages, notifications,
-│   │       │               # organizations, procedures, projects, tasks, users
+│   │       │               # dashboard, licenses, messages, notifications,
+│   │       │               # organizations, procedures, projects, safety, tasks, users
 │   │       ├── services/   # Business logic (one file per domain)
 │   │       └── middleware/ # authenticate, authorize, error-handler
 │   └── web/                # Next.js 15 App Router (desktop-first)
 │       └── src/
-│           ├── app/        # Pages: dashboard, projects, tasks, procedures,
-│           │               # calendar, messages, channels, contacts,
+│           ├── app/        # Pages: dashboard, projects (+ detail tabs: overview,
+│           │               # team, scopes, settings), tasks, procedures, calendar,
+│           │               # messages, channels, contacts, licenses, safety,
 │           │               # organization, settings
 │           ├── components/ # layout (sidebar, header, nav), dashboard, auth,
 │           │               # channels (chat, thread, attachments)

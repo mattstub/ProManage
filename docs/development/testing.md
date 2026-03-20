@@ -2,571 +2,271 @@
 
 ## Overview
 
-ProManage uses a multi-layered testing strategy to ensure code quality and prevent regressions.
+ProManage uses **Vitest** for all automated testing. There are two tested packages:
 
-## Testing Stack
+| Package | Tests | What's covered |
+| --- | --- | --- |
+| `packages/core` | 97 | Zod schemas, utility functions |
+| `apps/api` | 463 | Service business logic, HTTP route contracts |
 
-### Unit & Integration Tests
+There are no E2E tests, React component tests, or Playwright/Detox tests at this time.
 
-- **Vitest**: Fast unit test runner
-- **Testing Library**: React component testing
-- **Supertest**: API endpoint testing
-
-### E2E Tests
-
-- **Playwright**: Web application E2E
-- **Detox**: Mobile application E2E
-
-### Code Coverage
-
-- Minimum 80% coverage for business logic
-- Minimum 60% coverage overall
+---
 
 ## Running Tests
 
-### All Tests
-
 ```bash
-# Run all tests
-pnpm test
-
-# Run tests in watch mode
-pnpm test:watch
-
-# Run with coverage
-pnpm test:coverage
-```
-
-### Specific Workspaces
-
-```bash
-# Test specific app/package
-pnpm --filter @promanage/core test
-pnpm --filter @promanage/web test
-pnpm --filter @promanage/api test
-```
-
-### Running E2E Tests
-
-```bash
-# Web E2E
-pnpm test:e2e
-
-# Mobile E2E
-cd apps/mobile
-pnpm test:e2e:ios
-pnpm test:e2e:android
-```
-
-## Unit Testing
-
-### Writing Unit Tests
-
-```typescript
-// utils/calculate-total.test.ts
-import { describe, it, expect } from 'vitest'
-import { calculateTotal } from './calculate-total'
-
-describe('calculateTotal', () => {
-  it('should sum item prices correctly', () => {
-    const items = [
-      { price: 10, quantity: 2 },
-      { price: 5, quantity: 3 },
-    ]
-    const result = calculateTotal(items)
-    expect(result).toBe(35)
-  })
-
-  it('should handle empty array', () => {
-    expect(calculateTotal([])).toBe(0)
-  })
-
-  it('should handle decimal prices', () => {
-    const items = [{ price: 10.5, quantity: 2 }]
-    expect(calculateTotal(items)).toBe(21)
-  })
-})
-```
-
-### Test Structure
-
-Use the **Arrange-Act-Assert** pattern:
-
-```typescript
-it('should update project status', async () => {
-  // Arrange
-  const project = createTestProject({ status: 'active' })
-
-  // Act
-  const updated = await updateProjectStatus(project.id, 'completed')
-
-  // Assert
-  expect(updated.status).toBe('completed')
-})
-```
-
-### Mocking
-
-```typescript
-import { vi } from 'vitest'
-
-// Mock modules
-vi.mock('./api-client', () => ({
-  fetchProjects: vi.fn(),
-}))
-
-// Mock functions
-const mockFn = vi.fn()
-mockFn.mockResolvedValue({ id: '1', name: 'Project' })
-mockFn.mockRejectedValue(new Error('Failed'))
-
-// Spy on functions
-const spy = vi.spyOn(console, 'error')
-expect(spy).toHaveBeenCalled()
-```
-
-## Component Testing
-
-### React Components
-
-```typescript
-// components/Button.test.tsx
-import { render, screen } from '@testing-library/react'
-import { userEvent } from '@testing-library/user-event'
-import { Button } from './Button'
-
-describe('Button', () => {
-  it('should render with label', () => {
-    render(<Button>Click me</Button>)
-    expect(screen.getByText('Click me')).toBeInTheDocument()
-  })
-
-  it('should call onClick when clicked', async () => {
-    const handleClick = vi.fn()
-    render(<Button onClick={handleClick}>Click me</Button>)
-
-    await userEvent.click(screen.getByText('Click me'))
-    expect(handleClick).toHaveBeenCalledTimes(1)
-  })
-
-  it('should be disabled when disabled prop is true', () => {
-    render(<Button disabled>Click me</Button>)
-    expect(screen.getByRole('button')).toBeDisabled()
-  })
-
-  it('should show loading state', () => {
-    render(<Button isLoading>Click me</Button>)
-    expect(screen.getByRole('button')).toHaveAttribute('aria-busy', 'true')
-  })
-})
-```
-
-### Testing Hooks
-
-```typescript
-// hooks/useProjects.test.ts
-import { renderHook, waitFor } from '@testing-library/react'
-import { useProjects } from './useProjects'
-
-describe('useProjects', () => {
-  it('should fetch projects on mount', async () => {
-    const { result } = renderHook(() => useProjects())
-
-    expect(result.current.isLoading).toBe(true)
-
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false)
-    })
-
-    expect(result.current.projects).toHaveLength(3)
-  })
-})
-```
-
-### Query Testing (React Query)
-
-```typescript
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { renderHook, waitFor } from '@testing-library/react'
-import { useProjects } from './useProjects'
-
-const createWrapper = () => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: { retry: false },
-    },
-  })
-  return ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
-  )
-}
-
-describe('useProjects', () => {
-  it('should fetch and cache projects', async () => {
-    const { result } = renderHook(() => useProjects(), {
-      wrapper: createWrapper(),
-    })
-
-    await waitFor(() => expect(result.current.isSuccess).toBe(true))
-    expect(result.current.data).toBeDefined()
-  })
-})
-```
-
-## API Testing
-
-### Endpoint Tests
-
-```typescript
-// routes/projects.test.ts
-import { describe, it, expect, beforeAll, afterAll } from 'vitest'
-import { build } from '../app'
-import type { FastifyInstance } from 'fastify'
-
-describe('Projects API', () => {
-  let app: FastifyInstance
-
-  beforeAll(async () => {
-    app = await build()
-  })
-
-  afterAll(async () => {
-    await app.close()
-  })
-
-  describe('GET /projects', () => {
-    it('should return list of projects', async () => {
-      const response = await app.inject({
-        method: 'GET',
-        url: '/projects',
-        headers: {
-          authorization: `Bearer ${testToken}`,
-        },
-      })
-
-      expect(response.statusCode).toBe(200)
-      expect(response.json()).toHaveProperty('data')
-      expect(Array.isArray(response.json().data)).toBe(true)
-    })
-
-    it('should require authentication', async () => {
-      const response = await app.inject({
-        method: 'GET',
-        url: '/projects',
-      })
-
-      expect(response.statusCode).toBe(401)
-    })
-  })
-
-  describe('POST /projects', () => {
-    it('should create new project', async () => {
-      const payload = {
-        name: 'Test Project',
-        description: 'Test description',
-      }
-
-      const response = await app.inject({
-        method: 'POST',
-        url: '/projects',
-        headers: {
-          authorization: `Bearer ${testToken}`,
-        },
-        payload,
-      })
-
-      expect(response.statusCode).toBe(201)
-      expect(response.json()).toMatchObject(payload)
-    })
-
-    it('should validate required fields', async () => {
-      const response = await app.inject({
-        method: 'POST',
-        url: '/projects',
-        headers: {
-          authorization: `Bearer ${testToken}`,
-        },
-        payload: {},
-      })
-
-      expect(response.statusCode).toBe(400)
-    })
-  })
-})
-```
-
-### Database Tests
-
-```typescript
-import { PrismaClient } from '@prisma/client'
-import { beforeEach, afterEach } from 'vitest'
-
-const prisma = new PrismaClient()
-
-beforeEach(async () => {
-  // Clean database
-  await prisma.$transaction([
-    prisma.project.deleteMany(),
-    prisma.user.deleteMany(),
-  ])
-})
-
-afterEach(async () => {
-  await prisma.$disconnect()
-})
-
-describe('Project repository', () => {
-  it('should create project', async () => {
-    const project = await prisma.project.create({
-      data: {
-        name: 'Test Project',
-        organizationId: 'test-org',
-      },
-    })
-
-    expect(project.id).toBeDefined()
-    expect(project.name).toBe('Test Project')
-  })
-})
-```
-
-## E2E Testing (Web)
-
-### Playwright Tests
-
-```typescript
-// tests/e2e/projects.spec.ts
-import { test, expect } from '@playwright/test'
-
-test.describe('Projects', () => {
-  test.beforeEach(async ({ page }) => {
-    // Login
-    await page.goto('/login')
-    await page.fill('[name="email"]', 'test@example.com')
-    await page.fill('[name="password"]', 'password')
-    await page.click('button[type="submit"]')
-    await expect(page).toHaveURL('/dashboard')
-  })
-
-  test('should create new project', async ({ page }) => {
-    await page.goto('/projects')
-    await page.click('button:has-text("New Project")')
-
-    await page.fill('[name="name"]', 'E2E Test Project')
-    await page.fill('[name="description"]', 'Test description')
-    await page.click('button:has-text("Create")')
-
-    await expect(page.locator('text=E2E Test Project')).toBeVisible()
-  })
-
-  test('should edit project', async ({ page }) => {
-    await page.goto('/projects')
-    await page.click('text=Test Project')
-
-    await page.click('button:has-text("Edit")')
-    await page.fill('[name="name"]', 'Updated Project')
-    await page.click('button:has-text("Save")')
-
-    await expect(page.locator('text=Updated Project')).toBeVisible()
-  })
-})
-```
-
-### Page Object Pattern
-
-```typescript
-// tests/e2e/pages/projects.page.ts
-export class ProjectsPage {
-  constructor(private page: Page) {}
-
-  async goto() {
-    await this.page.goto('/projects')
-  }
-
-  async createProject(name: string, description: string) {
-    await this.page.click('button:has-text("New Project")')
-    await this.page.fill('[name="name"]', name)
-    await this.page.fill('[name="description"]', description)
-    await this.page.click('button:has-text("Create")')
-  }
-
-  async getProjectByName(name: string) {
-    return this.page.locator(`text=${name}`)
-  }
-}
-
-// Usage in test
-test('should create project', async ({ page }) => {
-  const projectsPage = new ProjectsPage(page)
-  await projectsPage.goto()
-  await projectsPage.createProject('Test', 'Description')
-  await expect(await projectsPage.getProjectByName('Test')).toBeVisible()
-})
-```
-
-## Mobile Testing
-
-See [mobile-testing.md](mobile-testing.md) for detailed mobile testing guide.
-
-## Test Data
-
-### Factories
-
-```typescript
-// tests/factories/project.factory.ts
-import { faker } from '@faker-js/faker'
-import type { Project } from '@prisma/client'
-
-export function createTestProject(overrides?: Partial<Project>): Project {
-  return {
-    id: faker.string.uuid(),
-    name: faker.company.name(),
-    description: faker.lorem.sentence(),
-    status: 'active',
-    budget: faker.number.float({ min: 10000, max: 1000000 }),
-    startDate: faker.date.past(),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    ...overrides,
-  }
-}
-```
-
-### Fixtures
-
-```typescript
-// tests/fixtures/projects.json
-[
-  {
-    "id": "project-1",
-    "name": "Office Building Renovation",
-    "status": "active",
-    "budget": 250000
-  },
-  {
-    "id": "project-2",
-    "name": "Warehouse Construction",
-    "status": "completed",
-    "budget": 1500000
-  }
-]
-```
-
-## Coverage
-
-### Viewing Coverage
-
-```bash
-# Generate coverage report
-pnpm test:coverage
-
-# Open HTML report
-open coverage/index.html
-```
-
-### Coverage Thresholds
-
-```typescript
-// vitest.config.ts
-export default defineConfig({
-  test: {
-    coverage: {
-      provider: 'v8',
-      reporter: ['text', 'html', 'json'],
-      exclude: ['**/*.test.ts', '**/*.spec.ts'],
-      lines: 80,
-      functions: 80,
-      branches: 75,
-      statements: 80,
-    },
-  },
-})
-```
-
-## Best Practices
-
-### Do's
-
-- ✅ Write tests for all business logic
-- ✅ Test edge cases and error conditions
-- ✅ Use descriptive test names
-- ✅ Keep tests simple and focused
-- ✅ Use test factories for test data
-- ✅ Mock external dependencies
-- ✅ Test user behavior, not implementation details
-
-### Don'ts
-
-- ❌ Don't test third-party libraries
-- ❌ Don't write tests just to increase coverage
-- ❌ Don't test implementation details
-- ❌ Don't use timeouts instead of proper async handling
-- ❌ Don't write overly complex tests
-- ❌ Don't share state between tests
-
-## CI/CD Integration
-
-### GitHub Actions
-
-```yaml
-# .github/workflows/test.yml
-name: Tests
-
-on: [push, pull_request]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Run tests
-        run: pnpm test:coverage
-
-      - name: Upload coverage
-        uses: codecov/codecov-action@v3
-        with:
-          files: ./coverage/coverage-final.json
-```
-
-## Debugging Tests
-
-### VS Code
-
-```json
-// .vscode/launch.json
-{
-  "configurations": [
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Debug Vitest Tests",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["test", "--run"],
-      "console": "integratedTerminal"
-    }
-  ]
-}
-```
-
-### Chrome DevTools
-
-```bash
-# Run with Node inspector
-node --inspect-brk ./node_modules/vitest/vitest.mjs
+pnpm test                              # all packages via Turborepo
+pnpm --filter @promanage/core test     # core unit tests only
+pnpm --filter @promanage/api test      # API service + route tests only
 ```
 
 ---
 
-**Last Updated**: 2026-02-02
-**Status**: Complete
+## packages/core Tests
+
+Test files live in `src/__tests__/`:
+
+```
+packages/core/src/__tests__/
+├── schemas/        # One file per schema (e.g. project.test.ts)
+└── utils/          # One file per util (e.g. pagination.test.ts)
+```
+
+### Schema Tests
+
+Cover valid inputs, invalid inputs, boundary values, and type coercion.
+
+```typescript
+// src/__tests__/schemas/project.test.ts
+import { describe, it, expect } from 'vitest'
+import { createProjectSchema } from '../../schemas/project'
+
+describe('createProjectSchema', () => {
+  it('accepts valid input', () => {
+    const result = createProjectSchema.safeParse({ name: 'Highway 45', type: 'COMMERCIAL' })
+    expect(result.success).toBe(true)
+  })
+
+  it('rejects missing name', () => {
+    const result = createProjectSchema.safeParse({ type: 'COMMERCIAL' })
+    expect(result.success).toBe(false)
+  })
+
+  it('rejects unknown type', () => {
+    const result = createProjectSchema.safeParse({ name: 'Test', type: 'INVALID' })
+    expect(result.success).toBe(false)
+  })
+})
+```
+
+### Util Tests
+
+Cover all branches and edge cases (0, negative, max values).
+
+```typescript
+// src/__tests__/utils/pagination.test.ts
+import { describe, it, expect } from 'vitest'
+import { parsePagination, buildPaginationMeta } from '../../utils/pagination'
+
+describe('parsePagination', () => {
+  it('returns defaults for empty input', () => {
+    const result = parsePagination({})
+    expect(result.page).toBe(1)
+    expect(result.limit).toBe(20)
+  })
+
+  it('clamps limit to maximum', () => {
+    const result = parsePagination({ limit: '999' })
+    expect(result.limit).toBeLessThanOrEqual(100)
+  })
+
+  it('clamps page to minimum of 1', () => {
+    const result = parsePagination({ page: '0' })
+    expect(result.page).toBe(1)
+  })
+})
+```
+
+---
+
+## apps/api Tests
+
+Test files live in `src/__tests__/`:
+
+```
+apps/api/src/__tests__/
+├── helpers/
+│   ├── build-app.ts      # buildXxxTestApp() per route group
+│   ├── mock-prisma.ts     # createMockPrisma() factory
+│   └── sign-test-token.ts # signTestToken() helper
+├── services/              # One file per service
+└── routes/                # One file per route group
+```
+
+### Mocking Infrastructure
+
+**`createMockPrisma()`** — returns a Prisma client where every model method is a `vi.fn()`. When adding a new Prisma model, add its mock group here.
+
+```typescript
+import { createMockPrisma } from '../helpers/mock-prisma'
+
+const prisma = createMockPrisma()
+
+beforeEach(() => {
+  vi.clearAllMocks()
+})
+```
+
+**`buildXxxTestApp(prisma)`** — constructs a Fastify instance wired to the mock Prisma client. Add a new helper for each new route group.
+
+```typescript
+// helpers/build-app.ts
+export async function buildProjectTestApp(prisma: MockPrisma) {
+  const app = fastify()
+  app.decorate('prisma', prisma)
+  await app.register(projectRoutes, { prefix: '/api/v1' })
+  return app
+}
+```
+
+**`signTestToken(app, payload)`** — signs a JWT using the test app's secret. Use this in route tests instead of hardcoding tokens.
+
+### Service Tests
+
+Test business rules and error branches. Mock Prisma. Mock external services with `vi.mock()`.
+
+```typescript
+// src/__tests__/services/project.service.test.ts
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { createMockPrisma } from '../helpers/mock-prisma'
+import { listProjects, getProject } from '../../services/project.service'
+
+const prisma = createMockPrisma()
+
+beforeEach(() => vi.clearAllMocks())
+
+describe('listProjects', () => {
+  it('scopes results to the organization', async () => {
+    prisma.project.findMany.mockResolvedValue([])
+    prisma.project.count.mockResolvedValue(0)
+
+    await listProjects(prisma, 'org-1', {})
+
+    expect(prisma.project.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({ where: expect.objectContaining({ organizationId: 'org-1' }) })
+    )
+  })
+})
+
+describe('getProject', () => {
+  it('throws when project not found', async () => {
+    prisma.project.findUnique.mockResolvedValue(null)
+    await expect(getProject(prisma, 'org-1', 'bad-id')).rejects.toThrow()
+  })
+})
+```
+
+### Route Tests
+
+Test HTTP contracts: status codes, response shape, auth requirements. Do not re-test service logic.
+
+```typescript
+// src/__tests__/routes/project.routes.test.ts
+import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from 'vitest'
+import type { FastifyInstance } from 'fastify'
+import { buildProjectTestApp } from '../helpers/build-app'
+import { createMockPrisma } from '../helpers/mock-prisma'
+import { signTestToken } from '../helpers/sign-test-token'
+
+const prisma = createMockPrisma()
+let app: FastifyInstance
+
+// requireRole does a real DB lookup — seed it per test
+function mockRole(role: string) {
+  prisma.userRole.findMany.mockResolvedValue([{ role: { name: role } }])
+}
+
+beforeAll(async () => { app = await buildProjectTestApp(prisma) })
+afterAll(() => app.close())
+beforeEach(() => vi.clearAllMocks())
+
+describe('GET /api/v1/projects', () => {
+  it('returns 200 with data array', async () => {
+    mockRole('Admin')
+    prisma.project.findMany.mockResolvedValue([])
+    prisma.project.count.mockResolvedValue(0)
+
+    const token = signTestToken(app, { userId: 'u1', organizationId: 'org1', email: 'a@b.com' })
+    const res = await app.inject({
+      method: 'GET',
+      url: '/api/v1/projects',
+      headers: { authorization: `Bearer ${token}` },
+    })
+
+    expect(res.statusCode).toBe(200)
+    expect(res.json()).toHaveProperty('data')
+  })
+
+  it('returns 401 without token', async () => {
+    const res = await app.inject({ method: 'GET', url: '/api/v1/projects' })
+    expect(res.statusCode).toBe(401)
+  })
+})
+
+describe('POST /api/v1/projects (Admin/PM only)', () => {
+  it('returns 403 for FieldUser', async () => {
+    mockRole('FieldUser')
+    const token = signTestToken(app, { userId: 'u1', organizationId: 'org1', email: 'a@b.com' })
+    const res = await app.inject({
+      method: 'POST',
+      url: '/api/v1/projects',
+      headers: { authorization: `Bearer ${token}` },
+      payload: { name: 'Test', type: 'COMMERCIAL' },
+    })
+    expect(res.statusCode).toBe(403)
+  })
+})
+```
+
+### requireRole Pattern — CRITICAL
+
+`requireRole` middleware performs a **real DB lookup** via `prisma.userRole.findMany`. Every test hitting a `requireRole`-protected endpoint must seed this mock — including tests that expect 403.
+
+```typescript
+// Happy path
+mockRole('Admin')
+
+// Test 403 enforcement
+mockRole('FieldUser')
+
+// If userRole.findMany is not seeded, requireRole returns 500 instead of 403
+```
+
+See `src/__tests__/routes/safety.routes.test.ts` as the reference implementation.
+
+---
+
+## What to Test at Each Layer
+
+| Layer | Test | Don't test |
+| --- | --- | --- |
+| Service | Business rules, error branches (not found, wrong org, forbidden) | DB query internals — trust Prisma |
+| Route | Status codes, response shape, cookie set/clear, auth required | Internal service logic |
+| Schema | Constraints (regex, length, required), type coercion | Implementation details |
+| Utils | Return values for all branches + edge cases (0, negative, max) | Library internals |
+
+---
+
+## Adding Tests for a New Feature
+
+1. **New API route group** → add `buildXxxTestApp()` in `helpers/build-app.ts`
+2. **New Prisma model** → add mock group in `helpers/mock-prisma.ts`
+3. **New service** → `src/__tests__/services/[name].service.test.ts`
+4. **New route group** → `src/__tests__/routes/[name].routes.test.ts`
+5. **New core schema/util** → `packages/core/src/__tests__/schemas/` or `utils/`
+6. **Tests ship with the feature** — not in a follow-up commit
+
+---
+
+**Last Updated**: 2026-03-19

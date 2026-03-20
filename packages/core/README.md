@@ -1,119 +1,130 @@
 # @promanage/core
 
-Shared business logic, types, and utilities for ProManage applications.
+Shared types, Zod schemas, constants, and utilities used across `apps/api`, `apps/web`, and `packages/api-client`.
 
-## Overview
+---
 
-The core package contains business logic, domain models, validation schemas, and utility functions shared across web, mobile, and API applications.
-
-## Installation
+## Build
 
 ```bash
-# This package is part of the ProManage monorepo
-# Install from project root
-pnpm install
+pnpm --filter @promanage/core build
+
+# If incremental build is stale:
+rm -rf packages/core/dist packages/core/tsconfig.tsbuildinfo
+pnpm --filter @promanage/core build
 ```
 
-## Usage
+Output is CommonJS (required for `ts-node` seed compatibility).
 
-```typescript
-import { User, Project } from '@promanage/core/types'
-import { validateEmail, formatCurrency } from '@promanage/core/utils'
-import { ProjectSchema } from '@promanage/core/schemas'
-```
+---
 
 ## Exports
 
-### Types
+### Types (`@promanage/core`)
+
+Domain model interfaces and input types for all features:
 
 ```typescript
-// Domain models
 import type {
-  User,
-  Project,
-  TimeEntry,
-  DailyReport
-} from '@promanage/core/types'
+  // Auth & Users
+  User, UserWithRoles, TokenPayload, AuthResponse,
+  // Organizations
+  Organization,
+  // Projects
+  Project, ProjectWithRelations, ProjectScope, ProjectSettings,
+  ProjectDashboard, ProjectDashboardMetrics, ProjectContactAssignment,
+  // Tasks
+  Task,
+  // Procedures
+  Procedure,
+  // Calendar
+  CalendarEvent,
+  // Messaging
+  Conversation, DirectMessage, Announcement,
+  // Channels
+  Channel, ChannelMember, ChatMessage,
+  // Contacts
+  Contact,
+  // Licenses
+  License, LicenseDocument, LicenseReminder,
+  // Safety
+  SafetyDocument, SdsEntry, ToolboxTalk, SafetyForm, IncidentReport,
+  // Notifications
+  Notification,
+  // API
+  ApiResponse, PaginationMeta,
+} from '@promanage/core'
 ```
 
-### Validation Schemas (Zod)
+### Schemas (`@promanage/core`)
+
+Zod schemas for request validation (used in both API and client):
 
 ```typescript
 import {
-  UserSchema,
-  ProjectSchema,
-  TimeEntrySchema,
-  DailyReportSchema
-} from '@promanage/core/schemas'
-
-// Usage
-const project = ProjectSchema.parse(data)
+  loginSchema, registerSchema,
+  createProjectSchema, updateProjectSchema,
+  createProjectScopeSchema, updateProjectScopeSchema,
+  updateProjectSettingsSchema, assignContactToProjectSchema,
+  createTaskSchema, updateTaskSchema,
+  createProcedureSchema, updateProcedureSchema,
+  createCalendarEventSchema, updateCalendarEventSchema,
+  sendDirectMessageSchema, createAnnouncementSchema,
+  createChannelSchema, sendChatMessageSchema,
+  createContactSchema, updateContactSchema,
+  createLicenseSchema, updateLicenseSchema,
+  createSafetyDocumentSchema, createToolboxTalkSchema,
+  // ... (one schema per resource action)
+} from '@promanage/core'
 ```
 
-### Utilities
+### Constants (`@promanage/core`)
 
 ```typescript
 import {
-  formatDate,
-  formatCurrency,
-  validateEmail,
-  calculateProjectProgress
-} from '@promanage/core/utils'
+  USER_ROLES,           // { Admin, ProjectManager, Superintendent, Foreman, FieldUser, OfficeAdmin }
+  DEFAULT_ROLE_PERMISSIONS,
+  PROJECT_STATUSES,     // { PLANNING, ACTIVE, ON_HOLD, COMPLETED, ARCHIVED, CANCELLED } with labels/colors
+  PROJECT_TYPES,        // { COMMERCIAL, RESIDENTIAL, INDUSTRIAL, INFRASTRUCTURE, RENOVATION, OTHER }
+  PROJECT_SCOPE_STATUSES,
+  TASK_STATUSES, TASK_PRIORITIES,
+  PROCEDURE_STATUSES, PROCEDURE_CATEGORIES,
+  EVENT_TYPES,
+  CONTACT_TYPES,
+  LICENSE_STATUSES,
+  SAFETY_DOCUMENT_CATEGORIES, TOOLBOX_TALK_STATUSES,
+  INCIDENT_TYPES, INCIDENT_STATUSES,
+  ERROR_CODES, HTTP_STATUS,
+} from '@promanage/core'
 ```
 
-### Constants
+### Utils (`@promanage/core`)
 
 ```typescript
 import {
-  PROJECT_STATUS,
-  USER_ROLES,
-  TIME_ENTRY_STATUS
-} from '@promanage/core/constants'
+  parsePagination,      // (query) => { page, limit }
+  buildPaginationMeta,  // (page, limit, total) => PaginationMeta
+  formatDate,           // (date) => 'Mar 19, 2026'
+  formatDateShort,      // (date) => '3/19/26'
+  formatDateTime,       // (date) => 'Mar 19, 2026 2:30 PM'
+  formatRelativeTime,   // (date) => '2 hours ago'
+  formatCurrency,       // (amount) => '$1,234.56'
+  formatCurrencyCompact, // (amount) => '$1.2K'
+} from '@promanage/core'
 ```
 
-## Development
+---
 
-### Build
+## Testing
 
 ```bash
-# Build package
-pnpm build
-
-# Watch mode
-pnpm dev
+pnpm --filter @promanage/core test    # 97 tests
 ```
 
-### Testing
+Tests live in `src/__tests__/schemas/` and `src/__tests__/utils/`. See [Testing Guide](../../docs/development/testing.md).
 
-```bash
-# Run tests
-pnpm test
-
-# Watch mode
-pnpm test:watch
-
-# Coverage
-pnpm test:coverage
-```
-
-## Package Structure
-
-```
-packages/core/
-├── src/
-│   ├── types/         # TypeScript type definitions
-│   ├── schemas/       # Zod validation schemas
-│   ├── utils/         # Utility functions
-│   ├── constants/     # App constants
-│   └── index.ts       # Main export
-├── tests/             # Test files
-└── package.json
-```
-
-## Contributing
-
-See [CONTRIBUTING.md](../../CONTRIBUTING.md)
+---
 
 ## License
 
-AGPL-3.0 - See [LICENSE](../../LICENSE)
+AGPL-3.0 — See [LICENSE](../../LICENSE)

@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Docs - Documentation overhaul (Session 24, 2026-03-19)
+
+- **`docs/development/testing.md`**: Full rewrite — replaced stale Playwright/Detox/RTL/coverage-thresholds content with actual Vitest patterns, `createMockPrisma()`, `buildXxxTestApp()`, `signTestToken()`, `mockRole()` for requireRole middleware, and layer-by-layer test guidance
+- **`docs/development/coding-standards.md`**: Fixed import order to match actual ESLint config (4 groups, blank lines, `@` before letters); replaced manual `useState/useEffect` hook example with TanStack Query pattern; fixed `UserRole` type to use real role names; replaced duplicate Testing section with link to testing.md; updated Last Updated
+- **`docs/development/setup.md`**: Fixed `docker-compose` → `docker compose` (v2); removed Redis from prerequisites; fixed `prisma migrate dev` → `prisma db push`; fixed seed command to `npx ts-node prisma/seed.ts`; removed `NEXT_PUBLIC_WS_URL`; added WSL note; replaced vscode-jest with vitest.explorer; fixed package build order step
+- **`docs/development/api-design.md`**: Replaced `time-entries`/`daily-reports` route examples with actual implemented routes (`calendar-events`, project scopes/contacts)
+- **`docs/README.md`**: Replaced stale "planned/in progress" status tables and "to be created" notes with accurate navigation index
+- **`apps/api/README.md`**: Full rewrite — accurate env vars, full 14-group route table with RBAC notes, correct scripts, links to central docs
+- **`apps/web/README.md`**: Full rewrite — accurate page list (all 14 routes including project detail tabs), correct env vars, key patterns (TanStack Query, auth store, Socket.io, Tailwind scanning)
+- **`packages/core/README.md`**: Full rewrite — correct type/schema/constant/util exports matching actual codebase
+- **`packages/api-client/README.md`**: Full rewrite — actual resource namespaces and methods (all 11 namespaces, ~90 methods)
+- **`packages/ui-components/README.md`**: Removed Storybook references; added Tailwind scanning requirement; added Button variant docs
+- **`apps/mobile/README.md`**, **`packages/mobile-components/README.md`**, **`packages/real-time/README.md`**: Trimmed to deferred placeholders
+- **Root `README.md`**: Updated Current Status, Features, test counts, model count, route list, page list, mobile deferral phase
+
+### Docs/Chores - Post-Phase 4.1 cleanup (Session 24, 2026-03-19)
+
+- **PR #113 — docs/license**: Added `LICENSE` file (AGPL-3.0)
+- **PR #112 — docs/lint-cleanup**: Addressed linting errors in AI-generated documentation and `.claude/commands/`; Copilot review fixes for API route error handling; updated `apps/api/README.md`
+- Phase 4.1 (`feat/phase4-subphase-1-project-entity`) merged to `main` as PR #111
+
+---
+
 ### Fixed - Phase 4.1 follow-up fixes (Session 23, 2026-03-18)
 
 - **Branch: `feat/phase4-subphase-1-project-entity`**

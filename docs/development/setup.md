@@ -109,13 +109,13 @@ The default values work out of the box with the Docker services. Key variables t
 
 ```bash
 # apps/api/.env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/promanage"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/promanage_dev?schema=public"
 JWT_SECRET="dev-secret-change-in-production"
 MINIO_ENDPOINT=localhost
 MINIO_PORT=9000
 MINIO_ACCESS_KEY=minioadmin
 MINIO_SECRET_KEY=minioadmin
-MINIO_BUCKET=promanage
+MINIO_BUCKET_NAME=promanage-attachments
 ```
 
 ```bash

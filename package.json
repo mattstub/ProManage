@@ -35,7 +35,7 @@
     "type-check": "turbo run type-check",
     "clean": "turbo run clean && rm -rf node_modules .turbo",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
-    "prepare": "simple-git-hooks"
+    "prepare": "[ -d .git ] && simple-git-hooks || true"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm turbo lint && pnpm turbo type-check",

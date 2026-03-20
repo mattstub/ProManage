@@ -32,9 +32,9 @@ Copy `.env.example` to `.env`. Key variables:
 | `MINIO_PORT` | MinIO port (default: `9000`) |
 | `MINIO_ACCESS_KEY` | MinIO access key (default: `minioadmin`) |
 | `MINIO_SECRET_KEY` | MinIO secret key (default: `minioadmin`) |
-| `MINIO_BUCKET` | Storage bucket name |
 | `SENTRY_DSN` | Optional — Sentry error tracking |
 
+> Note: The MinIO bucket name is defined in `@promanage/core` as `MINIO_BUCKET_NAME` (currently `promanage-attachments`) and is not configurable via an environment variable.
 ---
 
 ## API Routes

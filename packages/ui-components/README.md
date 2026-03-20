@@ -1,163 +1,78 @@
 # @promanage/ui-components
 
-Shared React component library for ProManage web applications.
+Shared React component library for ProManage. Built on Radix UI primitives + CVA variants + TailwindCSS. 26 components.
 
-## Overview
+---
 
-A collection of reusable, accessible React components built with Radix UI and TailwindCSS for use in ProManage web applications.
-
-## Installation
+## Build
 
 ```bash
-# This package is part of the ProManage monorepo
-# Install from project root
-pnpm install
+pnpm --filter @promanage/ui-components build
 ```
+
+React is a `peerDependency` — do not add it as a direct dep. Tailwind is not a dep; the consuming app runs Tailwind and must scan this package's source:
+
+```typescript
+// apps/web/tailwind.config.ts
+content: [
+  './src/**/*.{ts,tsx}',
+  '../../packages/ui-components/src/**/*.{ts,tsx}',
+]
+```
+
+---
+
+## Components
+
+### Form
+`Button`, `Input`, `Textarea`, `Label`, `Checkbox`, `RadioGroup`, `Switch`, `Select`
+
+### Layout
+`Card` (+ `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter`), `Container`, `Stack`, `Grid`, `Separator`
+
+### Navigation
+`Tabs`, `Breadcrumbs`, `Pagination`
+
+### Feedback
+`Alert`, `Toast` (+ `ToastProvider`, `ToastViewport`), `Dialog`, `Tooltip` (+ `TooltipProvider`), `Progress`, `Skeleton`
+
+### Data Display
+`Table` (+ `TableHeader`, `TableBody`, `TableRow`, `TableHead`, `TableCell`, `TableCaption`), `Badge`, `Avatar`, `StatusIndicator`
+
+### Utils
+`cn()` — `clsx` + `tailwind-merge`
+
+---
 
 ## Usage
 
 ```typescript
-import { Button, Input, Card } from '@promanage/ui-components'
+import { Button, Input, Card, CardContent, Badge, cn } from '@promanage/ui-components'
 
-function MyComponent() {
+function Example() {
   return (
     <Card>
-      <Input placeholder="Enter name" />
-      <Button>Submit</Button>
+      <CardContent>
+        <Input placeholder="Project name" />
+        <Button variant="default" size="md">Save</Button>
+        <Badge variant="outline">Active</Badge>
+      </CardContent>
     </Card>
   )
 }
 ```
 
-## Components
+### Button variants
 
-### Form Components
-
-- `Button` - Styled button with variants
-- `Input` - Text input field
-- `Textarea` - Multi-line text input
-- `Select` - Dropdown select
-- `Checkbox` - Checkbox input
-- `Radio` - Radio button input
-- `Switch` - Toggle switch
-- `Label` - Form label
-
-### Layout Components
-
-- `Card` - Content container
-- `Container` - Page container
-- `Stack` - Vertical/horizontal stack
-- `Grid` - CSS Grid layout
-- `Separator` - Visual divider
-
-### Navigation Components
-
-- `Tabs` - Tab navigation
-- `Breadcrumbs` - Navigation breadcrumbs
-- `Pagination` - Page pagination
-
-### Feedback Components
-
-- `Alert` - Alert messages
-- `Toast` - Toast notifications
-- `Dialog` - Modal dialog
-- `Tooltip` - Hover tooltip
-- `Progress` - Progress indicator
-- `Skeleton` - Loading skeleton
-
-### Data Display
-
-- `Table` - Data table
-- `Badge` - Status badge
-- `Avatar` - User avatar
-- `StatusIndicator` - Status dot
-
-## Development
-
-### Storybook
-
-```bash
-# Start Storybook
-pnpm storybook
-
-# Build Storybook
-pnpm build-storybook
-```
-
-Visit [http://localhost:6006](http://localhost:6006)
-
-### Build
-
-```bash
-# Build components
-pnpm build
-
-# Watch mode
-pnpm dev
-```
-
-### Testing
-
-```bash
-# Run tests
-pnpm test
-
-# Coverage
-pnpm test:coverage
-```
-
-## Component Guidelines
-
-### Accessibility
-
-All components follow WAI-ARIA guidelines:
-- Keyboard navigation
-- Screen reader support
-- Focus management
-- ARIA attributes
-
-### Styling
-
-Components use TailwindCSS with custom design tokens:
-- Consistent spacing
-- Color palette
-- Typography scale
-- Responsive breakpoints
-
-### Props
-
-Components accept standard HTML props plus custom variants:
 ```typescript
-<Button
-  variant="primary"  // primary | secondary | ghost | danger
-  size="md"         // sm | md | lg
-  disabled={false}
-  onClick={handleClick}
->
-  Click me
-</Button>
+<Button variant="default" />   // primary filled
+<Button variant="outline" />   // bordered
+<Button variant="ghost" />     // transparent
+<Button variant="destructive" /> // red
 ```
 
-## Package Structure
-
-```
-packages/ui-components/
-├── src/
-│   ├── components/      # React components
-│   │   ├── Button/
-│   │   ├── Input/
-│   │   └── ...
-│   ├── hooks/          # Shared hooks
-│   ├── utils/          # Component utilities
-│   └── index.ts        # Main export
-├── stories/            # Storybook stories
-└── tests/              # Component tests
-```
-
-## Contributing
-
-See [CONTRIBUTING.md](../../CONTRIBUTING.md)
+---
 
 ## License
 
-AGPL-3.0 - See [LICENSE](../../LICENSE)
+AGPL-3.0 — See [LICENSE](../../LICENSE)

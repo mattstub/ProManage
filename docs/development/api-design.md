@@ -114,7 +114,7 @@ Accept: application/json
 ```bash
 ✅ /projects
 ✅ /users
-✅ /time-entries
+✅ /calendar-events
 
 ❌ /project
 ❌ /user
@@ -123,20 +123,20 @@ Accept: application/json
 **Use kebab-case:**
 
 ```bash
-✅ /daily-reports
-✅ /time-entries
-✅ /cost-codes
+✅ /calendar-events
+✅ /toolbox-talks
 
-❌ /dailyReports
-❌ /daily_reports
+❌ /calendarEvents
+❌ /calendar_events
 ```
 
 ### Nested Resources
 
 ```http
-GET /projects/123/time-entries
-POST /projects/123/time-entries
-GET /projects/123/daily-reports
+GET  /projects/123/scopes
+POST /projects/123/scopes
+GET  /projects/123/contacts
+POST /projects/123/contacts
 ```
 
 **Limit nesting to 2 levels:**
@@ -662,5 +662,5 @@ export class NotFoundError extends APIError {
 
 ---
 
-**Last Updated**: 2026-02-02
+**Last Updated**: 2026-03-19
 **Status**: Complete

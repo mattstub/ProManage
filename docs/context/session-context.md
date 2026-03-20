@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-19 (MDS cleanup)
+**Last Updated**: 2026-03-19 (Session 24 — on main, Phase 4.1 merged)
 
 ---
 
@@ -103,7 +103,7 @@ Root tooling:          COMPLETE (Sub-phase A)
 
 ---
 
-## Current State (2026-03-18)
+## Current State (2026-03-19)
 
 - **Phase 1, Sub-phases A-G**: COMPLETE (~150 source files)
 - **Phase 2.1 Dashboard**: COMPLETE — real data, projects list, stats widgets, role-aware sidebar
@@ -126,6 +126,7 @@ Root tooling:          COMPLETE (Sub-phase A)
 - **packages/core**: CommonJS output (fixed ESM seed issue; web/bundler still works fine)
 - **Tests**: 5/5 turbo tasks (lint, type-check, test) all passing; 463 API tests, web type-check clean
 - **Infrastructure**: COMPLETE and merged — Dockerfiles, CI/CD, structured logging, Sentry scaffold, Fastify 5 upgrade
+- **Branch**: `main` — clean, Phase 4.1 merged (PR #111), post-merge docs/lint PRs (#112, #113) also merged
 - **Next**: Phase 4.2 — Construction Documents, or Phase 4.3 — Safety (Job-Specific)
 
 ### Seed Credentials
@@ -203,6 +204,16 @@ See: docs/ROADMAP.md
 ---
 
 ## Session Log
+
+### Session 24 — 2026-03-19
+
+- **Housekeeping + state sync** (on `main`):
+  - Phase 4.1 (`feat/phase4-subphase-1-project-entity`) merged as PR #111
+  - PR #112 (`docs/lint-cleanup`): lint fixes in AI-generated docs and `.claude/commands/`; Copilot review fixes for API route error handling; `apps/api/README.md` updated
+  - PR #113 (`docs/license`): `LICENSE` file added (AGPL-3.0)
+  - Updated session-context, CHANGELOG, and persistent memory to reflect clean main state
+  - Documentation overhaul: rewrote all 11 README files + 4 central docs in `docs/development/` to match actual codebase state; eliminated stale AI-generated scaffolding (wrong commands, wrong features, wrong tools); centralized testing/standards/setup guidance; trimmed deferred packages to placeholders
+  - Next: discussing Phase 4.2 / 4.3 planning before starting new branch
 
 ### Session 23 — 2026-03-18
 
@@ -388,7 +399,7 @@ See: docs/ROADMAP.md
 - Security: org scoping, role-based update permissions (Admin/PM/OfficeAdmin or assignee)
 - **146 total tests passing** (66 core + 80 API)
 - Commit: `09a89ed feat(tasks): add Phase 2.5 Task Management module`
-- TODO: run `prisma db push` to apply Task model to database
+- TO-DO: run `prisma db push` to apply Task model to database
 
 ### Session 8 - 2026-03-04
 

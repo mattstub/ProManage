@@ -169,6 +169,8 @@ function DrawingLog({ projectId }: { projectId: string }) {
                         size="sm"
                         onClick={() => deleteSheet.mutate(sheet.id)}
                         className="text-red-500 hover:text-red-700"
+                        aria-label="Delete sheet"
+                        title="Delete sheet"
                       >
                         <TrashIcon className="h-4 w-4" />
                       </Button>

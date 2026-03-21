@@ -451,6 +451,7 @@ export async function listSpecificationSections(
     include: {
       revisions: {
         where: { isCurrent: true },
+        orderBy: { createdAt: 'desc' },
         take: 1,
       },
       _count: { select: { revisions: true } },

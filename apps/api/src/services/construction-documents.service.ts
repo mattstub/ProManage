@@ -602,16 +602,56 @@ export async function addSpecificationRevision(
       data: { isCurrent: false },
     })
 
+    const expectedPrefix = `specs/${projectId}/${sectionId}/`
+
+    let normalizedFileKey: string | null = null
+    let normalizedFileName: string | null = null
+    let normalizedFileSize: number | null = null
+    let normalizedMimeType: string | null = null
+
+    if (input.fileKey) {
+      if (!input.fileKey.startsWith(expectedPrefix)) {
+        throw new ValidationError('Invalid file key for this specification section')
+      }
+
+      try {
+        // Confirm the object exists in MinIO and use its metadata
+        const stat = await (fastify as any).minio.client.statObject(
+          MINIO_BUCKET_NAME,
+          input.fileKey
+        )
+
+        normalizedFileKey = input.fileKey
+        normalizedFileSize = typeof stat.size === 'number' ? stat.size : null
+
+        const statMime =
+          (stat.metaData && (stat.metaData['content-type'] || stat.metaData['Content-Type'])) ||
+          null
+        normalizedMimeType = statMime ?? input.mimeType ?? null
+
+        if (input.fileName) {
+          normalizedFileName = input.fileName
+        } else {
+          // Derive a file name from the key if not provided
+          const keyWithoutPrefix = input.fileKey.substring(expectedPrefix.length)
+          normalizedFileName = keyWithoutPrefix || null
+        }
+      } catch (err: any) {
+        // If the object does not exist or cannot be accessed, surface a validation error
+        throw new ValidationError('Uploaded specification file could not be confirmed in storage')
+      }
+    }
+
     return tx.specificationRevision.create({
       data: {
         revisionNumber: nextRevNum,
         revisionDate: new Date(input.revisionDate),
         description: input.description ?? null,
         isAmendment: input.isAmendment ?? false,
-        fileKey: input.fileKey ?? null,
-        fileName: input.fileName ?? null,
-        fileSize: input.fileSize ?? null,
-        mimeType: input.mimeType ?? null,
+        fileKey: normalizedFileKey,
+        fileName: normalizedFileName,
+        fileSize: normalizedFileSize,
+        mimeType: normalizedMimeType,
         isCurrent: true,
         sectionId,
         organizationId,

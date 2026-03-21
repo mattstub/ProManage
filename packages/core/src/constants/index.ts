@@ -66,6 +66,8 @@ export {
   DRAWING_PHASES_LIST,
   ALLOWED_DRAWING_MIME_TYPES,
   MAX_DRAWING_FILE_SIZE_BYTES,
+  ALLOWED_SPEC_MIME_TYPES,
+  MAX_SPEC_FILE_SIZE_BYTES,
 } from './construction-documents'
 
 export {

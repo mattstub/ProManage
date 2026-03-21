@@ -589,6 +589,25 @@ async function main() {
     },
   })
 
+  // ─── Drawing Disciplines ────────────────────────────────────────────────────
+
+  const disciplineData = [
+    { name: 'Architectural', abbreviation: 'A', sortOrder: 0 },
+    { name: 'Structural', abbreviation: 'S', sortOrder: 1 },
+    { name: 'Mechanical', abbreviation: 'M', sortOrder: 2 },
+    { name: 'Electrical', abbreviation: 'E', sortOrder: 3 },
+    { name: 'Plumbing', abbreviation: 'P', sortOrder: 4 },
+    { name: 'Civil', abbreviation: 'C', sortOrder: 5 },
+  ]
+
+  for (const d of disciplineData) {
+    await prisma.drawingDiscipline.upsert({
+      where: { name_organizationId: { name: d.name, organizationId: org.id } },
+      update: {},
+      create: { ...d, organizationId: org.id },
+    })
+  }
+
   console.log('Seed completed successfully!')
   console.log('  Demo users (password: password123):')
   console.log('    admin@demo.com    - Admin')

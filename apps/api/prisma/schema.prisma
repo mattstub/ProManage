@@ -43,6 +43,13 @@ model Organization {
   safetyForms     SafetyForm[]
   incidentReports IncidentReport[]
 
+  drawingDisciplines    DrawingDiscipline[]
+  drawingSets           DrawingSet[]
+  drawingSheets         DrawingSheet[]
+  drawingRevisions      DrawingRevision[]
+  specificationSections SpecificationSection[]
+  specificationRevisions SpecificationRevision[]
+
   @@map("organizations")
 }
 
@@ -95,6 +102,11 @@ model User {
   toolboxTalkAttendances   ToolboxTalkAttendee[] @relation("ToolboxTalkAttendeeUser")
   safetyFormsCreated       SafetyForm[]          @relation("SafetyFormCreator")
   incidentReportsReported  IncidentReport[]      @relation("IncidentReporter")
+
+  drawingSetsCreated          DrawingSet[]          @relation("DrawingSetCreator")
+  drawingRevisionsUploaded    DrawingRevision[]     @relation("DrawingRevisionUploader")
+  specSectionsCreated         SpecificationSection[] @relation("SpecSectionCreator")
+  specRevisionsUploaded       SpecificationRevision[] @relation("SpecRevisionUploader")
 
   @@index([organizationId])
   @@index([email])
@@ -220,6 +232,10 @@ model Project {
   incidentReports IncidentReport[]
   scopes          ProjectScope[]
   settings        ProjectSettings?
+
+  drawingSets           DrawingSet[]
+  drawingSheets         DrawingSheet[]
+  specificationSections SpecificationSection[]
 
   @@unique([number, organizationId])
   @@index([organizationId])
@@ -857,4 +873,165 @@ model IncidentReport {
   @@index([status])
   @@index([incidentDate])
   @@map("incident_reports")
+}
+
+// ===========================================
+// PHASE 4.2 — CONSTRUCTION DOCUMENTS
+// ===========================================
+
+model DrawingDiscipline {
+  id           String   @id @default(cuid())
+  name         String
+  abbreviation String?
+  sortOrder    Int      @default(0) @map("sort_order")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @map("organization_id")
+
+  sheets DrawingSheet[]
+
+  @@unique([name, organizationId])
+  @@index([organizationId])
+  @@map("drawing_disciplines")
+}
+
+model DrawingSet {
+  id          String    @id @default(cuid())
+  name        String
+  phase       String    @default("CONSTRUCTION_DOCUMENTS") // DESIGN_DEVELOPMENT | BIDDING_DOCUMENTS | CONSTRUCTION_DOCUMENTS
+  issueDate   DateTime? @map("issue_date")
+  issuedBy    String?   @map("issued_by")
+  description String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @map("organization_id")
+
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String  @map("project_id")
+
+  createdBy   User   @relation("DrawingSetCreator", fields: [createdById], references: [id])
+  createdById String @map("created_by_id")
+
+  revisions DrawingRevision[]
+
+  @@index([organizationId])
+  @@index([projectId])
+  @@index([createdById])
+  @@map("drawing_sets")
+}
+
+model DrawingSheet {
+  id          String   @id @default(cuid())
+  sheetNumber String   @map("sheet_number")
+  title       String
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @map("organization_id")
+
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String  @map("project_id")
+
+  discipline   DrawingDiscipline? @relation(fields: [disciplineId], references: [id])
+  disciplineId String?            @map("discipline_id")
+
+  revisions DrawingRevision[]
+
+  @@unique([sheetNumber, projectId])
+  @@index([organizationId])
+  @@index([projectId])
+  @@index([disciplineId])
+  @@map("drawing_sheets")
+}
+
+model DrawingRevision {
+  id             String    @id @default(cuid())
+  revisionNumber String    @map("revision_number") // freeform: "0", "1", "PR1", "A", "ASI-1"
+  revisionDate   DateTime  @map("revision_date")
+  description    String?
+  fileKey        String?   @map("file_key")
+  fileName       String?   @map("file_name")
+  fileSize       Int?      @map("file_size")
+  mimeType       String?   @map("mime_type")
+  isCurrent      Boolean   @default(false) @map("is_current")
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @map("organization_id")
+
+  sheet   DrawingSheet @relation(fields: [sheetId], references: [id], onDelete: Cascade)
+  sheetId String       @map("sheet_id")
+
+  drawingSet   DrawingSet? @relation(fields: [drawingSetId], references: [id])
+  drawingSetId String?     @map("drawing_set_id")
+
+  uploadedBy   User   @relation("DrawingRevisionUploader", fields: [uploadedById], references: [id])
+  uploadedById String @map("uploaded_by_id")
+
+  @@index([organizationId])
+  @@index([sheetId])
+  @@index([drawingSetId])
+  @@index([uploadedById])
+  @@map("drawing_revisions")
+}
+
+model SpecificationSection {
+  id            String   @id @default(cuid())
+  sectionNumber String   @map("section_number") // freeform: "03 00 00", "03300", "DIVISION 3"
+  title         String
+  description   String?
+  sortOrder     Int      @default(0) @map("sort_order")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @map("organization_id")
+
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String  @map("project_id")
+
+  createdBy   User   @relation("SpecSectionCreator", fields: [createdById], references: [id])
+  createdById String @map("created_by_id")
+
+  revisions SpecificationRevision[]
+
+  @@unique([sectionNumber, projectId])
+  @@index([organizationId])
+  @@index([projectId])
+  @@index([createdById])
+  @@map("specification_sections")
+}
+
+model SpecificationRevision {
+  id             String   @id @default(cuid())
+  revisionNumber Int      @default(1) @map("revision_number") // auto-incremented per section
+  revisionDate   DateTime @map("revision_date")
+  description    String?
+  isAmendment    Boolean  @default(false) @map("is_amendment") // true = conformed amendment
+  fileKey        String?  @map("file_key")
+  fileName       String?  @map("file_name")
+  fileSize       Int?     @map("file_size")
+  mimeType       String?  @map("mime_type")
+  isCurrent      Boolean  @default(false) @map("is_current")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @map("organization_id")
+
+  section   SpecificationSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  sectionId String               @map("section_id")
+
+  uploadedBy   User   @relation("SpecRevisionUploader", fields: [uploadedById], references: [id])
+  uploadedById String @map("uploaded_by_id")
+
+  @@index([organizationId])
+  @@index([sectionId])
+  @@index([uploadedById])
+  @@map("specification_revisions")
 }

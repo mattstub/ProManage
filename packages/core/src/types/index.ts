@@ -165,6 +165,28 @@ export type {
 } from './safety'
 
 export type {
+  DrawingPhase,
+  DrawingDiscipline,
+  CreateDrawingDisciplineInput,
+  UpdateDrawingDisciplineInput,
+  DrawingSet,
+  CreateDrawingSetInput,
+  UpdateDrawingSetInput,
+  DrawingSheet,
+  DrawingSheetWithRevision,
+  CreateDrawingSheetInput,
+  UpdateDrawingSheetInput,
+  DrawingRevision,
+  AddDrawingRevisionInput,
+  SpecificationSection,
+  SpecificationSectionWithRevision,
+  CreateSpecificationSectionInput,
+  UpdateSpecificationSectionInput,
+  SpecificationRevision,
+  AddSpecificationRevisionInput,
+} from './construction-documents'
+
+export type {
   ChannelMessageEvent,
   ChannelMessageEditedEvent,
   ChannelMessageDeletedEvent,

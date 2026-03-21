@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-19 (Session 24 — on main, Phase 4.1 merged)
+**Last Updated**: 2026-03-21 (Session 25 — Phase 4.2 Construction Documents)
 
 ---
 
@@ -59,42 +59,49 @@
 
 ```bash
 ProManage/
-apps/api/              COMPLETE through Phase 3.3
-  prisma/schema.prisma   32 models (+ SafetyDocument, SdsEntry, ToolboxTalk, ToolboxTalkAttendee, SafetyForm, IncidentReport)
-  prisma/seed.ts         demo org, 6 roles, 64 perms, 3 users, 2 projects, 2 channels, 3 contacts, 2 licenses, safety demo data
+apps/api/              COMPLETE through Phase 4.2
+  prisma/schema.prisma   40 models (+ DrawingDiscipline, DrawingSet, DrawingSheet, DrawingRevision, SpecificationSection, SpecificationRevision)
+  prisma/seed.ts         demo org, 6 roles, 64 perms, 3 users, 2 projects, 2 channels, 3 contacts, 2 licenses, safety demo data, 6 disciplines
   src/config/            Zod env validation
   src/lib/               errors, response helpers, pino logger, rate-limit, sse
   src/middleware/        authenticate, authorize, error-handler
   src/plugins/           prisma, swagger, sse, minio, socket-io, license-reminder
   src/routes/            health, auth, users, organizations, projects, dashboard, tasks, procedures,
-                         notifications, messages, calendar-events, channels, contacts, licenses, safety
+                         notifications, messages, calendar-events, channels, contacts, licenses, safety,
+                         construction-documents
   src/services/          auth, user, org, token, password, project, dashboard, task, procedure,
-                         notification, messaging, calendar-event, channel, contact, license, safety
+                         notification, messaging, calendar-event, channel, contact, license, safety,
+                         construction-documents
   src/types/             fastify.d.ts (augmented with io, minio, sseClients)
-  src/__tests__/         383 tests passing
-apps/web/              COMPLETE through Phase 3.3
-  src/app/               App Router: dashboard, projects, tasks, procedures, calendar, messages, channels, contacts, licenses, safety
+  src/__tests__/         495 tests passing
+apps/web/              COMPLETE through Phase 4.2
+  src/app/               App Router: dashboard, projects (+ detail tabs: overview, team, scopes, documents, settings),
+                         tasks, procedures, calendar, messages, channels, contacts, licenses, safety
   src/components/        layout (sidebar, header, nav-item, notification-bell),
                          dashboard (stats-card, project-summary-list),
                          channels (chat-panel, thread-panel, attachment-uploader, create-dialog, settings-panel)
   src/hooks/             use-auth, use-dashboard-stats, use-organization, use-procedures, use-projects,
                          use-tasks, use-users, use-notifications, use-messaging, use-calendar-events,
-                         use-channels, use-socket, use-contacts, use-licenses, use-safety
+                         use-channels, use-socket, use-contacts, use-licenses, use-safety,
+                         use-construction-documents
   src/lib/               api-client singleton (with resetSocket on auth error), query-client
 apps/mobile/           DEFERRED
 
-packages/core/         COMPLETE through Phase 3.3
+packages/core/         COMPLETE through Phase 4.2
   src/types/             api, auth, user, role, org, project, task, dashboard, procedure,
-                         notification, messaging, calendar-event, channel, socket-events, license, safety
-  src/schemas/           auth, user, org, project, task, procedure, messaging, calendar-event, channel, license, safety
+                         notification, messaging, calendar-event, channel, socket-events, license, safety,
+                         construction-documents
+  src/schemas/           auth, user, org, project, task, procedure, messaging, calendar-event, channel, license, safety,
+                         construction-documents
   src/constants/         roles, permissions, project-status, task-status, api, procedure-status,
-                         notification, calendar-event, channel, license, safety
+                         notification, calendar-event, channel, license, safety, construction-documents
   src/utils/             pagination, format-date, format-currency
   src/__tests__/         97 tests
-packages/api-client/   COMPLETE through Phase 3.3
+packages/api-client/   COMPLETE through Phase 4.2
   src/resources/         auth, users, organizations, health, projects, dashboard, tasks,
-                         procedures, notifications, messaging, calendar-events, channels, contacts, licenses, safety
-  src/index.ts           createApiClient() factory + all exports (safety resource added)
+                         procedures, notifications, messaging, calendar-events, channels, contacts, licenses, safety,
+                         construction-documents
+  src/index.ts           createApiClient() factory + all exports (constructionDocuments resource added)
 packages/ui-components/ COMPLETE (Sub-phase F - 30 files, 26 components)
 
 Root tooling:          COMPLETE (Sub-phase A)
@@ -103,7 +110,7 @@ Root tooling:          COMPLETE (Sub-phase A)
 
 ---
 
-## Current State (2026-03-19)
+## Current State (2026-03-21)
 
 - **Phase 1, Sub-phases A-G**: COMPLETE (~150 source files)
 - **Phase 2.1 Dashboard**: COMPLETE — real data, projects list, stats widgets, role-aware sidebar
@@ -115,19 +122,21 @@ Root tooling:          COMPLETE (Sub-phase A)
 - **Phase 2.6 Procedures**: COMPLETE — full CRUD with RBAC
 - **Phase 3.1 Contact Management**: COMPLETE — 8-type contact directory, search/filter, project associations, org-scoped email uniqueness
 - **Phase 3.2 Licensing**: COMPLETE — org + individual license tracking, freeform types, multi-doc upload (MinIO), configurable renewal reminders (≤7d daily / >7d once), SSE bell notifications
-- **Phase 3.3 Safety**: COMPLETE — 5-tab safety hub (document library, SDS catalog, toolbox talks + attendee roster, safety forms, incident reports); all layers complete (Prisma, core, API service+routes+tests, api-client, web hooks+page+sidebar)
-- **Phase 4.1 Project Entity Expansion**: COMPLETE — Project detail pages (Overview, Team, Scopes, Settings); 18 new API routes; ProjectScope + ProjectSettings models; dashboard metrics; 63 new tests (463 total)
-- **API**: Runs on `http://localhost:3001` | Routes: /auth, /calendar-events, /channels, /contacts, /dashboard, /licenses, /messages, /notifications, /organizations, /procedures, /projects (18 routes), /safety, /tasks, /users
-- **DB**: PostgreSQL in Docker. 34 models (added ProjectScope + ProjectSettings). `prisma db push` applied. Seed includes project settings and scopes demo data.
-- **api-client**: Built — all resource namespaces including extended ProjectsResource (11 new methods)
+- **Phase 3.3 Safety**: COMPLETE — 5-tab safety hub (document library, SDS catalog, toolbox talks + attendee roster, safety forms, incident reports)
+- **Phase 4.1 Project Entity Expansion**: COMPLETE — Project detail pages (Overview, Team, Scopes, Settings); 18 new API routes; ProjectScope + ProjectSettings models; dashboard metrics; 63 new tests
+- **Phase 4.2 Construction Documents**: COMPLETE — Drawing log (per-sheet version history, user-defined disciplines), specification set management (freeform section numbers, conformed amendment tracking), MinIO file uploads, 21 new API routes, 28 new tests (495 total)
+- **API**: Runs on `http://localhost:3001` | Routes: /auth, /calendar-events, /channels, /construction-documents, /contacts, /dashboard, /licenses, /messages, /notifications, /organizations, /procedures, /projects (18 routes), /safety, /tasks, /users
+- **DB**: PostgreSQL in Docker. 40 models (added 6 CD models). `prisma db push` applied. Seed includes 6 default drawing disciplines.
+- **api-client**: Built — all resource namespaces including ConstructionDocumentsResource (20 methods)
 - **ui-components**: Built (tsc --build, zero errors), 26 Radix+Tailwind components
 - **Sidebar**: Dashboard, Projects, Tasks, Procedures, Calendar, Channels, Contacts, Licenses, Safety, Messages, Organization, Settings
+- **Project Detail Tabs**: Overview, Team, Scopes, Documents (new), Settings
 - **Header**: NotificationBell with live badge + dropdown (SSE-powered)
 - **packages/core**: CommonJS output (fixed ESM seed issue; web/bundler still works fine)
-- **Tests**: 5/5 turbo tasks (lint, type-check, test) all passing; 463 API tests, web type-check clean
+- **Tests**: 5/5 turbo tasks (lint, type-check, test) all passing; 495 API tests, web type-check clean
 - **Infrastructure**: COMPLETE and merged — Dockerfiles, CI/CD, structured logging, Sentry scaffold, Fastify 5 upgrade
-- **Branch**: `main` — clean, Phase 4.1 merged (PR #111), post-merge docs/lint PRs (#112, #113) also merged
-- **Next**: Phase 4.2 — Construction Documents, or Phase 4.3 — Safety (Job-Specific)
+- **Branch**: `feat/phase4-subphase-4.2-construction-documents` — ready to PR
+- **Next**: Phase 4.3 — Safety (Job-Specific)
 
 ### Seed Credentials
 
@@ -204,6 +213,19 @@ See: docs/ROADMAP.md
 ---
 
 ## Session Log
+
+### Session 25 — 2026-03-21
+
+- **Phase 4.2 Construction Documents COMPLETE** (`feat/phase4-subphase-4.2-construction-documents` branch):
+  - **Design decisions**: Overlay/comparison deferred to optimization phase; user-defined drawing disciplines (org-scoped lookup table, not enum); freeform spec section numbering (no CSI MasterFormat enforcement).
+  - **Prisma**: 6 new models — `DrawingDiscipline`, `DrawingSet`, `DrawingSheet`, `DrawingRevision`, `SpecificationSection`, `SpecificationRevision`. Back-relations on Organization (6), Project (3: drawingSets, drawingSheets, specificationSections), User (4 named). 40 models total.
+  - **packages/core**: New `construction-documents.ts` in types (9 interfaces), schemas (10 Zod schemas), constants (`DRAWING_PHASES`, `ALLOWED_DRAWING_MIME_TYPES`, `MAX_DRAWING_FILE_SIZE_BYTES`).
+  - **API service** (`construction-documents.service.ts`): Full CRUD for all 6 entities. `$transaction` for `isCurrent` flag management (drawing + spec revisions). Auto-increment spec `revisionNumber`. MinIO presigned PUT URL generation (`drawings/{projectId}/{sheetId}/{ts}-{fileName}`). Best-effort MinIO cleanup on delete. `assertProjectAccess()` helper guards all project-scoped ops.
+  - **API routes** (`routes/construction-documents/index.ts`): 21 routes. WRITE_ROLES = Admin+ProjectManager; UPLOAD_ROLES = Admin+ProjectManager+Superintendent. Route prefixes: `/disciplines`, `/:projectId/drawing-sets`, `/:projectId/drawing-sheets`, `/:projectId/spec-sections`.
+  - **Tests**: 14 service tests + 14 route tests = 28 new tests (495 total). `mockRole()` pattern from safety routes used throughout.
+  - **api-client**: `ConstructionDocumentsResource` (20 methods) added; registered in `createApiClient()` factory.
+  - **Web**: `use-construction-documents.ts` (20 TanStack Query hooks). `documents/page.tsx` — two-tab UI (Drawing Log + Specifications) with Add Sheet/Section dialogs. Documents tab added to project detail layout.
+  - **Seed**: 6 default drawing disciplines added for demo org (upserted by `@@unique` key).
 
 ### Session 24 — 2026-03-19
 

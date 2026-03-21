@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - Phase 4.2 Construction Documents (Session 25, 2026-03-21)
+
+- **Prisma schema**: 6 new models — `DrawingDiscipline`, `DrawingSet`, `DrawingSheet`, `DrawingRevision`, `SpecificationSection`, `SpecificationRevision` (40 models total). Back-relations added to Organization, Project, User.
+- **packages/core**: New `types/construction-documents.ts` (9 type exports), `schemas/construction-documents.ts` (10 Zod schemas), `constants/construction-documents.ts` (DRAWING_PHASES, DRAWING_PHASES_LIST, ALLOWED_DRAWING_MIME_TYPES, MAX_DRAWING_FILE_SIZE_BYTES). Wired into all index files.
+- **apps/api service**: `construction-documents.service.ts` — full service layer for disciplines CRUD, drawing sets CRUD, drawing sheets CRUD + MinIO cleanup, drawing revisions (add/list/delete + presigned upload URLs), spec sections CRUD + MinIO cleanup, spec revisions (auto-incrementing revisionNumber, isCurrent tracking, add/list/delete + presigned upload URLs).
+- **apps/api routes**: `routes/construction-documents/index.ts` — 21 routes registered at `/construction-documents`. Disciplines (org-scoped), drawing sets + sheets + revisions, spec sections + revisions (all project-scoped by `:projectId`). RBAC: GET = all auth, POST/PATCH = Admin/PM/Superintendent (uploads) or Admin/PM (metadata), DELETE = Admin/PM.
+- **apps/api tests**: `construction-documents.service.test.ts` (14 tests), `construction-documents.routes.test.ts` (14 tests). Updated `mock-prisma.ts` (6 new model mocks) and `build-app.ts` (`buildConstructionDocumentTestApp`). 495 total API tests.
+- **packages/api-client**: `ConstructionDocumentsResource` with 20 methods across all 6 entities. Added to `ApiClient` interface and `createApiClient()` factory.
+- **apps/web hooks**: `use-construction-documents.ts` — 20 TanStack Query hooks covering all CD operations.
+- **apps/web UI**: New `projects/[id]/documents/page.tsx` — Documents tab in project detail with Drawing Log (sheet table, discipline badge, current revision, create dialog) and Specifications (section table, conformed/original status, create dialog). Added Documents tab to `projects/[id]/layout.tsx`.
+- **Seed**: 6 default drawing disciplines seeded for demo org (A=Architectural, S=Structural, M=Mechanical, E=Electrical, P=Plumbing, C=Civil).
+
 ### Docs - Documentation overhaul (Session 24, 2026-03-19)
 
 - **`docs/development/testing.md`**: Full rewrite — replaced stale Playwright/Detox/RTL/coverage-thresholds content with actual Vitest patterns, `createMockPrisma()`, `buildXxxTestApp()`, `signTestToken()`, `mockRole()` for requireRole middleware, and layer-by-layer test guidance

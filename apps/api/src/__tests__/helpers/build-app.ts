@@ -9,6 +9,7 @@ import { errorHandler } from '../../middleware/error-handler'
 import authRoutes from '../../routes/auth'
 import calendarEventRoutes from '../../routes/calendar-events'
 import channelRoutes from '../../routes/channels'
+import constructionDocumentRoutes from '../../routes/construction-documents'
 import contactRoutes from '../../routes/contacts'
 import licenseRoutes from '../../routes/licenses'
 import messageRoutes from '../../routes/messages'
@@ -314,6 +315,32 @@ export async function buildSafetyTestApp(overridePrisma?: MockPrisma) {
   app.setErrorHandler(errorHandler)
 
   await app.register(safetyRoutes, { prefix: '/api/v1/safety' })
+  await app.ready()
+
+  return { app, prisma, minio }
+}
+
+/**
+ * Builds a minimal Fastify instance for testing construction document routes.
+ * Decorates fastify.minio with a mock client (drawing/spec file upload/delete).
+ */
+export async function buildConstructionDocumentTestApp(overridePrisma?: MockPrisma) {
+  const prisma = overridePrisma ?? createMockPrisma()
+  const minio = createMockMinio()
+
+  const app = Fastify({ logger: false })
+
+  await app.register(cookie)
+  await app.register(jwt, { secret: process.env['JWT_SECRET']! })
+  await app.register(rateLimit, { max: 1000, timeWindow: '1 minute' })
+
+  app.decorate('prisma', prisma as unknown as PrismaClient)
+  app.decorate('minio', minio)
+  app.decorate('sseClients', new Map())
+
+  app.setErrorHandler(errorHandler)
+
+  await app.register(constructionDocumentRoutes, { prefix: '/api/v1/construction-documents' })
   await app.ready()
 
   return { app, prisma, minio }

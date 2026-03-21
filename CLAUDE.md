@@ -79,6 +79,7 @@ cd apps/api && npx prisma db push --force-reset && npx ts-node prisma/seed.ts
 - **Phase 1** (Foundation): ALL COMPLETE — sub-phases A through G
 - **Phase 2** (Dashboard & Hub): ALL COMPLETE — 2.1 Dashboard, 2.2 Notifications, 2.3A Async Messaging, 2.3B Channel Chat, 2.4 Calendar, 2.5 Tasks, 2.6 Procedures
 - **Phase 3** (Contacts & Company Setup): COMPLETE — 3.1 Contact Management COMPLETE; 3.2 Licensing COMPLETE; 3.3 Safety COMPLETE
+- **Phase 4** (Project Depth): 4.1 Project Entity Expansion COMPLETE; 4.2 Construction Documents COMPLETE
 - Full roadmap: `docs/ROADMAP.md`
 
 ---

@@ -12,6 +12,7 @@ const TABS = [
   { label: 'Overview', href: '' },
   { label: 'Team', href: '/team' },
   { label: 'Scopes', href: '/scopes' },
+  { label: 'Documents', href: '/documents' },
   { label: 'Settings', href: '/settings' },
 ]
 

@@ -13,7 +13,7 @@ ProManage is a free, open-source platform designed to help small and mid-sized c
 
 ## Current Status
 
-> **Phase 4.1 Project Entity Expansion — COMPLETE | Working toward Phase 4.2**
+> **Phase 4.2 Construction Documents — COMPLETE | Working toward Phase 4.3**
 
 ## Features
 
@@ -28,6 +28,7 @@ ProManage is a free, open-source platform designed to help small and mid-sized c
 - **Contact Management** — Organization-level contact directory with project associations
 - **Licensing** — Organization and individual license tracking with renewal reminders and document uploads
 - **Safety** — 5-tab safety hub: document library, SDS catalog, toolbox talks, safety forms, incident reports
+- **Construction Documents** — Project drawing log with per-sheet version history, specification section tracking with amendment/conformed set management, user-defined disciplines
 
 ## Architecture
 
@@ -164,7 +165,7 @@ npx ts-node prisma/seed.ts
 ```bash
 pnpm test                              # all packages via Turborepo
 pnpm --filter @promanage/core test     # core unit tests only (97 tests)
-pnpm --filter @promanage/api test      # API service + route tests (463 tests)
+pnpm --filter @promanage/api test      # API service + route tests (495 tests)
 ```
 
 ### Type-check the web app
@@ -190,18 +191,18 @@ pnpm --filter @promanage/core build
 ProManage/
 ├── apps/
 │   ├── api/                # Fastify API server (TypeScript, Prisma, JWT auth)
-│   │   ├── prisma/         # Schema (34 models), seed script
+│   │   ├── prisma/         # Schema (40 models), seed script
 │   │   └── src/
-│   │       ├── routes/     # auth, calendar-events, channels, contacts,
-│   │       │               # dashboard, licenses, messages, notifications,
+│   │       ├── routes/     # auth, calendar-events, channels, construction-documents,
+│   │       │               # contacts, dashboard, licenses, messages, notifications,
 │   │       │               # organizations, procedures, projects, safety, tasks, users
 │   │       ├── services/   # Business logic (one file per domain)
 │   │       └── middleware/ # authenticate, authorize, error-handler
 │   └── web/                # Next.js 15 App Router (desktop-first)
 │       └── src/
 │           ├── app/        # Pages: dashboard, projects (+ detail tabs: overview,
-│           │               # team, scopes, settings), tasks, procedures, calendar,
-│           │               # messages, channels, contacts, licenses, safety,
+│           │               # team, scopes, documents, settings), tasks, procedures,
+│           │               # calendar, messages, channels, contacts, licenses, safety,
 │           │               # organization, settings
 │           ├── components/ # layout (sidebar, header, nav), dashboard, auth,
 │           │               # channels (chat, thread, attachments)

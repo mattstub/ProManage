@@ -193,19 +193,20 @@ The central entity that all construction modules connect to.
 - [ ] Project dashboard (health overview, key metrics)
 - [ ] Project Channels tab — surface project-scoped channels (projectId already on Channel model) within the project detail page; create/manage channels from inside the project file rather than only from global nav (deferred from Phase 2.3B)
 
-### 4.2 Construction Documents
+### 4.2 Construction Documents ✅ COMPLETE (Session 25, 2026-03-21)
 
-- [ ] Drawing log with version control (git-style revision tracking)
-  - [ ] Append sheet numbers with revision number and name
-  - [ ] Append new sheets in proper placement
-  - [ ] Full revision history per sheet
-- [ ] Specification set management
-  - [ ] Conformed specification tracking for amended specs
-- [ ] Document upload and blob storage (S3/MinIO)
-- [ ] Phase types: Design Development, Bidding Documents, Construction Documents
-- [ ] Document types: Drawings/Plans, Specifications, Geo-Technical Reports
-- [ ] Schema: Version ID, engineers by discipline, creation date, page number/name/date per sheet
-- [ ] Overlay capability — compare conformed set with incoming revisions
+- [x] Drawing log with version control (git-style revision tracking)
+  - [x] Append sheet numbers with revision number and name
+  - [x] Append new sheets in proper placement
+  - [x] Full revision history per sheet
+- [x] Specification set management
+  - [x] Conformed specification tracking for amended specs
+- [x] Document upload and blob storage (S3/MinIO)
+- [x] Phase types: Design Development, Bidding Documents, Construction Documents
+- [x] Schema: Version ID, user-defined disciplines, creation date, sheet number/title/revision per sheet
+- [x] User-defined drawing disciplines (not fixed enum — allows any industry)
+- [x] Freeform specification section numbering (no CSI enforcement)
+- [ ] Overlay capability — compare conformed set with incoming revisions (deferred to Phase 10 AI/OCR)
   - [ ] Generate report of sheets with changes
   - [ ] Verify against revision narratives
   - [ ] Link narratives to specific sheets for reference
@@ -492,6 +493,6 @@ Each module follows a consistent pattern from the canvas:
 
 ---
 
-**Last Updated**: 2026-03-18
-**Status**: Active — Phase 4 in progress (4.1 Project Entity underway)
+**Last Updated**: 2026-03-21
+**Status**: Active — Phase 4 in progress (4.2 Construction Documents complete; 4.3 next)
 **Source**: `notes/ProManage Suite.canvas`

@@ -62,6 +62,13 @@ export {
 } from './safety'
 
 export {
+  DRAWING_PHASES,
+  DRAWING_PHASES_LIST,
+  ALLOWED_DRAWING_MIME_TYPES,
+  MAX_DRAWING_FILE_SIZE_BYTES,
+} from './construction-documents'
+
+export {
   CHANNEL_MANAGE_ROLES,
   ALLOWED_ATTACHMENT_MIME_TYPES,
   MAX_ATTACHMENT_SIZE_BYTES,

@@ -191,6 +191,7 @@ export async function listDrawingSheets(
       discipline: true,
       revisions: {
         where: { isCurrent: true },
+        orderBy: { createdAt: 'desc' },
         take: 1,
       },
       _count: { select: { revisions: true } },

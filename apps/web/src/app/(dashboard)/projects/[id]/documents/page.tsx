@@ -366,6 +366,8 @@ function SpecificationsLog({ projectId }: { projectId: string }) {
                         size="sm"
                         onClick={() => deleteSection.mutate(section.id)}
                         className="text-red-500 hover:text-red-700"
+                        aria-label="Delete section"
+                        title="Delete section"
                       >
                         <TrashIcon className="h-4 w-4" />
                       </Button>

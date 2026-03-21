@@ -1,6 +1,11 @@
+import { randomUUID } from 'crypto'
+import path from 'node:path'
+
 import {
   ALLOWED_DRAWING_MIME_TYPES,
+  ALLOWED_SPEC_MIME_TYPES,
   MAX_DRAWING_FILE_SIZE_BYTES,
+  MAX_SPEC_FILE_SIZE_BYTES,
   MINIO_BUCKET_NAME,
 } from '@promanage/core'
 
@@ -19,6 +24,12 @@ import type {
   UpdateSpecificationSectionInput,
 } from '@promanage/core'
 import type { FastifyInstance } from 'fastify'
+
+function sanitizeFilename(original: string): string {
+  const ext = path.extname(original)
+  const base = path.basename(original, ext).replace(/[^a-zA-Z0-9._-]/g, '_').slice(0, 100)
+  return `${base}${ext}`
+}
 
 // =============================================================================
 // DISCIPLINES
@@ -354,16 +365,53 @@ export async function addDrawingRevision(
       data: { isCurrent: false },
     })
 
+    const expectedPrefix = `drawings/${projectId}/${sheetId}/`
+
+    let normalizedFileKey: string | null = null
+    let normalizedFileName: string | null = null
+    let normalizedFileSize: number | null = null
+    let normalizedMimeType: string | null = null
+
+    if (input.fileKey) {
+      if (!input.fileKey.startsWith(expectedPrefix)) {
+        throw new ValidationError('Invalid file key for this drawing sheet')
+      }
+
+      try {
+        const stat = await (fastify as any).minio.client.statObject(
+          MINIO_BUCKET_NAME,
+          input.fileKey
+        )
+
+        normalizedFileKey = input.fileKey
+        normalizedFileSize = typeof stat.size === 'number' ? stat.size : null
+
+        const statMime =
+          (stat.metaData && (stat.metaData['content-type'] || stat.metaData['Content-Type'])) ||
+          null
+        normalizedMimeType = statMime ?? input.mimeType ?? null
+
+        if (input.fileName) {
+          normalizedFileName = input.fileName
+        } else {
+          const keyWithoutPrefix = input.fileKey.substring(expectedPrefix.length)
+          normalizedFileName = keyWithoutPrefix || null
+        }
+      } catch {
+        throw new ValidationError('Uploaded drawing file could not be confirmed in storage')
+      }
+    }
+
     return tx.drawingRevision.create({
       data: {
         revisionNumber: input.revisionNumber,
         revisionDate: new Date(input.revisionDate),
         description: input.description ?? null,
         drawingSetId: input.drawingSetId ?? null,
-        fileKey: input.fileKey ?? null,
-        fileName: input.fileName ?? null,
-        fileSize: input.fileSize ?? null,
-        mimeType: input.mimeType ?? null,
+        fileKey: normalizedFileKey,
+        fileName: normalizedFileName,
+        fileSize: normalizedFileSize,
+        mimeType: normalizedMimeType,
         isCurrent: true,
         sheetId,
         organizationId,
@@ -395,7 +443,7 @@ export async function getDrawingRevisionUploadUrl(
     throw new ValidationError(`File exceeds maximum size of ${MAX_DRAWING_FILE_SIZE_BYTES / 1024 / 1024} MB`)
   }
 
-  const fileKey = `drawings/${projectId}/${sheetId}/${Date.now()}-${fileName.replace(/[^a-zA-Z0-9._-]/g, '_')}`
+  const fileKey = `drawings/${projectId}/${sheetId}/${randomUUID()}/${sanitizeFilename(fileName)}`
   const uploadUrl = await fastify.minio.presignedPutObject(MINIO_BUCKET_NAME, fileKey, 900)
   return { uploadUrl, fileKey, fileName, mimeType, fileSize }
 }
@@ -637,7 +685,7 @@ export async function addSpecificationRevision(
           const keyWithoutPrefix = input.fileKey.substring(expectedPrefix.length)
           normalizedFileName = keyWithoutPrefix || null
         }
-      } catch (err: any) {
+      } catch {
         // If the object does not exist or cannot be accessed, surface a validation error
         throw new ValidationError('Uploaded specification file could not be confirmed in storage')
       }
@@ -676,15 +724,15 @@ export async function getSpecificationRevisionUploadUrl(
   })
   if (!section) throw new NotFoundError('Specification section not found')
 
-  if (!(ALLOWED_DRAWING_MIME_TYPES as readonly string[]).includes(mimeType)) {
+  if (!(ALLOWED_SPEC_MIME_TYPES as readonly string[]).includes(mimeType)) {
     throw new ValidationError(`Unsupported file type: ${mimeType}`)
   }
   if (fileSize <= 0) throw new ValidationError('File must not be empty')
-  if (fileSize > MAX_DRAWING_FILE_SIZE_BYTES) {
-    throw new ValidationError(`File exceeds maximum size of ${MAX_DRAWING_FILE_SIZE_BYTES / 1024 / 1024} MB`)
+  if (fileSize > MAX_SPEC_FILE_SIZE_BYTES) {
+    throw new ValidationError(`File exceeds maximum size of ${MAX_SPEC_FILE_SIZE_BYTES / 1024 / 1024} MB`)
   }
 
-  const fileKey = `specs/${projectId}/${sectionId}/${Date.now()}-${fileName.replace(/[^a-zA-Z0-9._-]/g, '_')}`
+  const fileKey = `specs/${projectId}/${sectionId}/${randomUUID()}/${sanitizeFilename(fileName)}`
   const uploadUrl = await fastify.minio.presignedPutObject(MINIO_BUCKET_NAME, fileKey, 900)
   return { uploadUrl, fileKey, fileName, mimeType, fileSize }
 }

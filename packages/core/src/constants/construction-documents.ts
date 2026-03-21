@@ -29,3 +29,13 @@ export const ALLOWED_DRAWING_MIME_TYPES = [
 ] as const
 
 export const MAX_DRAWING_FILE_SIZE_BYTES = 100 * 1024 * 1024 // 100 MB
+
+export const ALLOWED_SPEC_MIME_TYPES = [
+  'application/pdf',
+  'image/jpeg',
+  'image/png',
+  'image/tiff',
+  'image/webp',
+] as const
+
+export const MAX_SPEC_FILE_SIZE_BYTES = 100 * 1024 * 1024 // 100 MB

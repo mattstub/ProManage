@@ -16,7 +16,9 @@ export interface SafetyDocument {
   fileKey: string
   fileSize: number
   mimeType: string
+  projectId: string | null
   uploadedById: string
+  project?: { id: string; name: string; number: string } | null
   uploadedBy: { id: string; firstName: string; lastName: string; email: string }
   createdAt: string
   updatedAt: string
@@ -219,4 +221,113 @@ export interface UpdateIncidentReportInput {
   correctiveAction?: string | null
   status?: IncidentStatus
   projectId?: string | null
+}
+
+// ─── Phase 4.3 — Job-Specific Safety ─────────────────────────────────────────
+
+export type JhaStatus = 'DRAFT' | 'ACTIVE' | 'ARCHIVED'
+
+export type EmergencyContactRole =
+  | 'SITE_SUPERVISOR'
+  | 'HOSPITAL'
+  | 'FIRE'
+  | 'POLICE'
+  | 'UTILITY'
+  | 'OTHER'
+
+export interface JobHazardAnalysis {
+  id: string
+  organizationId: string
+  projectId: string
+  title: string
+  description: string | null
+  status: JhaStatus
+  fileKey: string | null
+  fileName: string | null
+  fileSize: number | null
+  mimeType: string | null
+  createdById: string
+  createdBy: { id: string; firstName: string; lastName: string; email: string }
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CreateJobHazardAnalysisInput {
+  title: string
+  description?: string
+  status?: JhaStatus
+  fileKey?: string
+  fileName?: string
+  fileSize?: number
+  mimeType?: string
+}
+
+export interface UpdateJobHazardAnalysisInput {
+  title?: string
+  description?: string | null
+  status?: JhaStatus
+  fileKey?: string | null
+  fileName?: string | null
+  fileSize?: number | null
+  mimeType?: string | null
+}
+
+export interface ProjectEmergencyContact {
+  id: string
+  organizationId: string
+  projectId: string
+  name: string
+  role: EmergencyContactRole
+  phone: string
+  address: string | null
+  notes: string | null
+  sortOrder: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CreateProjectEmergencyContactInput {
+  name: string
+  role?: EmergencyContactRole
+  phone: string
+  address?: string
+  notes?: string
+  sortOrder?: number
+}
+
+export interface UpdateProjectEmergencyContactInput {
+  name?: string
+  role?: EmergencyContactRole
+  phone?: string
+  address?: string | null
+  notes?: string | null
+  sortOrder?: number
+}
+
+export interface ProjectSdsEntry {
+  id: string
+  organizationId: string
+  projectId: string
+  sdsEntryId: string
+  notes: string | null
+  addedAt: string
+  sdsEntry: {
+    id: string
+    productName: string
+    manufacturer: string | null
+    chemicalName: string | null
+    sdsFileKey: string | null
+    sdsFileName: string | null
+    reviewDate: string | null
+    notes: string | null
+  }
+}
+
+export interface AddProjectSdsEntryInput {
+  sdsEntryId: string
+  notes?: string
+}
+
+export interface UpdateProjectSdsEntryInput {
+  notes?: string | null
 }

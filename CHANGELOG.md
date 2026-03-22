@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - Phase 4.3 Safety Job-Specific (Session 26, 2026-03-21)
+
+- **Prisma schema**: 3 new models — `JobHazardAnalysis`, `ProjectEmergencyContact`, `ProjectSdsEntry` (43 models total). `SafetyDocument` gained optional `projectId`. Back-relations wired on Organization, Project, User.
+- **packages/core**: New types (`JhaStatus`, `EmergencyContactRole`, `JobHazardAnalysis`, `ProjectEmergencyContact`, `ProjectSdsEntry` + input types), schemas (create/update for JHA, emergency contact, project SDS entry), constants (`JHA_STATUSES`, `JHA_STATUS_LIST`, `EMERGENCY_CONTACT_ROLES`, `EMERGENCY_CONTACT_ROLE_LIST`, `ALLOWED_JHA_MIME_TYPES`, `MAX_JHA_FILE_SIZE_BYTES`) all appended to existing `safety.ts` files.
+- **apps/api service**: `job-safety.service.ts` — full CRUD for JHAs, emergency contacts, project SDS binder (with conflict detection). Read-only project-scoped list views for SafetyDocument, ToolboxTalk, IncidentReport. MinIO presigned PUT/GET URLs for JHA files. `assertProjectAccess()` guard.
+- **apps/api routes**: `routes/job-safety/index.ts` — 24 routes registered under `/projects` prefix at `/:projectId/safety/...` paths. RBAC: GET = all auth, POST/PATCH = Admin+PM+Super+OfficeAdmin, DELETE = Admin+PM+OfficeAdmin.
+- **apps/api tests**: `job-safety.routes.test.ts` — 24 tests covering CRUD, RBAC (403), 404, 409 conflict, schema validation. `buildJobSafetyTestApp()` helper added. 519 total API tests.
+- **packages/api-client**: `JobSafetyResource` (17 methods) added; registered in `ApiClient` interface and `createApiClient()` factory as `jobSafety`.
+- **apps/web hooks**: `use-job-safety.ts` — 13 TanStack Query hooks for JHAs, emergency contacts, project SDS binder, and project-scoped read views.
+- **apps/web UI**: New `projects/[id]/safety/page.tsx` — 6-tab Safety tab (Emergency Contacts, JHAs, SDS Binder, Safety Documents, Toolbox Talks, Incidents). Safety tab added to project detail layout between Documents and Settings.
+
 ### Added - Phase 4.2 Construction Documents (Session 25, 2026-03-21)
 
 - **Prisma schema**: 6 new models — `DrawingDiscipline`, `DrawingSet`, `DrawingSheet`, `DrawingRevision`, `SpecificationSection`, `SpecificationRevision` (40 models total). Back-relations added to Organization, Project, User.

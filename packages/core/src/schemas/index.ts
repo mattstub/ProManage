@@ -94,6 +94,12 @@ export {
   updateSafetyFormSchema,
   createIncidentReportSchema,
   updateIncidentReportSchema,
+  createJobHazardAnalysisSchema,
+  updateJobHazardAnalysisSchema,
+  createProjectEmergencyContactSchema,
+  updateProjectEmergencyContactSchema,
+  addProjectSdsEntrySchema,
+  updateProjectSdsEntrySchema,
   type CreateSafetyDocumentSchema,
   type UpdateSafetyDocumentSchema,
   type CreateSdsEntrySchema,
@@ -105,6 +111,12 @@ export {
   type UpdateSafetyFormSchema,
   type CreateIncidentReportSchema,
   type UpdateIncidentReportSchema,
+  type CreateJobHazardAnalysisSchema,
+  type UpdateJobHazardAnalysisSchema,
+  type CreateProjectEmergencyContactSchema,
+  type UpdateProjectEmergencyContactSchema,
+  type AddProjectSdsEntrySchema,
+  type UpdateProjectSdsEntrySchema,
 } from './safety'
 
 export {

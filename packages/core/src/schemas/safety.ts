@@ -135,6 +135,66 @@ export const updateIncidentReportSchema = z.object({
   projectId: z.string().nullable().optional(),
 })
 
+// ─── Phase 4.3 — Job-Specific Safety ─────────────────────────────────────────
+
+const JHA_STATUSES = ['DRAFT', 'ACTIVE', 'ARCHIVED'] as const
+
+const EMERGENCY_CONTACT_ROLES = [
+  'SITE_SUPERVISOR',
+  'HOSPITAL',
+  'FIRE',
+  'POLICE',
+  'UTILITY',
+  'OTHER',
+] as const
+
+export const createJobHazardAnalysisSchema = z.object({
+  title: z.string().min(1).max(200),
+  description: z.string().max(5000).optional(),
+  status: z.enum(JHA_STATUSES).optional(),
+  fileKey: z.string().max(500).optional(),
+  fileName: z.string().max(500).optional(),
+  fileSize: z.number().int().min(1).optional(),
+  mimeType: z.string().max(100).optional(),
+})
+
+export const updateJobHazardAnalysisSchema = z.object({
+  title: z.string().min(1).max(200).optional(),
+  description: z.string().max(5000).nullable().optional(),
+  status: z.enum(JHA_STATUSES).optional(),
+  fileKey: z.string().max(500).nullable().optional(),
+  fileName: z.string().max(500).nullable().optional(),
+  fileSize: z.number().int().min(1).nullable().optional(),
+  mimeType: z.string().max(100).nullable().optional(),
+})
+
+export const createProjectEmergencyContactSchema = z.object({
+  name: z.string().min(1).max(200),
+  role: z.enum(EMERGENCY_CONTACT_ROLES).optional(),
+  phone: z.string().min(1).max(50),
+  address: z.string().max(500).optional(),
+  notes: z.string().max(1000).optional(),
+  sortOrder: z.number().int().min(0).optional(),
+})
+
+export const updateProjectEmergencyContactSchema = z.object({
+  name: z.string().min(1).max(200).optional(),
+  role: z.enum(EMERGENCY_CONTACT_ROLES).optional(),
+  phone: z.string().min(1).max(50).optional(),
+  address: z.string().max(500).nullable().optional(),
+  notes: z.string().max(1000).nullable().optional(),
+  sortOrder: z.number().int().min(0).optional(),
+})
+
+export const addProjectSdsEntrySchema = z.object({
+  sdsEntryId: z.string().min(1),
+  notes: z.string().max(1000).optional(),
+})
+
+export const updateProjectSdsEntrySchema = z.object({
+  notes: z.string().max(1000).nullable().optional(),
+})
+
 // ─── Inferred types ──────────────────────────────────────────────────────────
 
 export type CreateSafetyDocumentSchema = z.infer<typeof createSafetyDocumentSchema>
@@ -148,3 +208,9 @@ export type CreateSafetyFormSchema = z.infer<typeof createSafetyFormSchema>
 export type UpdateSafetyFormSchema = z.infer<typeof updateSafetyFormSchema>
 export type CreateIncidentReportSchema = z.infer<typeof createIncidentReportSchema>
 export type UpdateIncidentReportSchema = z.infer<typeof updateIncidentReportSchema>
+export type CreateJobHazardAnalysisSchema = z.infer<typeof createJobHazardAnalysisSchema>
+export type UpdateJobHazardAnalysisSchema = z.infer<typeof updateJobHazardAnalysisSchema>
+export type CreateProjectEmergencyContactSchema = z.infer<typeof createProjectEmergencyContactSchema>
+export type UpdateProjectEmergencyContactSchema = z.infer<typeof updateProjectEmergencyContactSchema>
+export type AddProjectSdsEntrySchema = z.infer<typeof addProjectSdsEntrySchema>
+export type UpdateProjectSdsEntrySchema = z.infer<typeof updateProjectSdsEntrySchema>

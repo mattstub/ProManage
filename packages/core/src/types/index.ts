@@ -162,6 +162,17 @@ export type {
   IncidentReport,
   CreateIncidentReportInput,
   UpdateIncidentReportInput,
+  JhaStatus,
+  EmergencyContactRole,
+  JobHazardAnalysis,
+  CreateJobHazardAnalysisInput,
+  UpdateJobHazardAnalysisInput,
+  ProjectEmergencyContact,
+  CreateProjectEmergencyContactInput,
+  UpdateProjectEmergencyContactInput,
+  ProjectSdsEntry,
+  AddProjectSdsEntryInput,
+  UpdateProjectSdsEntryInput,
 } from './safety'
 
 export type {

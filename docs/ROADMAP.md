@@ -211,12 +211,13 @@ The central entity that all construction modules connect to.
   - [ ] Verify against revision narratives
   - [ ] Link narratives to specific sheets for reference
 
-### 4.3 Safety (Job-Specific)
+### 4.3 Safety (Job-Specific) ✅ COMPLETE (Session 26, 2026-03-21)
 
-- [ ] Job-specific safety documents and hazard assessments (JHA)
-- [ ] Job-specific contact information and emergency procedures
-- [ ] Job-specific SDS catalog
-- [ ] Near-miss and hazard reporting from field
+- [x] Job-specific hazard assessments (JHA) — freeform title/description/file upload, DRAFT/ACTIVE/ARCHIVED status
+- [x] Job-specific emergency contact information — name/role/phone/address, inline in project Safety tab
+- [x] Job-specific SDS binder — PM associates org catalog SDS entries to project; print-ready binder view
+- [x] Project-scoped views for SafetyDocuments, ToolboxTalks, IncidentReports (already had projectId in Phase 3.3)
+- [ ] Near-miss and hazard reporting from field (mobile companion — deferred to Phase 10)
 
 ---
 
@@ -494,5 +495,5 @@ Each module follows a consistent pattern from the canvas:
 ---
 
 **Last Updated**: 2026-03-21
-**Status**: Active — Phase 4 in progress (4.2 Construction Documents complete; 4.3 next)
+**Status**: Active — Phase 4 in progress (4.3 Safety Job-Specific complete; 4.4 next)
 **Source**: `notes/ProManage Suite.canvas`

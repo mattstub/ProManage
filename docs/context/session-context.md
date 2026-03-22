@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-21 (Session 25 — Phase 4.2 Construction Documents)
+**Last Updated**: 2026-03-21 (Session 26 — Phase 4.3 Safety Job-Specific)
 
 ---
 
@@ -59,8 +59,8 @@
 
 ```bash
 ProManage/
-apps/api/              COMPLETE through Phase 4.2
-  prisma/schema.prisma   40 models (+ DrawingDiscipline, DrawingSet, DrawingSheet, DrawingRevision, SpecificationSection, SpecificationRevision)
+apps/api/              COMPLETE through Phase 4.3
+  prisma/schema.prisma   43 models (+ JobHazardAnalysis, ProjectEmergencyContact, ProjectSdsEntry; SafetyDocument gained projectId)
   prisma/seed.ts         demo org, 6 roles, 64 perms, 3 users, 2 projects, 2 channels, 3 contacts, 2 licenses, safety demo data, 6 disciplines
   src/config/            Zod env validation
   src/lib/               errors, response helpers, pino logger, rate-limit, sse
@@ -68,14 +68,14 @@ apps/api/              COMPLETE through Phase 4.2
   src/plugins/           prisma, swagger, sse, minio, socket-io, license-reminder
   src/routes/            health, auth, users, organizations, projects, dashboard, tasks, procedures,
                          notifications, messages, calendar-events, channels, contacts, licenses, safety,
-                         construction-documents
+                         construction-documents, job-safety (under /projects/:projectId/safety/...)
   src/services/          auth, user, org, token, password, project, dashboard, task, procedure,
                          notification, messaging, calendar-event, channel, contact, license, safety,
-                         construction-documents
+                         construction-documents, job-safety
   src/types/             fastify.d.ts (augmented with io, minio, sseClients)
-  src/__tests__/         495 tests passing
-apps/web/              COMPLETE through Phase 4.2
-  src/app/               App Router: dashboard, projects (+ detail tabs: overview, team, scopes, documents, settings),
+  src/__tests__/         519 tests passing
+apps/web/              COMPLETE through Phase 4.3
+  src/app/               App Router: dashboard, projects (+ detail tabs: overview, team, scopes, documents, safety, settings),
                          tasks, procedures, calendar, messages, channels, contacts, licenses, safety
   src/components/        layout (sidebar, header, nav-item, notification-bell),
                          dashboard (stats-card, project-summary-list),
@@ -83,25 +83,27 @@ apps/web/              COMPLETE through Phase 4.2
   src/hooks/             use-auth, use-dashboard-stats, use-organization, use-procedures, use-projects,
                          use-tasks, use-users, use-notifications, use-messaging, use-calendar-events,
                          use-channels, use-socket, use-contacts, use-licenses, use-safety,
-                         use-construction-documents
+                         use-construction-documents, use-job-safety
   src/lib/               api-client singleton (with resetSocket on auth error), query-client
 apps/mobile/           DEFERRED
 
-packages/core/         COMPLETE through Phase 4.2
+packages/core/         COMPLETE through Phase 4.3
   src/types/             api, auth, user, role, org, project, task, dashboard, procedure,
-                         notification, messaging, calendar-event, channel, socket-events, license, safety,
+                         notification, messaging, calendar-event, channel, socket-events, license, safety
+                         (+ JhaStatus, EmergencyContactRole, JobHazardAnalysis, ProjectEmergencyContact, ProjectSdsEntry),
                          construction-documents
-  src/schemas/           auth, user, org, project, task, procedure, messaging, calendar-event, channel, license, safety,
-                         construction-documents
+  src/schemas/           auth, user, org, project, task, procedure, messaging, calendar-event, channel, license, safety
+                         (+ JHA, emergency contact, project SDS schemas), construction-documents
   src/constants/         roles, permissions, project-status, task-status, api, procedure-status,
-                         notification, calendar-event, channel, license, safety, construction-documents
+                         notification, calendar-event, channel, license, safety
+                         (+ JHA_STATUSES, EMERGENCY_CONTACT_ROLES), construction-documents
   src/utils/             pagination, format-date, format-currency
   src/__tests__/         97 tests
-packages/api-client/   COMPLETE through Phase 4.2
+packages/api-client/   COMPLETE through Phase 4.3
   src/resources/         auth, users, organizations, health, projects, dashboard, tasks,
                          procedures, notifications, messaging, calendar-events, channels, contacts, licenses, safety,
-                         construction-documents
-  src/index.ts           createApiClient() factory + all exports (constructionDocuments resource added)
+                         construction-documents, job-safety (JobSafetyResource — 17 methods)
+  src/index.ts           createApiClient() factory + all exports (jobSafety resource added)
 packages/ui-components/ COMPLETE (Sub-phase F - 30 files, 26 components)
 
 Root tooling:          COMPLETE (Sub-phase A)
@@ -125,18 +127,19 @@ Root tooling:          COMPLETE (Sub-phase A)
 - **Phase 3.3 Safety**: COMPLETE — 5-tab safety hub (document library, SDS catalog, toolbox talks + attendee roster, safety forms, incident reports)
 - **Phase 4.1 Project Entity Expansion**: COMPLETE — Project detail pages (Overview, Team, Scopes, Settings); 18 new API routes; ProjectScope + ProjectSettings models; dashboard metrics; 63 new tests
 - **Phase 4.2 Construction Documents**: COMPLETE — Drawing log (per-sheet version history, user-defined disciplines), specification set management (freeform section numbers, conformed amendment tracking), MinIO file uploads, 21 new API routes, 28 new tests (495 total)
-- **API**: Runs on `http://localhost:3001` | Routes: /auth, /calendar-events, /channels, /construction-documents, /contacts, /dashboard, /licenses, /messages, /notifications, /organizations, /procedures, /projects (18 routes), /safety, /tasks, /users
-- **DB**: PostgreSQL in Docker. 40 models (added 6 CD models). `prisma db push` applied. Seed includes 6 default drawing disciplines.
-- **api-client**: Built — all resource namespaces including ConstructionDocumentsResource (20 methods)
+- **Phase 4.3 Safety (Job-Specific)**: COMPLETE — JHAs (freeform, file upload), emergency contacts, project SDS binder (from org catalog), project-scoped views for safety docs/toolbox talks/incidents; 6-tab Safety tab on project detail page; 24 new API routes (job-safety), 24 new tests (519 total)
+- **API**: Runs on `http://localhost:3001` | Routes: /auth, /calendar-events, /channels, /construction-documents, /contacts, /dashboard, /licenses, /messages, /notifications, /organizations, /procedures, /projects (+ /:projectId/safety/... routes), /safety, /tasks, /users
+- **DB**: PostgreSQL in Docker. 43 models. `prisma db push` applied. SafetyDocument gained projectId.
+- **api-client**: Built — all resource namespaces including JobSafetyResource (17 methods)
 - **ui-components**: Built (tsc --build, zero errors), 26 Radix+Tailwind components
 - **Sidebar**: Dashboard, Projects, Tasks, Procedures, Calendar, Channels, Contacts, Licenses, Safety, Messages, Organization, Settings
-- **Project Detail Tabs**: Overview, Team, Scopes, Documents (new), Settings
+- **Project Detail Tabs**: Overview, Team, Scopes, Documents, Safety (new), Settings
 - **Header**: NotificationBell with live badge + dropdown (SSE-powered)
 - **packages/core**: CommonJS output (fixed ESM seed issue; web/bundler still works fine)
-- **Tests**: 5/5 turbo tasks (lint, type-check, test) all passing; 495 API tests, web type-check clean
+- **Tests**: 519 API tests, 97 core tests, web type-check clean, lint 0 errors
 - **Infrastructure**: COMPLETE and merged — Dockerfiles, CI/CD, structured logging, Sentry scaffold, Fastify 5 upgrade
-- **Branch**: `feat/phase4-subphase-4.2-construction-documents` — ready to PR
-- **Next**: Phase 4.3 — Safety (Job-Specific)
+- **Branch**: `feat/phase4-subphase-4.3-safety-job-specific` — ready to PR
+- **Next**: Phase 4.4 or post-Phase 4 work (TBD)
 
 ### Seed Credentials
 
@@ -213,6 +216,18 @@ See: docs/ROADMAP.md
 ---
 
 ## Session Log
+
+### Session 26 — 2026-03-21
+
+- **Phase 4.3 Safety (Job-Specific) COMPLETE** (`feat/phase4-subphase-4.3-safety-job-specific` branch):
+  - **Design decisions**: JHAs are freeform (title + description + optional file upload, no structured rows); emergency contacts are inline in Safety tab (no sub-section); SDS binder = PM associates org catalog entries to project (join table); Safety tab inserted between Documents and Settings.
+  - **Prisma**: 3 new models — `JobHazardAnalysis` (freeform JHA, optional MinIO file), `ProjectEmergencyContact` (name/role/phone/address/notes/sortOrder), `ProjectSdsEntry` (join table linking org `SdsEntry` to project, @@unique on [projectId, sdsEntryId]). `SafetyDocument` gained optional `projectId`. 43 models total.
+  - **packages/core**: New types/schemas/constants added to existing `safety.ts` files. Types: `JhaStatus`, `EmergencyContactRole`, `JobHazardAnalysis`, `ProjectEmergencyContact`, `ProjectSdsEntry` + input types. Schemas: create/update for JHA, emergency contact, project SDS entry. Constants: `JHA_STATUSES`, `JHA_STATUS_LIST`, `EMERGENCY_CONTACT_ROLES`, `EMERGENCY_CONTACT_ROLE_LIST`, `ALLOWED_JHA_MIME_TYPES`, `MAX_JHA_FILE_SIZE_BYTES`.
+  - **API service** (`job-safety.service.ts`): Full CRUD for JHAs, emergency contacts, project SDS binder. Read-only project-scoped views for SafetyDocument, ToolboxTalk, IncidentReport (already had projectId). MinIO presigned URLs for JHA file upload/download. `assertProjectAccess()` helper. Conflict detection for duplicate SDS binder entries.
+  - **API routes** (`routes/job-safety/index.ts`): 24 routes registered under `/projects` prefix, paths like `/:projectId/safety/jhas`. WRITE_ROLES = Admin+PM+Super+OfficeAdmin; MANAGE_ROLES = Admin+PM+OfficeAdmin.
+  - **Tests**: 24 new route tests (519 total, 23 test files). Covers CRUD happy-paths, 401/403/404/409 error cases, schema validation.
+  - **api-client**: `JobSafetyResource` (17 methods) added; registered in `createApiClient()` factory as `jobSafety`.
+  - **Web**: `use-job-safety.ts` (13 TanStack Query hooks). `safety/page.tsx` — 6-tab UI (Emergency Contacts, JHAs, SDS Binder, Safety Documents, Toolbox Talks, Incidents). Safety tab added to project detail layout between Documents and Settings.
 
 ### Session 25 — 2026-03-21
 

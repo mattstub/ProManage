@@ -50,6 +50,10 @@ model Organization {
   specificationSections SpecificationSection[]
   specificationRevisions SpecificationRevision[]
 
+  jobHazardAnalyses       JobHazardAnalysis[]
+  projectEmergencyContacts ProjectEmergencyContact[]
+  projectSdsEntries       ProjectSdsEntry[]
+
   @@map("organizations")
 }
 
@@ -107,6 +111,8 @@ model User {
   drawingRevisionsUploaded    DrawingRevision[]     @relation("DrawingRevisionUploader")
   specSectionsCreated         SpecificationSection[] @relation("SpecSectionCreator")
   specRevisionsUploaded       SpecificationRevision[] @relation("SpecRevisionUploader")
+
+  jhasCreated                 JobHazardAnalysis[]   @relation("JhaCreator")
 
   @@index([organizationId])
   @@index([email])
@@ -236,6 +242,11 @@ model Project {
   drawingSets           DrawingSet[]
   drawingSheets         DrawingSheet[]
   specificationSections SpecificationSection[]
+
+  safetyDocuments       SafetyDocument[]
+  jobHazardAnalyses     JobHazardAnalysis[]
+  emergencyContacts     ProjectEmergencyContact[]
+  projectSdsEntries     ProjectSdsEntry[]
 
   @@unique([number, organizationId])
   @@index([organizationId])
@@ -742,10 +753,14 @@ model SafetyDocument {
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   organizationId String       @map("organization_id")
 
+  project   Project? @relation(fields: [projectId], references: [id])
+  projectId String?  @map("project_id")
+
   uploadedBy   User   @relation("SafetyDocumentUploader", fields: [uploadedById], references: [id])
   uploadedById String @map("uploaded_by_id")
 
   @@index([organizationId])
+  @@index([projectId])
   @@index([category])
   @@index([uploadedById])
   @@map("safety_documents")
@@ -768,6 +783,8 @@ model SdsEntry {
 
   createdBy   User   @relation("SdsEntryCreator", fields: [createdById], references: [id])
   createdById String @map("created_by_id")
+
+  projectSdsEntries ProjectSdsEntry[]
 
   @@index([organizationId])
   @@index([createdById])
@@ -1034,4 +1051,79 @@ model SpecificationRevision {
   @@index([sectionId])
   @@index([uploadedById])
   @@map("specification_revisions")
+}
+
+// ===========================================
+// PHASE 4.3 — SAFETY (JOB-SPECIFIC)
+// ===========================================
+
+model JobHazardAnalysis {
+  id          String   @id @default(cuid())
+  title       String
+  description String?  // freeform work description / hazard notes
+  status      String   @default("DRAFT") // DRAFT | ACTIVE | ARCHIVED
+  fileKey     String?  @map("file_key")   // optional MinIO upload
+  fileName    String?  @map("file_name")
+  fileSize    Int?     @map("file_size")
+  mimeType    String?  @map("mime_type")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @map("organization_id")
+
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String  @map("project_id")
+
+  createdBy   User   @relation("JhaCreator", fields: [createdById], references: [id])
+  createdById String @map("created_by_id")
+
+  @@index([organizationId])
+  @@index([projectId])
+  @@index([status])
+  @@index([createdById])
+  @@map("job_hazard_analyses")
+}
+
+model ProjectEmergencyContact {
+  id        String   @id @default(cuid())
+  name      String
+  role      String   @default("OTHER") // SITE_SUPERVISOR | HOSPITAL | FIRE | POLICE | UTILITY | OTHER
+  phone     String
+  address   String?
+  notes     String?
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @map("organization_id")
+
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String  @map("project_id")
+
+  @@index([organizationId])
+  @@index([projectId])
+  @@map("project_emergency_contacts")
+}
+
+model ProjectSdsEntry {
+  id        String   @id @default(cuid())
+  notes     String?  // project-specific notes about this SDS entry
+  addedAt   DateTime @default(now()) @map("added_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @map("organization_id")
+
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String  @map("project_id")
+
+  sdsEntry   SdsEntry @relation(fields: [sdsEntryId], references: [id], onDelete: Cascade)
+  sdsEntryId String   @map("sds_entry_id")
+
+  @@unique([projectId, sdsEntryId])
+  @@index([organizationId])
+  @@index([projectId])
+  @@index([sdsEntryId])
+  @@map("project_sds_entries")
 }

@@ -32,14 +32,15 @@ const channelRoutes: FastifyPluginAsync = async (fastify) => {
 
   // ─── Channels ───────────────────────────────────────────────────────────────
 
-  // GET /channels — list channels visible to current user
+  // GET /channels — list channels visible to current user; ?projectId=xxx filters to a project
   fastify.get(
     '/',
     { preHandler: [readRateLimiter, authenticate] },
     async (request, reply) => {
+      const { projectId } = request.query as { projectId?: string }
       const { id: userId, organizationId } = request.user
       const userRoles = await getUserRoles(fastify, userId, organizationId)
-      const channels = await channelService.listChannels(fastify, organizationId, userRoles)
+      const channels = await channelService.listChannels(fastify, organizationId, userRoles, projectId)
       return success(reply, channels)
     }
   )

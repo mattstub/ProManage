@@ -1,7 +1,8 @@
 'use client'
 
 import { Cog6ToothIcon, HashtagIcon, LockClosedIcon, PlusIcon } from '@heroicons/react/24/outline'
-import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 import { Badge, Breadcrumbs, Button, Skeleton } from '@promanage/ui-components'
 
@@ -22,12 +23,22 @@ export default function ChannelsPage() {
 
   const { data: channels, isLoading } = useChannels()
   const joinChannel = useJoinChannel()
+  const searchParams = useSearchParams()
 
   const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null)
   const [settingsChannel, setSettingsChannel] = useState<ChannelWithRelations | null>(null)
   const [createOpen, setCreateOpen] = useState(false)
 
   const channelList = channels ?? []
+
+  // Auto-select channel when navigating from a deep link (?id=channelId)
+  useEffect(() => {
+    const id = searchParams.get('id')
+    if (id && channelList.length > 0 && !selectedChannel) {
+      const match = channelList.find((c) => c.id === id)
+      if (match) setSelectedChannel(match)
+    }
+  }, [searchParams, channelList, selectedChannel])
 
   return (
     <div className="space-y-4">

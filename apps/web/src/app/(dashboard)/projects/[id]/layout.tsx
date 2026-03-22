@@ -11,6 +11,7 @@ import { useProject } from '@/hooks/use-projects'
 const TABS = [
   { label: 'Overview', href: '' },
   { label: 'Team', href: '/team' },
+  { label: 'Channels', href: '/channels' },
   { label: 'Scopes', href: '/scopes' },
   { label: 'Documents', href: '/documents' },
   { label: 'Safety', href: '/safety' },

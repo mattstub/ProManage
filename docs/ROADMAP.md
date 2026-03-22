@@ -181,17 +181,17 @@ Company-level modules that support all downstream project work.
 
 The central entity that all construction modules connect to.
 
-### 4.1 Project Entity
+### 4.1 Project Entity ✅ COMPLETE (Session 27, 2026-03-21)
 
-- [ ] Project CRUD
-- [ ] Project types: Commercial, Residential, Industrial, Municipal, Institutional
-- [ ] Support for multiple scopes under one contract
-- [ ] Support for multiple contracts under one project
-- [ ] Project status lifecycle
-- [ ] Project team assignment (from Contact Management)
-- [ ] Project-level settings and configuration
-- [ ] Project dashboard (health overview, key metrics)
-- [ ] Project Channels tab — surface project-scoped channels (projectId already on Channel model) within the project detail page; create/manage channels from inside the project file rather than only from global nav (deferred from Phase 2.3B)
+- [x] Project CRUD
+- [x] Project types: Commercial, Residential, Industrial, Municipal, Institutional
+- [x] Support for multiple scopes under one contract
+- [ ] Support for multiple contracts under one project — deferred to Phase 6.1 (Contracts module)
+- [x] Project status lifecycle
+- [x] Project team assignment (from Contact Management)
+- [x] Project-level settings and configuration
+- [x] Project dashboard (health overview, key metrics)
+- [x] Project Channels tab — project-scoped channels surfaced in project detail; create/manage channels with projectId pre-filled; Open link deep-links to main channels UI
 
 ### 4.2 Construction Documents ✅ COMPLETE (Session 25, 2026-03-21)
 
@@ -495,5 +495,5 @@ Each module follows a consistent pattern from the canvas:
 ---
 
 **Last Updated**: 2026-03-21
-**Status**: Active — Phase 4 in progress (4.3 Safety Job-Specific complete; 4.4 next)
+**Status**: Phase 4 COMPLETE — all sub-phases (4.1–4.3) done; Phase 5+ unlocked for parallel development
 **Source**: `notes/ProManage Suite.canvas`

@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-21 (Session 26 — Phase 4.3 Safety Job-Specific)
+**Last Updated**: 2026-03-21 (Session 27 — Phase 4.1 Channels Tab — Phase 4 COMPLETE)
 
 ---
 
@@ -74,8 +74,8 @@ apps/api/              COMPLETE through Phase 4.3
                          construction-documents, job-safety
   src/types/             fastify.d.ts (augmented with io, minio, sseClients)
   src/__tests__/         519 tests passing
-apps/web/              COMPLETE through Phase 4.3
-  src/app/               App Router: dashboard, projects (+ detail tabs: overview, team, scopes, documents, safety, settings),
+apps/web/              COMPLETE through Phase 4.1 (Phase 4 COMPLETE)
+  src/app/               App Router: dashboard, projects (+ detail tabs: overview, team, channels, scopes, documents, safety, settings),
                          tasks, procedures, calendar, messages, channels, contacts, licenses, safety
   src/components/        layout (sidebar, header, nav-item, notification-bell),
                          dashboard (stats-card, project-summary-list),
@@ -125,21 +125,22 @@ Root tooling:          COMPLETE (Sub-phase A)
 - **Phase 3.1 Contact Management**: COMPLETE — 8-type contact directory, search/filter, project associations, org-scoped email uniqueness
 - **Phase 3.2 Licensing**: COMPLETE — org + individual license tracking, freeform types, multi-doc upload (MinIO), configurable renewal reminders (≤7d daily / >7d once), SSE bell notifications
 - **Phase 3.3 Safety**: COMPLETE — 5-tab safety hub (document library, SDS catalog, toolbox talks + attendee roster, safety forms, incident reports)
-- **Phase 4.1 Project Entity Expansion**: COMPLETE — Project detail pages (Overview, Team, Scopes, Settings); 18 new API routes; ProjectScope + ProjectSettings models; dashboard metrics; 63 new tests
+- **Phase 4.1 Project Entity + Channels Tab**: COMPLETE — Project detail pages (Overview, Team, Channels, Scopes, Documents, Safety, Settings); `GET /channels?projectId=xxx` filtering; project channels page (create/list/delete/open); deep-link from project channels to main channels UI
 - **Phase 4.2 Construction Documents**: COMPLETE — Drawing log (per-sheet version history, user-defined disciplines), specification set management (freeform section numbers, conformed amendment tracking), MinIO file uploads, 21 new API routes, 28 new tests (495 total)
 - **Phase 4.3 Safety (Job-Specific)**: COMPLETE — JHAs (freeform, file upload), emergency contacts, project SDS binder (from org catalog), project-scoped views for safety docs/toolbox talks/incidents; 6-tab Safety tab on project detail page; 24 new API routes (job-safety), 24 new tests (519 total)
-- **API**: Runs on `http://localhost:3001` | Routes: /auth, /calendar-events, /channels, /construction-documents, /contacts, /dashboard, /licenses, /messages, /notifications, /organizations, /procedures, /projects (+ /:projectId/safety/... routes), /safety, /tasks, /users
-- **DB**: PostgreSQL in Docker. 43 models. `prisma db push` applied. SafetyDocument gained projectId.
-- **api-client**: Built — all resource namespaces including JobSafetyResource (17 methods)
+- **Phase 4 COMPLETE** — Phases 5–9 now unlocked for parallel development
+- **API**: Runs on `http://localhost:3001` | Routes: /auth, /calendar-events, /channels (+ ?projectId filter), /construction-documents, /contacts, /dashboard, /licenses, /messages, /notifications, /organizations, /procedures, /projects (+ /:projectId/safety/... routes), /safety, /tasks, /users
+- **DB**: PostgreSQL in Docker. 43 models. `prisma db push` applied.
+- **api-client**: Built — all resource namespaces including JobSafetyResource (17 methods); `channels.list()` accepts `{ projectId? }`
 - **ui-components**: Built (tsc --build, zero errors), 26 Radix+Tailwind components
 - **Sidebar**: Dashboard, Projects, Tasks, Procedures, Calendar, Channels, Contacts, Licenses, Safety, Messages, Organization, Settings
-- **Project Detail Tabs**: Overview, Team, Scopes, Documents, Safety (new), Settings
+- **Project Detail Tabs**: Overview, Team, Channels (new), Scopes, Documents, Safety, Settings
 - **Header**: NotificationBell with live badge + dropdown (SSE-powered)
 - **packages/core**: CommonJS output (fixed ESM seed issue; web/bundler still works fine)
 - **Tests**: 519 API tests, 97 core tests, web type-check clean, lint 0 errors
 - **Infrastructure**: COMPLETE and merged — Dockerfiles, CI/CD, structured logging, Sentry scaffold, Fastify 5 upgrade
-- **Branch**: `feat/phase4-subphase-4.3-safety-job-specific` — ready to PR
-- **Next**: Phase 4.4 or post-Phase 4 work (TBD)
+- **Branch**: `feat/phase4-subphase-4.1-channels-tab` — ready to PR
+- **Next**: Phase 5 (Pre-Construction & Estimation) or Phase 6 (Contract Administration) — discuss next session
 
 ### Seed Credentials
 

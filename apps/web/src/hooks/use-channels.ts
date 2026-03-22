@@ -28,6 +28,16 @@ export function useChannels() {
   })
 }
 
+export function useProjectChannels(projectId: string) {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
+
+  return useQuery({
+    queryKey: ['channels', 'project', projectId],
+    queryFn: () => getApiClient().channels.list({ projectId }),
+    enabled: isAuthenticated && Boolean(projectId),
+  })
+}
+
 export function useChannel(channelId: string | null) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
 

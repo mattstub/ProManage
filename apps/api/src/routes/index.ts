@@ -4,6 +4,7 @@ import channelRoutes from './channels'
 import constructionDocumentRoutes from './construction-documents'
 import contactRoutes from './contacts'
 import dashboardRoutes from './dashboard'
+import jobSafetyRoutes from './job-safety'
 import licenseRoutes from './licenses'
 import messageRoutes from './messages'
 import notificationRoutes from './notifications'
@@ -23,6 +24,7 @@ const routes: FastifyPluginAsync = async (fastify) => {
   fastify.register(contactRoutes, { prefix: '/contacts' })
   fastify.register(channelRoutes, { prefix: '/channels' })
   fastify.register(dashboardRoutes, { prefix: '/dashboard' })
+  fastify.register(jobSafetyRoutes, { prefix: '/projects' })
   fastify.register(licenseRoutes, { prefix: '/licenses' })
   fastify.register(messageRoutes, { prefix: '/messages' })
   fastify.register(notificationRoutes, { prefix: '/notifications' })

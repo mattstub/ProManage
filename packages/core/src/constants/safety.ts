@@ -4,6 +4,8 @@ import type {
   SafetyFormCategory,
   IncidentType,
   IncidentStatus,
+  JhaStatus,
+  EmergencyContactRole,
 } from '../types/safety'
 
 export const SAFETY_DOCUMENT_CATEGORIES: Record<SafetyDocumentCategory, { label: string }> = {
@@ -64,3 +66,39 @@ export const INCIDENT_STATUSES: Record<IncidentStatus, { label: string; color: s
 export const INCIDENT_STATUS_LIST = Object.entries(INCIDENT_STATUSES).map(
   ([value, meta]) => ({ value: value as IncidentStatus, ...meta })
 )
+
+// ─── Phase 4.3 — Job-Specific Safety ─────────────────────────────────────────
+
+export const JHA_STATUSES: Record<JhaStatus, { label: string; color: string }> = {
+  DRAFT:    { label: 'Draft',    color: 'gray'   },
+  ACTIVE:   { label: 'Active',   color: 'green'  },
+  ARCHIVED: { label: 'Archived', color: 'gray'   },
+}
+
+export const JHA_STATUS_LIST = Object.entries(JHA_STATUSES).map(
+  ([value, meta]) => ({ value: value as JhaStatus, ...meta })
+)
+
+export const EMERGENCY_CONTACT_ROLES: Record<EmergencyContactRole, { label: string }> = {
+  SITE_SUPERVISOR: { label: 'Site Supervisor' },
+  HOSPITAL:        { label: 'Hospital'        },
+  FIRE:            { label: 'Fire Department' },
+  POLICE:          { label: 'Police'          },
+  UTILITY:         { label: 'Utility'         },
+  OTHER:           { label: 'Other'           },
+}
+
+export const EMERGENCY_CONTACT_ROLE_LIST = Object.entries(EMERGENCY_CONTACT_ROLES).map(
+  ([value, meta]) => ({ value: value as EmergencyContactRole, ...meta })
+)
+
+export const ALLOWED_JHA_MIME_TYPES = [
+  'application/pdf',
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+] as const
+
+export const MAX_JHA_FILE_SIZE_BYTES = 25 * 1024 * 1024 // 25 MB

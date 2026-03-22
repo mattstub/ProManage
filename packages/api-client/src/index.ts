@@ -7,6 +7,7 @@ export { ConstructionDocumentsResource } from './resources/construction-document
 export { ContactsResource } from './resources/contacts'
 export { DashboardResource } from './resources/dashboard'
 export { HealthResource } from './resources/health'
+export { JobSafetyResource } from './resources/job-safety'
 export { LicensesResource } from './resources/licenses'
 export { MessagingResource } from './resources/messaging'
 export { NotificationsResource } from './resources/notifications'
@@ -49,6 +50,7 @@ export type {
   ListSafetyFormsParams,
   ListIncidentReportsParams,
 } from './resources/safety'
+export type { JhaUploadUrlResult, ListJhasParams, ListProjectSdsParams } from './resources/job-safety'
 export type { ListTasksParams } from './resources/tasks'
 
 import { ProManageClient } from './client'
@@ -59,6 +61,7 @@ import { ConstructionDocumentsResource } from './resources/construction-document
 import { ContactsResource } from './resources/contacts'
 import { DashboardResource } from './resources/dashboard'
 import { HealthResource } from './resources/health'
+import { JobSafetyResource } from './resources/job-safety'
 import { LicensesResource } from './resources/licenses'
 import { MessagingResource } from './resources/messaging'
 import { NotificationsResource } from './resources/notifications'
@@ -95,6 +98,7 @@ export interface ApiClient {
   contacts: ContactsResource
   dashboard: DashboardResource
   health: HealthResource
+  jobSafety: JobSafetyResource
   licenses: LicensesResource
   messaging: MessagingResource
   notifications: NotificationsResource
@@ -123,6 +127,7 @@ export function createApiClient(config: ClientConfig): ApiClient {
     contacts: new ContactsResource(core),
     dashboard: new DashboardResource(core),
     health: new HealthResource(core),
+    jobSafety: new JobSafetyResource(core),
     licenses: new LicensesResource(core),
     messaging: new MessagingResource(core),
     notifications: new NotificationsResource(core),

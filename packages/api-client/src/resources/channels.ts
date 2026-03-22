@@ -23,9 +23,10 @@ export class ChannelsResource {
 
   // ─── Channels ───────────────────────────────────────────────────────────────
 
-  /** List all channels visible to the current user in their organization. */
-  async list(): Promise<Channel[]> {
-    const res = await this.client.request<{ data: Channel[] }>('/api/v1/channels')
+  /** List all channels visible to the current user. Pass `projectId` to filter to a specific project. */
+  async list(params?: { projectId?: string }): Promise<Channel[]> {
+    const qs = params?.projectId ? `?projectId=${params.projectId}` : ''
+    const res = await this.client.request<{ data: Channel[] }>(`/api/v1/channels${qs}`)
     return res.data
   }
 

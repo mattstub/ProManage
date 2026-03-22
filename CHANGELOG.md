@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - Phase 4.1 Project Channels Tab (Session 27, 2026-03-21)
+
+- **apps/api service**: `listChannels` now accepts optional `projectId` filter — Prisma `where` clause scoped to project when provided
+- **apps/api route**: `GET /channels` now reads `?projectId` query param and passes it to service
+- **packages/api-client**: `channels.list()` accepts optional `{ projectId? }` params; appends `?projectId=xxx` to the request URL when provided
+- **apps/web hooks**: Added `useProjectChannels(projectId)` to `use-channels.ts` — fetches channels filtered by project, keyed as `['channels', 'project', projectId]`
+- **apps/web UI**: New `projects/[id]/channels/page.tsx` — project channels tab showing card list with channel name, slug, description, private/public badge; Create channel dialog (pre-fills projectId), Open link (deep-links to `/channels?id=channelId`), Delete button (Admin/PM/OfficeAdmin)
+- **apps/web UI**: `projects/[id]/layout.tsx` — added Channels tab between Team and Scopes
+- **apps/web UI**: Main `/channels` page now reads `?id=channelId` search param on mount and auto-selects the matching channel — enables deep linking from project channels tab
+
 ### Added - Phase 4.3 Safety Job-Specific (Session 26, 2026-03-21)
 
 - **Prisma schema**: 3 new models — `JobHazardAnalysis`, `ProjectEmergencyContact`, `ProjectSdsEntry` (43 models total). `SafetyDocument` gained optional `projectId`. Back-relations wired on Organization, Project, User.

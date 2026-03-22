@@ -106,12 +106,13 @@ export interface ListChannelsQuery {
 export async function listChannels(
   fastify: FastifyInstance,
   organizationId: string,
-  userRoles: string[]
+  userRoles: string[],
+  projectId?: string
 ) {
   const canManage = isManageRole(userRoles)
 
   const channels = await fastify.prisma.channel.findMany({
-    where: { organizationId },
+    where: { organizationId, ...(projectId ? { projectId } : {}) },
     select: {
       ...CHANNEL_SELECT,
       permissions: {

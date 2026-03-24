@@ -6,6 +6,7 @@ import {
   ChatBubbleLeftRightIcon,
   ClipboardDocumentListIcon,
   Cog6ToothIcon,
+  CubeIcon,
   DocumentTextIcon,
   FolderOpenIcon,
   HashtagIcon,
@@ -66,6 +67,18 @@ const NAV_ITEMS: NavItemConfig[] = [
     href: '/contacts',
     label: 'Contacts',
     icon: <UsersIcon className="h-5 w-5" />,
+  },
+  {
+    href: '/materials',
+    label: 'Materials',
+    icon: <CubeIcon className="h-5 w-5" />,
+    roles: ['Admin', 'ProjectManager', 'OfficeAdmin'] as RoleName[],
+  },
+  {
+    href: '/proposals',
+    label: 'Proposals',
+    icon: <DocumentTextIcon className="h-5 w-5" />,
+    roles: ['Admin', 'ProjectManager', 'OfficeAdmin'] as RoleName[],
   },
   {
     href: '/licenses',

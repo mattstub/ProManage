@@ -11,11 +11,14 @@ import calendarEventRoutes from '../../routes/calendar-events'
 import channelRoutes from '../../routes/channels'
 import constructionDocumentRoutes from '../../routes/construction-documents'
 import contactRoutes from '../../routes/contacts'
+import estimationRoutes from '../../routes/estimation'
 import jobSafetyRoutes from '../../routes/job-safety'
 import licenseRoutes from '../../routes/licenses'
+import materialRoutes from '../../routes/materials'
 import messageRoutes from '../../routes/messages'
 import notificationRoutes from '../../routes/notifications'
 import projectRoutes from '../../routes/projects'
+import proposalRoutes from '../../routes/proposals'
 import safetyRoutes from '../../routes/safety'
 import taskRoutes from '../../routes/tasks'
 
@@ -371,4 +374,71 @@ export async function buildConstructionDocumentTestApp(overridePrisma?: MockPris
   await app.ready()
 
   return { app, prisma, minio }
+}
+
+/**
+ * Builds a minimal Fastify instance for testing material routes.
+ * No file uploads — materials have no MinIO dependency.
+ */
+export async function buildMaterialTestApp(overridePrisma?: MockPrisma) {
+  const prisma = overridePrisma ?? createMockPrisma()
+
+  const app = Fastify({ logger: false })
+
+  await app.register(cookie)
+  await app.register(jwt, { secret: process.env['JWT_SECRET']! })
+  await app.register(rateLimit, { max: 1000, timeWindow: '1 minute' })
+
+  app.decorate('prisma', prisma as unknown as PrismaClient)
+
+  app.setErrorHandler(errorHandler)
+
+  await app.register(materialRoutes, { prefix: '/api/v1/materials' })
+  await app.ready()
+
+  return { app, prisma }
+}
+
+/**
+ * Builds a minimal Fastify instance for testing estimation routes.
+ */
+export async function buildEstimationTestApp(overridePrisma?: MockPrisma) {
+  const prisma = overridePrisma ?? createMockPrisma()
+
+  const app = Fastify({ logger: false })
+
+  await app.register(cookie)
+  await app.register(jwt, { secret: process.env['JWT_SECRET']! })
+  await app.register(rateLimit, { max: 1000, timeWindow: '1 minute' })
+
+  app.decorate('prisma', prisma as unknown as PrismaClient)
+
+  app.setErrorHandler(errorHandler)
+
+  await app.register(estimationRoutes, { prefix: '/api/v1/estimation' })
+  await app.ready()
+
+  return { app, prisma }
+}
+
+/**
+ * Builds a minimal Fastify instance for testing proposal routes.
+ */
+export async function buildProposalTestApp(overridePrisma?: MockPrisma) {
+  const prisma = overridePrisma ?? createMockPrisma()
+
+  const app = Fastify({ logger: false })
+
+  await app.register(cookie)
+  await app.register(jwt, { secret: process.env['JWT_SECRET']! })
+  await app.register(rateLimit, { max: 1000, timeWindow: '1 minute' })
+
+  app.decorate('prisma', prisma as unknown as PrismaClient)
+
+  app.setErrorHandler(errorHandler)
+
+  await app.register(proposalRoutes, { prefix: '/api/v1/proposals' })
+  await app.ready()
+
+  return { app, prisma }
 }

@@ -4,13 +4,16 @@ import channelRoutes from './channels'
 import constructionDocumentRoutes from './construction-documents'
 import contactRoutes from './contacts'
 import dashboardRoutes from './dashboard'
+import estimationRoutes from './estimation'
 import jobSafetyRoutes from './job-safety'
 import licenseRoutes from './licenses'
+import materialRoutes from './materials'
 import messageRoutes from './messages'
 import notificationRoutes from './notifications'
 import organizationRoutes from './organizations'
 import procedureRoutes from './procedures'
 import projectRoutes from './projects'
+import proposalRoutes from './proposals'
 import safetyRoutes from './safety'
 import taskRoutes from './tasks'
 import userRoutes from './users'
@@ -24,13 +27,16 @@ const routes: FastifyPluginAsync = async (fastify) => {
   fastify.register(contactRoutes, { prefix: '/contacts' })
   fastify.register(channelRoutes, { prefix: '/channels' })
   fastify.register(dashboardRoutes, { prefix: '/dashboard' })
+  fastify.register(estimationRoutes, { prefix: '/estimation' })
   fastify.register(jobSafetyRoutes, { prefix: '/projects' })
   fastify.register(licenseRoutes, { prefix: '/licenses' })
+  fastify.register(materialRoutes, { prefix: '/materials' })
   fastify.register(messageRoutes, { prefix: '/messages' })
   fastify.register(notificationRoutes, { prefix: '/notifications' })
   fastify.register(organizationRoutes, { prefix: '/organizations' })
   fastify.register(procedureRoutes, { prefix: '/procedures' })
   fastify.register(projectRoutes, { prefix: '/projects' })
+  fastify.register(proposalRoutes, { prefix: '/proposals' })
   fastify.register(safetyRoutes, { prefix: '/safety' })
   fastify.register(taskRoutes, { prefix: '/tasks' })
   fastify.register(userRoutes, { prefix: '/users' })

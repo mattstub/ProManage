@@ -205,3 +205,47 @@ export type {
   ChannelMemberLeftEvent,
   ChannelSocketEvent,
 } from './socket-events'
+
+export type {
+  MaterialUnit,
+  CostCode,
+  CreateCostCodeInput,
+  UpdateCostCodeInput,
+  MaterialPriceHistory,
+  Material,
+  CreateMaterialInput,
+  UpdateMaterialInput,
+} from './material'
+
+export type {
+  EstimateStatus,
+  EstimateUnit,
+  Estimate,
+  EstimateWithItems,
+  EstimateItem,
+  EstimateItemWithQuotes,
+  EstimateItemVendorQuote,
+  BidResult,
+  EstimateSummary,
+  CreateEstimateInput,
+  UpdateEstimateInput,
+  CreateEstimateItemInput,
+  UpdateEstimateItemInput,
+  CreateEstimateItemVendorQuoteInput,
+  CreateBidResultInput,
+  UpdateBidResultInput,
+} from './estimation'
+
+export type {
+  ProposalStatus,
+  ProposalLineItem,
+  Proposal,
+  ProposalWithRelations,
+  ProposalTemplate,
+  CreateProposalInput,
+  CreateProposalLineItemInput,
+  UpdateProposalInput,
+  UpsertProposalLineItemsInput,
+  CreateProposalTemplateInput,
+  UpdateProposalTemplateInput,
+} from './proposal'

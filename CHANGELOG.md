@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - Phase 5 Pre-Construction & Estimation (Session 28, 2026-03-23)
+
+- **Prisma schema**: 10 new models — `CostCode`, `Material`, `MaterialPriceHistory`, `Estimate`, `EstimateItem`, `EstimateItemVendorQuote`, `BidResult`, `ProposalTemplate`, `Proposal`, `ProposalLineItem` (53 models total). Back-relations added to Organization (8), User (4), Project (2), Contact (2).
+- **packages/core**: New types (`material.ts`, `estimation.ts`, `proposal.ts`), schemas (`material.ts`, `estimation.ts`, `proposal.ts`), constants (`material.ts`, `estimation.ts`, `proposal.ts`). All exported from index files.
+- **apps/api services**: `material.service.ts` (CostCode CRUD + paginated material CRUD with `$transaction` price history seeding + 6-month auto-prune), `estimation.service.ts` (Estimate/Item/VendorQuote/BidResult CRUD; denormalized `totalCost` recomputed via `estimateItem.aggregate` on every item mutation), `proposal.service.ts` (Proposal/LineItem/Template CRUD; auto-increment proposalNumber per org; submittedAt auto-set on SENT; `$transaction` upsert for line items).
+- **apps/api routes**: `/api/v1/materials` (11 routes), `/api/v1/estimation` (22 routes), `/api/v1/proposals` (13 routes). RBAC enforced per resource.
+- **apps/api tests**: `material.routes.test.ts`, `estimation.routes.test.ts`, `proposal.routes.test.ts` — 53 new tests. 572 total (26 test files).
+- **packages/api-client**: `MaterialsResource` (9 methods), `EstimationResource` (18 methods), `ProposalsResource` (11 methods) added to `ApiClient` interface and `createApiClient()` factory.
+- **apps/web hooks**: `use-materials.ts` (10 hooks), `use-estimation.ts` (14 hooks), `use-proposals.ts` (10 hooks).
+- **apps/web UI**: `materials/page.tsx` — two-tab page (Materials: paginated table with filter bar + price history dialog; Cost Codes: CRUD table). `proposals/page.tsx` — two-tab page (Proposals: status-filtered table with create/edit/delete; Templates: CRUD table). `projects/[id]/estimates/page.tsx` — split-panel UI (estimate list + detail with Line Items tab + Bid Results tab). Estimates tab added to project layout. Materials + Proposals added to sidebar.
+
 ### Added - Phase 4.1 Project Channels Tab (Session 27, 2026-03-21)
 
 - **apps/api service**: `listChannels` now accepts optional `projectId` filter — Prisma `where` clause scoped to project when provided

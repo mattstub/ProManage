@@ -249,3 +249,16 @@ export type {
   CreateProposalTemplateInput,
   UpdateProposalTemplateInput,
 } from './proposal'
+
+export type {
+  ContractType,
+  ContractStatus,
+  ContractDocumentType,
+  ContractDocumentStatus,
+  Contract,
+  ContractDocument,
+  CreateContractInput,
+  UpdateContractInput,
+  CreateContractDocumentInput,
+  UpdateContractDocumentInput,
+} from './contract'

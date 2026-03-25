@@ -11,6 +11,7 @@ import calendarEventRoutes from '../../routes/calendar-events'
 import channelRoutes from '../../routes/channels'
 import constructionDocumentRoutes from '../../routes/construction-documents'
 import contactRoutes from '../../routes/contacts'
+import contractRoutes from '../../routes/contracts'
 import estimationRoutes from '../../routes/estimation'
 import jobSafetyRoutes from '../../routes/job-safety'
 import licenseRoutes from '../../routes/licenses'
@@ -419,6 +420,31 @@ export async function buildEstimationTestApp(overridePrisma?: MockPrisma) {
   await app.ready()
 
   return { app, prisma }
+}
+
+/**
+ * Builds a minimal Fastify instance for testing contract routes.
+ * Decorates fastify.minio with a mock client (contract document upload).
+ */
+export async function buildContractTestApp(overridePrisma?: MockPrisma) {
+  const prisma = overridePrisma ?? createMockPrisma()
+  const minio = createMockMinio()
+
+  const app = Fastify({ logger: false })
+
+  await app.register(cookie)
+  await app.register(jwt, { secret: process.env['JWT_SECRET']! })
+  await app.register(rateLimit, { max: 1000, timeWindow: '1 minute' })
+
+  app.decorate('prisma', prisma as unknown as PrismaClient)
+  app.decorate('minio', minio)
+
+  app.setErrorHandler(errorHandler)
+
+  await app.register(contractRoutes, { prefix: '/api/v1/contracts' })
+  await app.ready()
+
+  return { app, prisma, minio }
 }
 
 /**

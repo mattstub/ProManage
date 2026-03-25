@@ -259,13 +259,15 @@ Modules that handle everything before construction begins — from bid to award.
 
 Managing the contractual and documentation lifecycle during construction.
 
-### 6.1 Contracts
+### 6.1 Contracts ✅ COMPLETE
 
-- [ ] Contract CRUD with types: Lump Sum, Cost Plus, Time & Materials, Unit Price
-- [ ] Schema: project, contract number/date/status/amount, customer project number, scope (linked proposal), retention rate, wage requirements, tax status, liquidated damages, bonding, billing date
-- [ ] Contract-to-bid comparison
-- [ ] Sales tax letter request and dissemination automation
-- [ ] Insurance and bonding request workflows
+- [x] Contract CRUD with types: Lump Sum, Cost Plus, Time & Materials, Unit Price
+- [x] Schema: project, contract number/date/status/amount, customer project number, linked proposal (nullable), retention rate, wage requirements, tax status, liquidated damages, bonding, billing date
+- [x] Contract documents with file upload/download (MinIO presigned URLs) and status flags (Requested/Received/Expired/Waived)
+- [x] Contracts tab on project detail page (split-panel UI)
+- [ ] Contract-to-bid comparison (deferred)
+- [ ] Sales tax letter request and dissemination automation (deferred)
+- [ ] Insurance and bonding request workflows (deferred)
 
 ### 6.2 Submittals
 

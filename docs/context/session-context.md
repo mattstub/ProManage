@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-24 (Session 29 — Dependabot maintenance: Prisma 7 pinned back, 0 vulns, Docker health fix)
+**Last Updated**: 2026-03-25 (Session 30 — Phase 6.1 Contracts: schema, core, api service/routes/tests, api-client, web hooks + UI)
 
 ---
 
@@ -59,9 +59,8 @@
 
 ```bash
 ProManage/
-apps/api/              COMPLETE through Phase 5
-  prisma/schema.prisma   53 models (+ CostCode, Material, MaterialPriceHistory, Estimate, EstimateItem,
-                         EstimateItemVendorQuote, BidResult, ProposalTemplate, Proposal, ProposalLineItem)
+apps/api/              COMPLETE through Phase 6.1
+  prisma/schema.prisma   55 models (+ Contract, ContractDocument + 4 enums)
   prisma/seed.ts         demo org, 6 roles, 64 perms, 3 users, 2 projects, 2 channels, 3 contacts, 2 licenses, safety demo data, 6 disciplines
   src/config/            Zod env validation
   src/lib/               errors, response helpers, pino logger, rate-limit, sse
@@ -70,43 +69,44 @@ apps/api/              COMPLETE through Phase 5
   src/routes/            health, auth, users, organizations, projects, dashboard, tasks, procedures,
                          notifications, messages, calendar-events, channels, contacts, licenses, safety,
                          construction-documents, job-safety (under /projects/:projectId/safety/...),
-                         estimation (/api/v1/estimation), materials (/api/v1/materials), proposals (/api/v1/proposals)
+                         estimation (/api/v1/estimation), materials (/api/v1/materials),
+                         proposals (/api/v1/proposals), contracts (/api/v1/contracts) (NEW)
   src/services/          auth, user, org, token, password, project, dashboard, task, procedure,
                          notification, messaging, calendar-event, channel, contact, license, safety,
-                         construction-documents, job-safety, estimation, material, proposal
+                         construction-documents, job-safety, estimation, material, proposal, contract (NEW)
   src/types/             fastify.d.ts (augmented with io, minio, sseClients)
-  src/__tests__/         572 tests passing (26 test files)
-apps/web/              COMPLETE through Phase 5
+  src/__tests__/         594 tests passing (27 test files)
+apps/web/              COMPLETE through Phase 6.1
   src/app/               App Router: dashboard, projects (+ detail tabs: overview, team, channels, scopes,
-                         estimates (NEW), documents, safety, settings), tasks, procedures, calendar,
-                         messages, channels, contacts, licenses, safety, materials (NEW), proposals (NEW)
+                         estimates, contracts (NEW), documents, safety, settings), tasks, procedures, calendar,
+                         messages, channels, contacts, licenses, safety, materials, proposals
   src/components/        layout (sidebar, header, nav-item, notification-bell),
                          dashboard (stats-card, project-summary-list),
                          channels (chat-panel, thread-panel, attachment-uploader, create-dialog, settings-panel)
   src/hooks/             use-auth, use-dashboard-stats, use-organization, use-procedures, use-projects,
                          use-tasks, use-users, use-notifications, use-messaging, use-calendar-events,
                          use-channels, use-socket, use-contacts, use-licenses, use-safety,
-                         use-construction-documents, use-job-safety, use-materials (NEW),
-                         use-estimation (NEW), use-proposals (NEW)
+                         use-construction-documents, use-job-safety, use-materials,
+                         use-estimation, use-proposals, use-contracts (NEW)
   src/lib/               api-client singleton (with resetSocket on auth error), query-client
 apps/mobile/           DEFERRED
 
-packages/core/         COMPLETE through Phase 5
+packages/core/         COMPLETE through Phase 6.1
   src/types/             api, auth, user, role, org, project, task, dashboard, procedure,
                          notification, messaging, calendar-event, channel, socket-events, license, safety,
-                         construction-documents, material (NEW), estimation (NEW), proposal (NEW)
+                         construction-documents, material, estimation, proposal, contract (NEW)
   src/schemas/           auth, user, org, project, task, procedure, messaging, calendar-event, channel, license, safety,
-                         construction-documents, material (NEW), estimation (NEW), proposal (NEW)
+                         construction-documents, material, estimation, proposal, contract (NEW)
   src/constants/         roles, permissions, project-status, task-status, api, procedure-status,
                          notification, calendar-event, channel, license, safety, construction-documents,
-                         material (NEW), estimation (NEW), proposal (NEW)
+                         material, estimation, proposal, contract (NEW)
   src/utils/             pagination, format-date, format-currency
   src/__tests__/         97 tests
-packages/api-client/   COMPLETE through Phase 5
+packages/api-client/   COMPLETE through Phase 6.1
   src/resources/         auth, users, organizations, health, projects, dashboard, tasks,
                          procedures, notifications, messaging, calendar-events, channels, contacts, licenses, safety,
-                         construction-documents, job-safety, materials (NEW), estimation (NEW), proposals (NEW)
-  src/index.ts           createApiClient() factory + all exports (materials, estimation, proposals added)
+                         construction-documents, job-safety, materials, estimation, proposals, contracts (NEW)
+  src/index.ts           createApiClient() factory + all exports (contracts added)
 packages/ui-components/ COMPLETE (Sub-phase F - 30 files, 26 components)
 
 Root tooling:          COMPLETE (Sub-phase A)
@@ -115,39 +115,22 @@ Root tooling:          COMPLETE (Sub-phase A)
 
 ---
 
-## Current State (2026-03-23)
+## Current State (2026-03-25)
 
-- **Phase 1, Sub-phases A-G**: COMPLETE (~150 source files)
-- **Phase 2.1 Dashboard**: COMPLETE — real data, projects list, stats widgets, role-aware sidebar
-- **Phase 2.2 Notifications**: COMPLETE — SSE real-time push, bell component, auto-notify on task assignment
-- **Phase 2.3A Async Messaging**: COMPLETE — DMs (thread model) + Announcements (role-targeted, scheduled)
-- **Phase 2.3B Channel Chat**: COMPLETE — Socket.io channels, per-role permissions, file uploads via MinIO, message threading, real-time delivery
-- **Phase 2.4 Calendar**: COMPLETE — custom month-view calendar, full CRUD with RBAC
-- **Phase 2.5 Task Management**: COMPLETE — full CRUD with RBAC
-- **Phase 2.6 Procedures**: COMPLETE — full CRUD with RBAC
-- **Phase 3.1 Contact Management**: COMPLETE — 8-type contact directory, search/filter, project associations, org-scoped email uniqueness
-- **Phase 3.2 Licensing**: COMPLETE — org + individual license tracking, freeform types, multi-doc upload (MinIO), configurable renewal reminders (≤7d daily / >7d once), SSE bell notifications
-- **Phase 3.3 Safety**: COMPLETE — 5-tab safety hub (document library, SDS catalog, toolbox talks + attendee roster, safety forms, incident reports)
-- **Phase 4.1 Project Entity + Channels Tab**: COMPLETE — Project detail pages (Overview, Team, Channels, Scopes, Documents, Safety, Settings); `GET /channels?projectId=xxx` filtering; project channels page (create/list/delete/open); deep-link from project channels to main channels UI
-- **Phase 4.2 Construction Documents**: COMPLETE — Drawing log (per-sheet version history, user-defined disciplines), specification set management (freeform section numbers, conformed amendment tracking), MinIO file uploads, 21 new API routes, 28 new tests (495 total)
-- **Phase 4.3 Safety (Job-Specific)**: COMPLETE — JHAs (freeform, file upload), emergency contacts, project SDS binder (from org catalog), project-scoped views for safety docs/toolbox talks/incidents; 6-tab Safety tab on project detail page; 24 new API routes (job-safety), 24 new tests (519 total)
-- **Phase 4 COMPLETE** — Phases 5–9 now unlocked for parallel development
-- **Phase 5.1 Estimation**: COMPLETE — Estimate → EstimateItem → EstimateItemVendorQuote; BidResult; denormalized totalCost (auto-recomputed via aggregate); 22 API routes, project Estimates tab
-- **Phase 5.2 Material Database**: COMPLETE — CostCode + Material + MaterialPriceHistory (6-month auto-prune); paginated material list; 11 API routes; standalone Materials page with cost codes sub-tab
-- **Phase 5.3 Proposals**: COMPLETE — Proposal (auto-increment proposalNumber per org) + ProposalLineItem + ProposalTemplate; status auto-sets submittedAt on SENT; createFromEstimate stub (501); 13 API routes; standalone Proposals page with templates sub-tab
-- **Phase 5 COMPLETE**
+- **Phase 1–5**: COMPLETE
+- **Phase 6.1 Contracts**: COMPLETE — Contract + ContractDocument models; 11 API routes; 22 new tests (594 total); ContractsResource in api-client; Contracts tab on project detail with split-panel UI, document management + file upload/download
 - **API**: Runs on `http://localhost:3001`
-- **DB**: PostgreSQL in Docker. 53 models. `prisma db push` applied.
-- **api-client**: Built — all resource namespaces; materials, estimation, proposals added
+- **DB**: PostgreSQL in Docker. 55 models. `prisma db push` applied.
+- **api-client**: Built — all resource namespaces; contracts added
 - **ui-components**: Built (tsc --build, zero errors), 26 Radix+Tailwind components
-- **Sidebar**: Dashboard, Projects, Tasks, Procedures, Calendar, Channels, Contacts, Licenses, Safety, Messages, Materials (new), Proposals (new), Organization, Settings
-- **Project Detail Tabs**: Overview, Team, Channels, Scopes, Estimates (new), Documents, Safety, Settings
+- **Sidebar**: Dashboard, Projects, Tasks, Procedures, Calendar, Channels, Contacts, Licenses, Safety, Messages, Materials, Proposals, Organization, Settings
+- **Project Detail Tabs**: Overview, Team, Channels, Scopes, Estimates, Contracts (new), Documents, Safety, Settings
 - **Header**: NotificationBell with live badge + dropdown (SSE-powered)
 - **packages/core**: CommonJS output (fixed ESM seed issue; web/bundler still works fine)
-- **Tests**: 572 API tests, 97 core tests, web type-check clean, lint 0 errors
+- **Tests**: 594 API tests, 97 core tests, web type-check clean, lint 0 errors
 - **Infrastructure**: COMPLETE and merged — Dockerfiles, CI/CD, structured logging, Sentry scaffold, Fastify 5 upgrade
-- **Branch**: `feat/phase5-pre-construction-estimation`
-- **Next**: Phase 6 (Contract Administration) — RFIs, Submittals, Change Orders, Purchase Orders
+- **Branch**: `feat/phase5-pre-construction` (ready to push Phase 6.1 work)
+- **Next**: Phase 6.2+ (RFIs, Submittals, Change Orders, Purchase Orders)
 
 ### Seed Credentials
 

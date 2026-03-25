@@ -3,6 +3,7 @@ export { ApiClientError } from './errors'
 export { AuthResource } from './resources/auth'
 export { CalendarEventsResource } from './resources/calendar-events'
 export { ChannelsResource } from './resources/channels'
+export { ContractsResource } from './resources/contracts'
 export { ConstructionDocumentsResource } from './resources/construction-documents'
 export { ContactsResource } from './resources/contacts'
 export { DashboardResource } from './resources/dashboard'
@@ -55,6 +56,7 @@ export type {
 } from './resources/safety'
 export type { JhaUploadUrlResult, ListJhasParams, ListProjectSdsParams } from './resources/job-safety'
 export type { ListMaterialsParams } from './resources/materials'
+export type { ListContractsParams } from './resources/contracts'
 export type { ListProposalsParams } from './resources/proposals'
 export type { ListTasksParams } from './resources/tasks'
 
@@ -64,6 +66,7 @@ import { CalendarEventsResource } from './resources/calendar-events'
 import { ChannelsResource } from './resources/channels'
 import { ConstructionDocumentsResource } from './resources/construction-documents'
 import { ContactsResource } from './resources/contacts'
+import { ContractsResource } from './resources/contracts'
 import { DashboardResource } from './resources/dashboard'
 import { EstimationResource } from './resources/estimation'
 import { HealthResource } from './resources/health'
@@ -104,6 +107,7 @@ export interface ApiClient {
   channels: ChannelsResource
   constructionDocuments: ConstructionDocumentsResource
   contacts: ContactsResource
+  contracts: ContractsResource
   dashboard: DashboardResource
   health: HealthResource
   jobSafety: JobSafetyResource
@@ -136,6 +140,7 @@ export function createApiClient(config: ClientConfig): ApiClient {
     channels: new ChannelsResource(core),
     constructionDocuments: new ConstructionDocumentsResource(core),
     contacts: new ContactsResource(core),
+    contracts: new ContractsResource(core),
     dashboard: new DashboardResource(core),
     health: new HealthResource(core),
     jobSafety: new JobSafetyResource(core),

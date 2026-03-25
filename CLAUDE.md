@@ -81,6 +81,7 @@ cd apps/api && npx prisma db push --force-reset && npx ts-node prisma/seed.ts
 - **Phase 3** (Contacts & Company Setup): COMPLETE — 3.1 Contact Management COMPLETE; 3.2 Licensing COMPLETE; 3.3 Safety COMPLETE
 - **Phase 4** (Project Management Core): ALL COMPLETE — 4.1 Project Entity + Channels Tab COMPLETE; 4.2 Construction Documents COMPLETE; 4.3 Safety Job-Specific COMPLETE
 - **Phase 5** (Pre-Construction & Estimation): ALL COMPLETE — 5.1 Estimation COMPLETE; 5.2 Material Database COMPLETE; 5.3 Proposal & Bid Management COMPLETE
+- **Phase 6** (Contract Administration): IN PROGRESS — 6.1 Contracts COMPLETE; 6.2–6.6 pending
 - Full roadmap: `docs/ROADMAP.md`
 
 ---

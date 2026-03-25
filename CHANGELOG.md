@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - Phase 6.1 Contract Administration (Session 30, 2026-03-25)
+
+- **Prisma schema**: 2 new models — `Contract` (ContractType/ContractStatus enums, Decimal amount/retentionRate/liquidatedDamagesRate, nullable proposalId) + `ContractDocument` (ContractDocumentType/ContractDocumentStatus enums, MinIO fileKey/fileName/fileSize). 4 new enums. 55 models total. Back-relations added to Organization, Project, Proposal, User.
+- **packages/core**: New `types/contract.ts`, `schemas/contract.ts`, `constants/contract.ts` — Contract + ContractDocument CRUD types, Zod validation schemas, list arrays and Record lookups for all 4 enum sets. Exported from all index files.
+- **apps/api service**: `contract.service.ts` — 12 exported functions: `listContracts`, `getContract`, `createContract` (P2002 → 409), `updateContract`, `deleteContract`, `listContractDocuments`, `createContractDocument`, `updateContractDocument`, `deleteContractDocument`, `getContractDocumentUploadUrl` (presigned PUT + fileKey persisted), `getContractDocumentDownloadUrl`.
+- **apps/api routes**: `/api/v1/contracts` — 11 routes. WRITE_ROLES = Admin, ProjectManager, OfficeAdmin. Read routes unauthenticated-friendly.
+- **apps/api tests**: `contract.routes.test.ts` — 22 tests, 594 total (27 test files). `mock-prisma.ts` + `build-app.ts` updated with `contract`/`contractDocument` mocks and `buildContractTestApp` helper.
+- **packages/api-client**: `ContractsResource` (10 methods: list, get, create, update, delete, listDocuments, createDocument, updateDocument, deleteDocument, getDocumentUploadUrl, getDocumentDownloadUrl). Added to `ApiClient` interface + `createApiClient()` factory.
+- **apps/web hooks**: `use-contracts.ts` — 12 hooks for full contract + document lifecycle.
+- **apps/web UI**: `projects/[id]/contracts/page.tsx` — split-panel layout (contract list + detail panel with Details + Documents tabs). Contract form includes all fields (type, amount, retention, dates, bonded, liquidated damages, wage requirements). Document panel includes file upload (presigned PUT), download, and status management. Contracts tab added to project layout.
+
 ### Maintenance — Dependabot Security/Upgrade Pass (Session 29, 2026-03-24)
 
 - **apps/api `package.json`**: Pinned `@prisma/client` and `prisma` back to `^5.22.0` — Prisma 7 requires a full schema migration (`prisma.config.ts` + removing `url` from datasource) that is deferred as a dedicated task

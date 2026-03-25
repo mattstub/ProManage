@@ -13,7 +13,7 @@ ProManage is a free, open-source platform designed to help small and mid-sized c
 
 ## Current Status
 
-> **Phase 5 Pre-Construction & Estimation — COMPLETE | Working toward Phase 6 (Contract Administration)**
+> **Phase 6.1 Contracts — COMPLETE | Working toward Phase 6.2 (RFIs & Submittals)**
 
 ## Features
 
@@ -33,6 +33,7 @@ ProManage is a free, open-source platform designed to help small and mid-sized c
 - **Estimation** — Estimate → line items → vendor quotes; BidResult tracking; denormalized total cost auto-recomputed; split-panel project Estimates tab
 - **Material Database** — CostCode catalog, paginated material list with price history (6-month auto-prune), standalone Materials page
 - **Proposals & Bid Management** — Proposals with auto-incremented proposal numbers, line items, reusable templates; status tracking (Draft → Sent → Accepted/Rejected/Revised)
+- **Contract Administration** — Project-linked contracts (Lump Sum / Cost Plus / T&M / Unit Price); retention rate, liquidated damages, bonding, wage requirements; contract documents with file upload/download (MinIO presigned URLs) and status tracking (Requested/Received/Expired/Waived)
 
 ## Architecture
 
@@ -169,7 +170,7 @@ npx ts-node prisma/seed.ts
 ```bash
 pnpm test                              # all packages via Turborepo
 pnpm --filter @promanage/core test     # core unit tests only (97 tests)
-pnpm --filter @promanage/api test      # API service + route tests (572 tests)
+pnpm --filter @promanage/api test      # API service + route tests (594 tests)
 ```
 
 ### Type-check the web app
@@ -195,7 +196,7 @@ pnpm --filter @promanage/core build
 ProManage/
 ├── apps/
 │   ├── api/                # Fastify API server (TypeScript, Prisma, JWT auth)
-│   │   ├── prisma/         # Schema (53 models), seed script
+│   │   ├── prisma/         # Schema (55 models), seed script
 │   │   └── src/
 │   │       ├── routes/     # auth, calendar-events, channels, construction-documents,
 │   │       │               # contacts, dashboard, estimation, job-safety, licenses,

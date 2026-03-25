@@ -63,6 +63,8 @@ model Organization {
   proposals                Proposal[]
   proposalTemplates        ProposalTemplate[]
 
+  contracts Contract[]
+
   @@map("organizations")
 }
 
@@ -127,6 +129,9 @@ model User {
   materialPriceHistoryEntries MaterialPriceHistory[] @relation("MaterialPriceHistoryRecorder")
   estimatesCreated            Estimate[]            @relation("EstimateCreator")
   proposalsCreated            Proposal[]            @relation("ProposalCreator")
+
+  contractsCreated          Contract[]         @relation("ContractCreator")
+  contractDocumentsUploaded ContractDocument[] @relation("ContractDocumentUploader")
 
   @@index([organizationId])
   @@index([email])
@@ -264,6 +269,7 @@ model Project {
 
   estimates  Estimate[]
   proposals  Proposal[]
+  contracts  Contract[]
 
   @@unique([number, organizationId])
   @@index([organizationId])
@@ -1380,6 +1386,7 @@ model Proposal {
   createdById String @map("created_by_id")
 
   lineItems ProposalLineItem[]
+  contracts Contract[]
 
   @@unique([organizationId, proposalNumber])
   @@index([organizationId])
@@ -1407,4 +1414,108 @@ model ProposalLineItem {
 
   @@index([proposalId])
   @@map("proposal_line_items")
+}
+
+// ===========================================
+// PHASE 6.1 — CONTRACTS
+// ===========================================
+
+enum ContractType {
+  LUMP_SUM
+  COST_PLUS
+  TIME_AND_MATERIALS
+  UNIT_PRICE
+}
+
+enum ContractStatus {
+  DRAFT
+  PENDING_SIGNATURE
+  ACTIVE
+  COMPLETED
+  TERMINATED
+  ON_HOLD
+}
+
+enum ContractDocumentType {
+  INSURANCE
+  BONDING
+  SALES_TAX_REQUEST
+  SALES_TAX_EXEMPTION
+  OTHER
+}
+
+enum ContractDocumentStatus {
+  REQUESTED
+  RECEIVED
+  EXPIRED
+  WAIVED
+}
+
+model Contract {
+  id                    String         @id @default(cuid())
+  contractNumber        String         @map("contract_number")
+  type                  ContractType   @map("type")
+  status                ContractStatus @default(DRAFT) @map("status")
+  amount                Decimal        @map("amount") @db.Decimal(15, 2)
+  customerProjectNumber String?        @map("customer_project_number")
+  retentionRate         Decimal?       @map("retention_rate") @db.Decimal(5, 2) // percentage e.g. 10.00
+  wageRequirements      String?        @map("wage_requirements")                 // prevailing wage, Davis-Bacon, etc.
+  taxStatus             String?        @map("tax_status")                        // taxable | exempt | partial
+  liquidatedDamages     Boolean        @default(false) @map("liquidated_damages")
+  liquidatedDamagesRate Decimal?       @map("liquidated_damages_rate") @db.Decimal(12, 2) // per-day rate
+  bonded                Boolean        @default(false) @map("bonded")
+  billingDate           DateTime?      @map("billing_date")
+  startDate             DateTime?      @map("start_date")
+  executedDate          DateTime?      @map("executed_date")
+  description           String?
+  notes                 String?
+  createdAt             DateTime       @default(now()) @map("created_at")
+  updatedAt             DateTime       @updatedAt @map("updated_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @map("organization_id")
+
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String  @map("project_id")
+
+  proposal   Proposal? @relation(fields: [proposalId], references: [id], onDelete: SetNull)
+  proposalId String?   @map("proposal_id")
+
+  createdBy   User   @relation("ContractCreator", fields: [createdById], references: [id])
+  createdById String @map("created_by_id")
+
+  documents ContractDocument[]
+
+  @@unique([organizationId, contractNumber])
+  @@index([organizationId])
+  @@index([projectId])
+  @@index([proposalId])
+  @@index([status])
+  @@map("contracts")
+}
+
+model ContractDocument {
+  id         String                 @id @default(cuid())
+  type       ContractDocumentType   @map("type")
+  name       String
+  status     ContractDocumentStatus @default(REQUESTED) @map("status")
+  fileKey    String?                @map("file_key")
+  fileName   String?                @map("file_name")
+  fileSize   Int?                   @map("file_size")
+  mimeType   String?                @map("mime_type")
+  notes      String?
+  expiresAt  DateTime?              @map("expires_at")
+  receivedAt DateTime?              @map("received_at")
+  createdAt  DateTime               @default(now()) @map("created_at")
+  updatedAt  DateTime               @updatedAt @map("updated_at")
+
+  contract   Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  contractId String   @map("contract_id")
+
+  uploadedBy   User?   @relation("ContractDocumentUploader", fields: [uploadedById], references: [id])
+  uploadedById String? @map("uploaded_by_id")
+
+  @@index([contractId])
+  @@index([uploadedById])
+  @@map("contract_documents")
 }

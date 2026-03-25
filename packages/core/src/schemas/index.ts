@@ -185,3 +185,10 @@ export {
   type CreateProposalTemplateSchemaInput,
   type UpdateProposalTemplateSchemaInput,
 } from './proposal'
+
+export {
+  createContractSchema,
+  updateContractSchema,
+  createContractDocumentSchema,
+  updateContractDocumentSchema,
+} from './contract'

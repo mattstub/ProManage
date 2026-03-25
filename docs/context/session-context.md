@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-23 (Session 28 — Phase 5 Pre-Construction & Estimation COMPLETE)
+**Last Updated**: 2026-03-24 (Session 29 — Dependabot maintenance: Prisma 7 pinned back, 0 vulns, Docker health fix)
 
 ---
 
@@ -224,6 +224,14 @@ See: docs/ROADMAP.md
 ---
 
 ## Session Log
+
+### Session 29 — 2026-03-24
+
+- **Dependabot maintenance** — assessed all merged security/upgrade PRs, verified operational health:
+  - **Fastify 5, Next 16, Tailwind 4, TanStack Query 5.95, react-hook-form 7.72, bcrypt 6, dotenv 17, pino 10, vitest 4**: All already installed via lockfile; type-check clean; 572 tests passing — no code changes needed
+  - **Prisma 7 (BLOCKED)**: Requires removing `url = env("DATABASE_URL")` from `schema.prisma` and creating `prisma.config.ts`; pinned back to `^5.22.0` in `apps/api/package.json`. Deferred as a dedicated migration task.
+  - **Vulnerabilities**: Added `pnpm.overrides` in root `package.json` — `socket.io-parser >=4.2.6` + `fast-xml-parser >=5.5.9`. Audit: **0 vulnerabilities** (was 15: 5 high, 9 moderate, 1 low)
+  - **Docker health checks**: Fixed API + web health check to use `127.0.0.1` instead of `localhost` — busybox wget couldn't resolve `localhost`, causing `promanage-api` to report unhealthy despite server responding correctly
 
 ### Session 28 — 2026-03-23
 

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Maintenance — Dependabot Security/Upgrade Pass (Session 29, 2026-03-24)
+
+- **apps/api `package.json`**: Pinned `@prisma/client` and `prisma` back to `^5.22.0` — Prisma 7 requires a full schema migration (`prisma.config.ts` + removing `url` from datasource) that is deferred as a dedicated task
+- **root `package.json`**: Added `pnpm.overrides` to force patched transitive deps — `socket.io-parser >=4.2.6` (GHSA unbounded binary attachments), `fast-xml-parser >=5.5.9` (GHSA numeric entity expansion bypass) — audit now reports **0 vulnerabilities**
+- **`docker-compose.yml`**: Fixed API and web container health checks to use `127.0.0.1` instead of `localhost` — busybox wget in Alpine does not reliably resolve `localhost` via `/etc/hosts`
+- **pnpm lockfile**: Synced — eslint 10.0.3→10.1.0, turbo 2.8.17→2.8.20; all other Dependabot upgrades (Fastify 5, Next 16, TanStack Query 5.95, react-hook-form 7.72, Tailwind 4, bcrypt 6, dotenv 17, pino 10, vitest 4) are already reflected in installed packages and pass type-check + all 572 API tests
+
 ### Added - Phase 5 Pre-Construction & Estimation (Session 28, 2026-03-23)
 
 - **Prisma schema**: 10 new models — `CostCode`, `Material`, `MaterialPriceHistory`, `Estimate`, `EstimateItem`, `EstimateItemVendorQuote`, `BidResult`, `ProposalTemplate`, `Proposal`, `ProposalLineItem` (53 models total). Back-relations added to Organization (8), User (4), Project (2), Contact (2).

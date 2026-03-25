@@ -34,7 +34,7 @@
     "@promanage/core": "workspace:*",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.3.1",
-    "fastify": "^5.8.1",
+    "fastify": "^5.8.3",
     "fastify-plugin": "^5.0.0",
     "minio": "^8.0.7",
     "pino": "^10.3.1",

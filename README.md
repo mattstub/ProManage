@@ -13,7 +13,7 @@ ProManage is a free, open-source platform designed to help small and mid-sized c
 
 ## Current Status
 
-> **Phase 4.2 Construction Documents — COMPLETE | Working toward Phase 4.3**
+> **Phase 5 Pre-Construction & Estimation — COMPLETE | Working toward Phase 6 (Contract Administration)**
 
 ## Features
 
@@ -29,6 +29,10 @@ ProManage is a free, open-source platform designed to help small and mid-sized c
 - **Licensing** — Organization and individual license tracking with renewal reminders and document uploads
 - **Safety** — 5-tab safety hub: document library, SDS catalog, toolbox talks, safety forms, incident reports
 - **Construction Documents** — Project drawing log with per-sheet version history, specification section tracking with amendment/conformed set management, user-defined disciplines
+- **Job-Specific Safety** — Per-project safety tab: JHAs (with file uploads), emergency contacts, project SDS binder, project-scoped views for safety docs/toolbox talks/incidents
+- **Estimation** — Estimate → line items → vendor quotes; BidResult tracking; denormalized total cost auto-recomputed; split-panel project Estimates tab
+- **Material Database** — CostCode catalog, paginated material list with price history (6-month auto-prune), standalone Materials page
+- **Proposals & Bid Management** — Proposals with auto-incremented proposal numbers, line items, reusable templates; status tracking (Draft → Sent → Accepted/Rejected/Revised)
 
 ## Architecture
 
@@ -41,7 +45,7 @@ ProManage is a free, open-source platform designed to help small and mid-sized c
 
 | Layer | Technology |
 | --- | --- |
-| Web Frontend | Next.js 14, React 19, TailwindCSS, Radix UI, Zustand, TanStack Query |
+| Web Frontend | Next.js 16, React 19, TailwindCSS 4, Radix UI, Zustand, TanStack Query |
 | API Server | Node.js 20, Fastify, TypeScript, Prisma |
 | Database | PostgreSQL 15 |
 | File Storage | MinIO (local) / AWS S3 (production) |
@@ -165,7 +169,7 @@ npx ts-node prisma/seed.ts
 ```bash
 pnpm test                              # all packages via Turborepo
 pnpm --filter @promanage/core test     # core unit tests only (97 tests)
-pnpm --filter @promanage/api test      # API service + route tests (495 tests)
+pnpm --filter @promanage/api test      # API service + route tests (572 tests)
 ```
 
 ### Type-check the web app
@@ -191,19 +195,21 @@ pnpm --filter @promanage/core build
 ProManage/
 ├── apps/
 │   ├── api/                # Fastify API server (TypeScript, Prisma, JWT auth)
-│   │   ├── prisma/         # Schema (40 models), seed script
+│   │   ├── prisma/         # Schema (53 models), seed script
 │   │   └── src/
 │   │       ├── routes/     # auth, calendar-events, channels, construction-documents,
-│   │       │               # contacts, dashboard, licenses, messages, notifications,
-│   │       │               # organizations, procedures, projects, safety, tasks, users
+│   │       │               # contacts, dashboard, estimation, job-safety, licenses,
+│   │       │               # materials, messages, notifications, organizations,
+│   │       │               # procedures, projects, proposals, safety, tasks, users
 │   │       ├── services/   # Business logic (one file per domain)
 │   │       └── middleware/ # authenticate, authorize, error-handler
-│   └── web/                # Next.js 15 App Router (desktop-first)
+│   └── web/                # Next.js 16 App Router (desktop-first)
 │       └── src/
 │           ├── app/        # Pages: dashboard, projects (+ detail tabs: overview,
-│           │               # team, scopes, documents, settings), tasks, procedures,
-│           │               # calendar, messages, channels, contacts, licenses, safety,
-│           │               # organization, settings
+│           │               # team, channels, scopes, estimates, documents, safety,
+│           │               # settings), tasks, procedures, calendar, messages,
+│           │               # channels, contacts, licenses, safety, materials,
+│           │               # proposals, organization, settings
 │           ├── components/ # layout (sidebar, header, nav), dashboard, auth,
 │           │               # channels (chat, thread, attachments)
 │           └── hooks/      # TanStack Query hooks (one file per domain)

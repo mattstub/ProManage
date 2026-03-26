@@ -19,6 +19,7 @@ export { EstimationResource } from './resources/estimation'
 export { MaterialsResource } from './resources/materials'
 export { ProposalsResource } from './resources/proposals'
 export { SafetyResource } from './resources/safety'
+export { SubmittalsResource } from './resources/submittals'
 export { TasksResource } from './resources/tasks'
 export { UsersResource } from './resources/users'
 
@@ -58,6 +59,7 @@ export type { JhaUploadUrlResult, ListJhasParams, ListProjectSdsParams } from '.
 export type { ListMaterialsParams } from './resources/materials'
 export type { ListContractsParams } from './resources/contracts'
 export type { ListProposalsParams } from './resources/proposals'
+export type { ListSubmittalsParams } from './resources/submittals'
 export type { ListTasksParams } from './resources/tasks'
 
 import { ProManageClient } from './client'
@@ -80,6 +82,7 @@ import { ProceduresResource } from './resources/procedures'
 import { ProjectsResource } from './resources/projects'
 import { ProposalsResource } from './resources/proposals'
 import { SafetyResource } from './resources/safety'
+import { SubmittalsResource } from './resources/submittals'
 import { TasksResource } from './resources/tasks'
 import { UsersResource } from './resources/users'
 
@@ -108,6 +111,7 @@ export interface ApiClient {
   constructionDocuments: ConstructionDocumentsResource
   contacts: ContactsResource
   contracts: ContractsResource
+  submittals: SubmittalsResource
   dashboard: DashboardResource
   health: HealthResource
   jobSafety: JobSafetyResource
@@ -141,6 +145,7 @@ export function createApiClient(config: ClientConfig): ApiClient {
     constructionDocuments: new ConstructionDocumentsResource(core),
     contacts: new ContactsResource(core),
     contracts: new ContractsResource(core),
+    submittals: new SubmittalsResource(core),
     dashboard: new DashboardResource(core),
     health: new HealthResource(core),
     jobSafety: new JobSafetyResource(core),

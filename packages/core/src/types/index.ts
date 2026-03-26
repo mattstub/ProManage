@@ -262,3 +262,14 @@ export type {
   CreateContractDocumentInput,
   UpdateContractDocumentInput,
 } from './contract'
+
+export type {
+  SubmittalType,
+  SubmittalStatus,
+  Submittal,
+  SubmittalDocument,
+  CreateSubmittalInput,
+  UpdateSubmittalInput,
+  CreateSubmittalDocumentInput,
+  UpdateSubmittalDocumentInput,
+} from './submittal'

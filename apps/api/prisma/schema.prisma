@@ -63,7 +63,8 @@ model Organization {
   proposals                Proposal[]
   proposalTemplates        ProposalTemplate[]
 
-  contracts Contract[]
+  contracts   Contract[]
+  submittals  Submittal[]
 
   @@map("organizations")
 }
@@ -132,6 +133,9 @@ model User {
 
   contractsCreated          Contract[]         @relation("ContractCreator")
   contractDocumentsUploaded ContractDocument[] @relation("ContractDocumentUploader")
+
+  submittalsCreated          Submittal[]         @relation("SubmittalCreator")
+  submittalDocumentsUploaded SubmittalDocument[] @relation("SubmittalDocumentUploader")
 
   @@index([organizationId])
   @@index([email])
@@ -267,9 +271,10 @@ model Project {
   emergencyContacts     ProjectEmergencyContact[]
   projectSdsEntries     ProjectSdsEntry[]
 
-  estimates  Estimate[]
-  proposals  Proposal[]
-  contracts  Contract[]
+  estimates   Estimate[]
+  proposals   Proposal[]
+  contracts   Contract[]
+  submittals  Submittal[]
 
   @@unique([number, organizationId])
   @@index([organizationId])
@@ -1518,4 +1523,89 @@ model ContractDocument {
   @@index([contractId])
   @@index([uploadedById])
   @@map("contract_documents")
+}
+
+// ===========================================
+// PHASE 6.2 — SUBMITTALS
+// ===========================================
+
+enum SubmittalType {
+  SHOP_DRAWINGS
+  PRODUCT_DATA
+  SAMPLES
+  MOCKUPS
+  CALCULATIONS
+  VENDOR_INFO
+  WARRANTIES
+  MANUALS
+  AS_BUILTS
+}
+
+enum SubmittalStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  APPROVED_AS_NOTED
+  REVISE_RESUBMIT
+  REJECTED
+  VOID
+}
+
+model Submittal {
+  id               String          @id @default(cuid())
+  submittalNumber  String          @map("submittal_number")
+  specSection      String?         @map("spec_section")  // e.g. "03-300"
+  title            String
+  description      String?
+  type             SubmittalType   @map("type")
+  status           SubmittalStatus @default(DRAFT) @map("status")
+  revision         Int             @default(1)
+  submittedDate    DateTime?       @map("submitted_date")
+  requiredByDate   DateTime?       @map("required_by_date")
+  returnedDate     DateTime?       @map("returned_date")
+  ballInCourt      String?         @map("ball_in_court") // "Architect" | "GC" | "Subcontractor" | etc.
+  approver         String?                               // architect/engineer name
+  notes            String?
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @map("organization_id")
+
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String  @map("project_id")
+
+  createdBy   User   @relation("SubmittalCreator", fields: [createdById], references: [id])
+  createdById String @map("created_by_id")
+
+  documents SubmittalDocument[]
+
+  @@unique([organizationId, submittalNumber])
+  @@index([organizationId])
+  @@index([projectId])
+  @@index([status])
+  @@map("submittals")
+}
+
+model SubmittalDocument {
+  id        String   @id @default(cuid())
+  name      String
+  fileKey   String?  @map("file_key")
+  fileName  String?  @map("file_name")
+  fileSize  Int?     @map("file_size")
+  mimeType  String?  @map("mime_type")
+  notes     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  submittal   Submittal @relation(fields: [submittalId], references: [id], onDelete: Cascade)
+  submittalId String    @map("submittal_id")
+
+  uploadedBy   User?   @relation("SubmittalDocumentUploader", fields: [uploadedById], references: [id])
+  uploadedById String? @map("uploaded_by_id")
+
+  @@index([submittalId])
+  @@index([uploadedById])
+  @@map("submittal_documents")
 }

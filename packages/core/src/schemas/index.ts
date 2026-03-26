@@ -192,3 +192,10 @@ export {
   createContractDocumentSchema,
   updateContractDocumentSchema,
 } from './contract'
+
+export {
+  createSubmittalSchema,
+  updateSubmittalSchema,
+  createSubmittalDocumentSchema,
+  updateSubmittalDocumentSchema,
+} from './submittal'

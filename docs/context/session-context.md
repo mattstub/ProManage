@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-25 (Session 30 — Phase 6.1 Contracts: schema, core, api service/routes/tests, api-client, web hooks + UI)
+**Last Updated**: 2026-03-25 (Session 31 — Phase 6.2 Submittals: schema, core, api service/routes/tests, api-client, web hooks + UI)
 
 ---
 
@@ -59,8 +59,8 @@
 
 ```bash
 ProManage/
-apps/api/              COMPLETE through Phase 6.1
-  prisma/schema.prisma   55 models (+ Contract, ContractDocument + 4 enums)
+apps/api/              COMPLETE through Phase 6.2
+  prisma/schema.prisma   57 models (+ Submittal, SubmittalDocument + 2 enums)
   prisma/seed.ts         demo org, 6 roles, 64 perms, 3 users, 2 projects, 2 channels, 3 contacts, 2 licenses, safety demo data, 6 disciplines
   src/config/            Zod env validation
   src/lib/               errors, response helpers, pino logger, rate-limit, sse
@@ -70,15 +70,17 @@ apps/api/              COMPLETE through Phase 6.1
                          notifications, messages, calendar-events, channels, contacts, licenses, safety,
                          construction-documents, job-safety (under /projects/:projectId/safety/...),
                          estimation (/api/v1/estimation), materials (/api/v1/materials),
-                         proposals (/api/v1/proposals), contracts (/api/v1/contracts) (NEW)
+                         proposals (/api/v1/proposals), contracts (/api/v1/contracts),
+                         submittals (/api/v1/submittals) (NEW)
   src/services/          auth, user, org, token, password, project, dashboard, task, procedure,
                          notification, messaging, calendar-event, channel, contact, license, safety,
-                         construction-documents, job-safety, estimation, material, proposal, contract (NEW)
+                         construction-documents, job-safety, estimation, material, proposal, contract,
+                         submittal (NEW)
   src/types/             fastify.d.ts (augmented with io, minio, sseClients)
-  src/__tests__/         594 tests passing (27 test files)
-apps/web/              COMPLETE through Phase 6.1
+  src/__tests__/         618 tests passing (28 test files)
+apps/web/              COMPLETE through Phase 6.2
   src/app/               App Router: dashboard, projects (+ detail tabs: overview, team, channels, scopes,
-                         estimates, contracts (NEW), documents, safety, settings), tasks, procedures, calendar,
+                         estimates, contracts, submittals (NEW), documents, safety, settings), tasks, procedures, calendar,
                          messages, channels, contacts, licenses, safety, materials, proposals
   src/components/        layout (sidebar, header, nav-item, notification-bell),
                          dashboard (stats-card, project-summary-list),
@@ -87,26 +89,27 @@ apps/web/              COMPLETE through Phase 6.1
                          use-tasks, use-users, use-notifications, use-messaging, use-calendar-events,
                          use-channels, use-socket, use-contacts, use-licenses, use-safety,
                          use-construction-documents, use-job-safety, use-materials,
-                         use-estimation, use-proposals, use-contracts (NEW)
+                         use-estimation, use-proposals, use-contracts, use-submittals (NEW)
   src/lib/               api-client singleton (with resetSocket on auth error), query-client
 apps/mobile/           DEFERRED
 
-packages/core/         COMPLETE through Phase 6.1
+packages/core/         COMPLETE through Phase 6.2
   src/types/             api, auth, user, role, org, project, task, dashboard, procedure,
                          notification, messaging, calendar-event, channel, socket-events, license, safety,
-                         construction-documents, material, estimation, proposal, contract (NEW)
+                         construction-documents, material, estimation, proposal, contract, submittal (NEW)
   src/schemas/           auth, user, org, project, task, procedure, messaging, calendar-event, channel, license, safety,
-                         construction-documents, material, estimation, proposal, contract (NEW)
+                         construction-documents, material, estimation, proposal, contract, submittal (NEW)
   src/constants/         roles, permissions, project-status, task-status, api, procedure-status,
                          notification, calendar-event, channel, license, safety, construction-documents,
-                         material, estimation, proposal, contract (NEW)
+                         material, estimation, proposal, contract, submittal (NEW)
   src/utils/             pagination, format-date, format-currency
   src/__tests__/         97 tests
-packages/api-client/   COMPLETE through Phase 6.1
+packages/api-client/   COMPLETE through Phase 6.2
   src/resources/         auth, users, organizations, health, projects, dashboard, tasks,
                          procedures, notifications, messaging, calendar-events, channels, contacts, licenses, safety,
-                         construction-documents, job-safety, materials, estimation, proposals, contracts (NEW)
-  src/index.ts           createApiClient() factory + all exports (contracts added)
+                         construction-documents, job-safety, materials, estimation, proposals, contracts,
+                         submittals (NEW)
+  src/index.ts           createApiClient() factory + all exports (submittals added)
 packages/ui-components/ COMPLETE (Sub-phase F - 30 files, 26 components)
 
 Root tooling:          COMPLETE (Sub-phase A)
@@ -119,18 +122,19 @@ Root tooling:          COMPLETE (Sub-phase A)
 
 - **Phase 1–5**: COMPLETE
 - **Phase 6.1 Contracts**: COMPLETE — Contract + ContractDocument models; 11 API routes; 22 new tests (594 total); ContractsResource in api-client; Contracts tab on project detail with split-panel UI, document management + file upload/download
+- **Phase 6.2 Submittals**: COMPLETE — Submittal + SubmittalDocument models; 11 API routes; 24 new tests (618 total); SubmittalsResource in api-client; Submittals tab on project detail (split-panel Submittal Log, Details + Attachments tabs, file upload/download)
 - **API**: Runs on `http://localhost:3001`
-- **DB**: PostgreSQL in Docker. 55 models. `prisma db push` applied.
-- **api-client**: Built — all resource namespaces; contracts added
+- **DB**: PostgreSQL in Docker. 57 models. `prisma db push` applied.
+- **api-client**: Built — all resource namespaces; submittals added
 - **ui-components**: Built (tsc --build, zero errors), 26 Radix+Tailwind components
 - **Sidebar**: Dashboard, Projects, Tasks, Procedures, Calendar, Channels, Contacts, Licenses, Safety, Messages, Materials, Proposals, Organization, Settings
-- **Project Detail Tabs**: Overview, Team, Channels, Scopes, Estimates, Contracts (new), Documents, Safety, Settings
+- **Project Detail Tabs**: Overview, Team, Channels, Scopes, Estimates, Contracts, Submittals (new), Documents, Safety, Settings
 - **Header**: NotificationBell with live badge + dropdown (SSE-powered)
 - **packages/core**: CommonJS output (fixed ESM seed issue; web/bundler still works fine)
-- **Tests**: 594 API tests, 97 core tests, web type-check clean, lint 0 errors
+- **Tests**: 618 API tests, 97 core tests, web type-check clean, lint 0 errors
 - **Infrastructure**: COMPLETE and merged — Dockerfiles, CI/CD, structured logging, Sentry scaffold, Fastify 5 upgrade
-- **Branch**: `feat/phase5-pre-construction` (ready to push Phase 6.1 work)
-- **Next**: Phase 6.2+ (RFIs, Submittals, Change Orders, Purchase Orders)
+- **Branch**: `feat/phase6-subphase-6.2-submittals`
+- **Next**: Phase 6.3 RFIs
 
 ### Seed Credentials
 
@@ -207,6 +211,22 @@ See: docs/ROADMAP.md
 ---
 
 ## Session Log
+
+### Session 31 — 2026-03-25
+
+- **Phase 6.2 Submittals COMPLETE** (`feat/phase6-subphase-6.2-submittals` branch):
+  - **Prisma**: 2 new models — `Submittal` (SubmittalType: 9 values, SubmittalStatus: 8 values; specSection, title, revision, submittedDate, requiredByDate, returnedDate, ballInCourt, approver; @@unique[organizationId, submittalNumber]) + `SubmittalDocument` (MinIO fileKey/fileName/fileSize). 57 models total. Back-relations on Organization, Project, User.
+  - **packages/core**: New `types/submittal.ts`, `schemas/submittal.ts`, `constants/submittal.ts` — `SUBMITTAL_TYPE_LIST`/`SUBMITTAL_TYPES`, `SUBMITTAL_STATUS_LIST`/`SUBMITTAL_STATUSES`, `BALL_IN_COURT_OPTIONS`. All exported from index files.
+  - **API service** (`submittal.service.ts`): 12 functions — full CRUD for Submittal + SubmittalDocument; P2002 → 409 on duplicate submittalNumber; MinIO presigned PUT/GET for document file upload/download.
+  - **API routes** (`routes/submittals/index.ts`): 11 routes under `/api/v1/submittals`. WRITE_ROLES = Admin, ProjectManager, OfficeAdmin.
+  - **Tests**: 24 new route tests (618 total, 28 test files). `submittal`/`submittalDocument` mocks added to `mock-prisma.ts`. `buildSubmittalTestApp` added to `build-app.ts`.
+  - **api-client**: `SubmittalsResource` (11 methods) added; registered in `createApiClient()` factory.
+  - **Web**: `use-submittals.ts` (12 TanStack Query hooks). `projects/[id]/submittals/page.tsx` — split-panel Submittal Log (list with type/spec section/status badge, Details + Attachments tabs). Submittals tab added between Contracts and Documents in project layout.
+
+### Session 30 — 2026-03-25
+
+- **Phase 6.1 Contracts COMPLETE** (PR #141 merged into `main`):
+  - Full Contract + ContractDocument stack: 2 new Prisma models (4 enums), 55 models total; core types/schemas/constants; `contract.service.ts` (12 functions including presigned MinIO upload/download); 11 API routes; 22 route tests (594 total); `ContractsResource` in api-client; `use-contracts.ts` (12 hooks); `projects/[id]/contracts/page.tsx` split-panel UI with Details + Documents tabs; Contracts tab added to project layout.
 
 ### Session 29 — 2026-03-24
 

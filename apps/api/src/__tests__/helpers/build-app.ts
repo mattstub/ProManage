@@ -21,6 +21,7 @@ import notificationRoutes from '../../routes/notifications'
 import projectRoutes from '../../routes/projects'
 import proposalRoutes from '../../routes/proposals'
 import safetyRoutes from '../../routes/safety'
+import submittalRoutes from '../../routes/submittals'
 import taskRoutes from '../../routes/tasks'
 
 import { createMockPrisma } from './mock-prisma'
@@ -442,6 +443,31 @@ export async function buildContractTestApp(overridePrisma?: MockPrisma) {
   app.setErrorHandler(errorHandler)
 
   await app.register(contractRoutes, { prefix: '/api/v1/contracts' })
+  await app.ready()
+
+  return { app, prisma, minio }
+}
+
+/**
+ * Builds a minimal Fastify instance for testing submittal routes.
+ * Decorates fastify.minio with a mock client (submittal document upload).
+ */
+export async function buildSubmittalTestApp(overridePrisma?: MockPrisma) {
+  const prisma = overridePrisma ?? createMockPrisma()
+  const minio = createMockMinio()
+
+  const app = Fastify({ logger: false })
+
+  await app.register(cookie)
+  await app.register(jwt, { secret: process.env['JWT_SECRET']! })
+  await app.register(rateLimit, { max: 1000, timeWindow: '1 minute' })
+
+  app.decorate('prisma', prisma as unknown as PrismaClient)
+  app.decorate('minio', minio)
+
+  app.setErrorHandler(errorHandler)
+
+  await app.register(submittalRoutes, { prefix: '/api/v1/submittals' })
   await app.ready()
 
   return { app, prisma, minio }

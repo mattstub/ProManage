@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - Phase 6.2 Submittals (Session 31, 2026-03-25)
+
+- **Prisma schema**: 2 new models — `Submittal` (SubmittalType/SubmittalStatus enums, specSection, title, revision, submittedDate/requiredByDate/returnedDate, ballInCourt, approver) + `SubmittalDocument` (MinIO fileKey/fileName/fileSize). 2 new enums (9 type values, 8 status values). 57 models total. Back-relations added to Organization, Project, User.
+- **packages/core**: New `types/submittal.ts`, `schemas/submittal.ts`, `constants/submittal.ts` — Submittal + SubmittalDocument CRUD types, Zod validation schemas, `SUBMITTAL_TYPE_LIST`/`SUBMITTAL_TYPES`, `SUBMITTAL_STATUS_LIST`/`SUBMITTAL_STATUSES`, `BALL_IN_COURT_OPTIONS`. Exported from all index files.
+- **apps/api service**: `submittal.service.ts` — 12 exported functions: `listSubmittals`, `getSubmittal`, `createSubmittal` (P2002 → 409), `updateSubmittal`, `deleteSubmittal`, `listSubmittalDocuments`, `createSubmittalDocument`, `updateSubmittalDocument`, `deleteSubmittalDocument`, `getSubmittalDocumentUploadUrl` (presigned PUT + fileKey persisted), `getSubmittalDocumentDownloadUrl`.
+- **apps/api routes**: `/api/v1/submittals` — 11 routes. WRITE_ROLES = Admin, ProjectManager, OfficeAdmin. Full CRUD + document file management.
+- **apps/api tests**: `submittal.routes.test.ts` — 24 tests, 618 total (28 test files). `mock-prisma.ts` + `build-app.ts` updated with `submittal`/`submittalDocument` mocks and `buildSubmittalTestApp` helper.
+- **packages/api-client**: `SubmittalsResource` (11 methods: list, get, create, update, delete, listDocuments, createDocument, updateDocument, deleteDocument, getDocumentUploadUrl, getDocumentDownloadUrl). Added to `ApiClient` interface + `createApiClient()` factory.
+- **apps/web hooks**: `use-submittals.ts` — 12 hooks for full submittal + document lifecycle.
+- **apps/web UI**: `projects/[id]/submittals/page.tsx` — split-panel Submittal Log (list with status badge, spec section, type + detail panel with Details + Attachments tabs). Edit form covers all fields (status, type, title, spec section, revision, dates, ball in court, approver). File upload/download via presigned URLs. Submittals tab added between Contracts and Documents in project layout.
+
 ### Added - Phase 6.1 Contract Administration (Session 30, 2026-03-25)
 
 - **Prisma schema**: 2 new models — `Contract` (ContractType/ContractStatus enums, Decimal amount/retentionRate/liquidatedDamagesRate, nullable proposalId) + `ContractDocument` (ContractDocumentType/ContractDocumentStatus enums, MinIO fileKey/fileName/fileSize). 4 new enums. 55 models total. Back-relations added to Organization, Project, Proposal, User.

@@ -13,7 +13,7 @@ ProManage is a free, open-source platform designed to help small and mid-sized c
 
 ## Current Status
 
-> **Phase 6.1 Contracts — COMPLETE | Working toward Phase 6.2 (RFIs & Submittals)**
+> **Phase 6.2 Submittals — COMPLETE | Working toward Phase 6.3 (RFIs)**
 
 ## Features
 
@@ -34,6 +34,7 @@ ProManage is a free, open-source platform designed to help small and mid-sized c
 - **Material Database** — CostCode catalog, paginated material list with price history (6-month auto-prune), standalone Materials page
 - **Proposals & Bid Management** — Proposals with auto-incremented proposal numbers, line items, reusable templates; status tracking (Draft → Sent → Accepted/Rejected/Revised)
 - **Contract Administration** — Project-linked contracts (Lump Sum / Cost Plus / T&M / Unit Price); retention rate, liquidated damages, bonding, wage requirements; contract documents with file upload/download (MinIO presigned URLs) and status tracking (Requested/Received/Expired/Waived)
+- **Submittals** — Project submittal log; 9 types (shop drawings, product data, samples, mockups, calculations, vendor info, warranties, manuals, as-builts); 8 review statuses (Draft → Submitted → Under Review → Approved/Approved as Noted/Revise & Resubmit/Rejected/Void); spec section, revision tracking, ball-in-court, approver; attachment file upload/download
 
 ## Architecture
 
@@ -170,7 +171,7 @@ npx ts-node prisma/seed.ts
 ```bash
 pnpm test                              # all packages via Turborepo
 pnpm --filter @promanage/core test     # core unit tests only (97 tests)
-pnpm --filter @promanage/api test      # API service + route tests (594 tests)
+pnpm --filter @promanage/api test      # API service + route tests (618 tests)
 ```
 
 ### Type-check the web app
@@ -196,7 +197,7 @@ pnpm --filter @promanage/core build
 ProManage/
 ├── apps/
 │   ├── api/                # Fastify API server (TypeScript, Prisma, JWT auth)
-│   │   ├── prisma/         # Schema (55 models), seed script
+│   │   ├── prisma/         # Schema (57 models), seed script
 │   │   └── src/
 │   │       ├── routes/     # auth, calendar-events, channels, construction-documents,
 │   │       │               # contacts, dashboard, estimation, job-safety, licenses,

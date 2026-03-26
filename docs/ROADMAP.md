@@ -271,12 +271,12 @@ Managing the contractual and documentation lifecycle during construction.
 
 ### 6.2 Submittals
 
-- [ ] Submittal package creation and tracking
-- [ ] Submittal types: shop drawings, product data, samples, mockups, calculations, vendor info, warranties, manuals, as-builts
-- [ ] Schema: project, spec section, submittal/version number, dates, status, approver(s), notes, package (PDF blob)
-- [ ] Reusable submittal templates across projects
-- [ ] Submittal log with status tracking
-- [ ] Generate report identifying requirements per project (from plans/specs)
+- [x] Submittal package creation and tracking
+- [x] Submittal types: shop drawings, product data, samples, mockups, calculations, vendor info, warranties, manuals, as-builts
+- [x] Schema: project, spec section, submittal/version number, dates, status, approver(s), notes, package (PDF blob)
+- [ ] Reusable submittal templates across projects (deferred)
+- [x] Submittal log with status tracking
+- [ ] Generate report identifying requirements per project (from plans/specs) (deferred)
 
 ### 6.3 Requests for Information (RFIs)
 

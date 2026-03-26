@@ -16,6 +16,7 @@ import procedureRoutes from './procedures'
 import projectRoutes from './projects'
 import proposalRoutes from './proposals'
 import safetyRoutes from './safety'
+import submittalRoutes from './submittals'
 import taskRoutes from './tasks'
 import userRoutes from './users'
 
@@ -40,6 +41,7 @@ const routes: FastifyPluginAsync = async (fastify) => {
   fastify.register(projectRoutes, { prefix: '/projects' })
   fastify.register(proposalRoutes, { prefix: '/proposals' })
   fastify.register(safetyRoutes, { prefix: '/safety' })
+  fastify.register(submittalRoutes, { prefix: '/submittals' })
   fastify.register(taskRoutes, { prefix: '/tasks' })
   fastify.register(userRoutes, { prefix: '/users' })
 }

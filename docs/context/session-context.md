@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-27 (Session 33 — Same-origin API proxy via Next.js rewrites; Socket.io NEXT_PUBLIC_SOCKET_URL split)
+**Last Updated**: 2026-03-27 (Session 33 — Auth race condition fix in api-client; same-origin proxy; SameSite=None cookie)
 
 ---
 

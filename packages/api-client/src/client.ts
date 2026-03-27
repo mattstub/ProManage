@@ -61,12 +61,21 @@ export class ProManageClient {
 
     // Silent token refresh on 401 — but only if we haven't already retried
     if (response.status === 401 && !skipAuthRetry) {
+      // Track whether we had a token before attempting refresh. If we had no
+      // token the request was unauthenticated by design (e.g. AuthProvider's
+      // initial me() call on the login page). In that case a 401 is expected
+      // and we must NOT call onAuthError — doing so causes a race where a
+      // stale pre-login request fires onAuthError after a successful login,
+      // clearing auth state and redirecting the user back to /login.
+      const hadToken = !!this.accessToken
       const refreshed = await this.tryRefresh()
       if (refreshed) {
         return this.request<T>(path, { ...options, skipAuthRetry: true })
       }
-      // Refresh also failed — notify the app
-      this.config.onAuthError?.()
+      // Only treat this as an auth error if we thought we were authenticated.
+      if (hadToken) {
+        this.config.onAuthError?.()
+      }
       throw new ApiClientError(401, 'UNAUTHORIZED', 'Session expired. Please log in again.')
     }
 

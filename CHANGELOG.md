@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fix — Auth Race Condition (Session 33, 2026-03-27)
+
+- **`packages/api-client/src/client.ts`**: Fixed race condition where a stale pre-login `me()` request (fired by `AuthProvider` on the login page) could complete after a successful login, triggering `onAuthError`, clearing auth state, and redirecting back to `/login`. Fix: only call `onAuthError` when the request had an access token attached — a 401 with no token is the expected unauthenticated state, not a session expiry.
+
 ### Fix — Same-Origin API Proxy (Session 33, 2026-03-27)
 
 - **`apps/web/next.config.js`**: Added `rewrites()` to proxy all `/api/*` requests server-side to `INTERNAL_API_URL`. Browser only ever talks to the web app's own origin — refresh-token cookie is set and sent for the same domain, eliminating cross-origin cookie blocking (LibreWolf/Firefox strict ETP, Safari ITP, etc.).

@@ -10,10 +10,13 @@ import type { FastifyPluginAsync } from 'fastify'
 
 const REFRESH_COOKIE = 'refresh_token'
 
+const isProduction = process.env.NODE_ENV === 'production'
+
 const cookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax' as const,
+  secure: isProduction,
+  // SameSite=None required for cross-origin requests (API and web on different subdomains)
+  sameSite: (isProduction ? 'none' : 'lax') as 'none' | 'lax',
   path: '/',
   maxAge: 7 * 24 * 60 * 60, // 7 days in seconds
 }
@@ -99,7 +102,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
         await authService.logout(fastify, token)
       }
 
-      reply.clearCookie(REFRESH_COOKIE, { path: '/' })
+      reply.clearCookie(REFRESH_COOKIE, { path: '/', secure: isProduction, sameSite: (isProduction ? 'none' : 'lax') as 'none' | 'lax' })
 
       return reply.status(204).send()
     }

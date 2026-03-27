@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-26 (Session 32 — Railway CI/CD deployment: web Dockerfile monorepo standalone fix, release.yml Railway webhook, deployment guide)
+**Last Updated**: 2026-03-27 (Session 33 — Fix cross-origin refresh token cookie: SameSite=None in production for Railway cross-subdomain auth)
 
 ---
 
@@ -133,7 +133,7 @@ Root tooling:          COMPLETE (Sub-phase A)
 - **packages/core**: CommonJS output (fixed ESM seed issue; web/bundler still works fine)
 - **Tests**: 618 API tests, 97 core tests, web type-check clean, lint 0 errors
 - **Infrastructure**: COMPLETE and merged — Dockerfiles, CI/CD, structured logging, Sentry scaffold, Fastify 5 upgrade
-- **Branch**: `feat/phase6-subphase-6.2-submittals`
+- **Branch**: `chore/fix-cross-origin-cookie-samesite`
 - **Next**: Phase 6.3 RFIs
 
 ### Seed Credentials

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fix — Same-Origin API Proxy (Session 33, 2026-03-27)
+
+- **`apps/web/next.config.js`**: Added `rewrites()` to proxy all `/api/*` requests server-side to `INTERNAL_API_URL`. Browser only ever talks to the web app's own origin — refresh-token cookie is set and sent for the same domain, eliminating cross-origin cookie blocking (LibreWolf/Firefox strict ETP, Safari ITP, etc.).
+- **`apps/web/src/hooks/use-socket.ts`**: Socket.io now reads `NEXT_PUBLIC_SOCKET_URL` (falls back to `NEXT_PUBLIC_API_URL`) so WebSocket connections stay pointed directly at the API. Socket.io uses JWT token auth, not cookies, so direct cross-origin is fine.
+- **Railway env vars required**: `INTERNAL_API_URL` on the web service, `NEXT_PUBLIC_SOCKET_URL` and updated `NEXT_PUBLIC_API_URL` as GitHub Variables.
+
 ### Fix — Cross-Origin Cookie (Session 33, 2026-03-27)
 
 - **`apps/api/src/routes/auth/index.ts`**: Changed refresh token cookie `sameSite` from `'lax'` to `'none'` in production. `lax` blocks the cookie on cross-site POST requests — when the web and API run on different Railway subdomains, the browser never sends the refresh token, causing an infinite login loop. `SameSite=None; Secure` is the correct setting for cross-origin auth cookies. `clearCookie` at logout updated with matching attributes.

@@ -41,12 +41,15 @@ RUN addgroup --system --gid 1001 nodejs && \
 
 WORKDIR /app
 
-# Public assets
-COPY --from=builder /app/apps/web/public ./public
-
 # Standalone bundle (server.js + all required node_modules, no devDeps)
+# outputFileTracingRoot is set to the monorepo root, so Next.js mirrors the
+# directory structure within standalone/ — server.js lives at apps/web/server.js,
+# not at the standalone root.
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./.next/static
+
+# Static assets and public dir must be co-located with server.js
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
 USER nextjs
 
@@ -54,4 +57,4 @@ ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 EXPOSE 3000
-CMD ["node", "server.js"]
+CMD ["node", "apps/web/server.js"]

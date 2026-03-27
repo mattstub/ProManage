@@ -73,3 +73,28 @@ jobs:
             NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL || 'http://localhost:3001' }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      # -----------------------------------------------------------------------
+      # Railway — trigger redeploys after images land in GHCR.
+      # Set RAILWAY_WEBHOOK_API and RAILWAY_WEBHOOK_WEB in GitHub repo secrets.
+      # Steps are skipped silently when secrets are not configured yet.
+      # Webhook URLs: Railway dashboard → service → Settings → Deploy Hooks
+      # -----------------------------------------------------------------------
+      - name: Trigger Railway deploys
+        if: success()
+        env:
+          RAILWAY_WEBHOOK_API: ${{ secrets.RAILWAY_WEBHOOK_API }}
+          RAILWAY_WEBHOOK_WEB: ${{ secrets.RAILWAY_WEBHOOK_WEB }}
+        run: |
+          if [ -n "$RAILWAY_WEBHOOK_API" ]; then
+            curl -s -f -X POST "$RAILWAY_WEBHOOK_API"
+            echo "API deploy triggered"
+          else
+            echo "RAILWAY_WEBHOOK_API not set — skipping API deploy"
+          fi
+          if [ -n "$RAILWAY_WEBHOOK_WEB" ]; then
+            curl -s -f -X POST "$RAILWAY_WEBHOOK_WEB"
+            echo "Web deploy triggered"
+          else
+            echo "RAILWAY_WEBHOOK_WEB not set — skipping web deploy"
+          fi

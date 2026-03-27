@@ -2,7 +2,7 @@
 
 **Purpose**: Single file to read at the start of each session. Summarizes project state, key decisions, and file locations.
 
-**Last Updated**: 2026-03-25 (Session 31 — Phase 6.2 Submittals: schema, core, api service/routes/tests, api-client, web hooks + UI)
+**Last Updated**: 2026-03-26 (Session 32 — Railway CI/CD deployment: web Dockerfile monorepo standalone fix, release.yml Railway webhook, deployment guide)
 
 ---
 
@@ -211,6 +211,14 @@ See: docs/ROADMAP.md
 ---
 
 ## Session Log
+
+### Session 32 — 2026-03-26
+
+- **Railway CI/CD deployment setup** (`chore/railway-cicd-deployment` branch):
+  - **Web Dockerfile fix** — `outputFileTracingRoot` set to monorepo root causes Next.js standalone to mirror the directory structure, placing `server.js` at `apps/web/server.js` within the standalone output (not at the root). Fixed 3 issues: `CMD` updated from `node server.js` → `node apps/web/server.js`; static files copy target updated from `./.next/static` → `./apps/web/.next/static`; public directory removed from top-level copy (now inline after standalone copy, at `./apps/web/public`). Verified: all 4 Docker containers now healthy (api, web, postgres, minio).
+  - **`release.yml` update** — Added `Trigger Railway deploys` step after image push. Reads `RAILWAY_WEBHOOK_API` + `RAILWAY_WEBHOOK_WEB` from GitHub Secrets; skips silently if not set (graceful before Railway is configured). Ensures Railway redeploys from GHCR images on every merge to main.
+  - **`docs/deployment/railway.md`** — New file: step-by-step Railway setup guide covering project creation, PostgreSQL plugin, Cloudflare R2 (recommended) vs MinIO-on-Railway for file storage, API + web service Dockerfile config, environment variables, database seeding, deploy webhook setup, custom domains, and self-hosted GHCR pull alternative.
+  - **618 tests passing, no code changes** — infrastructure/config only
 
 ### Session 31 — 2026-03-25
 

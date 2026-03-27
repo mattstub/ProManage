@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fix — Cross-Origin Cookie (Session 33, 2026-03-27)
+
+- **`apps/api/src/routes/auth/index.ts`**: Changed refresh token cookie `sameSite` from `'lax'` to `'none'` in production. `lax` blocks the cookie on cross-site POST requests — when the web and API run on different Railway subdomains, the browser never sends the refresh token, causing an infinite login loop. `SameSite=None; Secure` is the correct setting for cross-origin auth cookies. `clearCookie` at logout updated with matching attributes.
+
 ### Infrastructure — Railway CI/CD Deployment (Session 32, 2026-03-26)
 
 - **`apps/web/Dockerfile`**: Fixed Next.js standalone monorepo path issue. When `outputFileTracingRoot` is the repo root, Next.js mirrors the directory structure within `.next/standalone/` — `server.js` lives at `apps/web/server.js`, not at the standalone root. Fixed: `CMD` updated to `node apps/web/server.js`; static files copy target updated to `./apps/web/.next/static`; public dir co-located with server.js at `./apps/web/public`. All 4 Docker containers now healthy.

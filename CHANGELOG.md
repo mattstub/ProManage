@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Infrastructure — Railway CI/CD Deployment (Session 32, 2026-03-26)
+
+- **`apps/web/Dockerfile`**: Fixed Next.js standalone monorepo path issue. When `outputFileTracingRoot` is the repo root, Next.js mirrors the directory structure within `.next/standalone/` — `server.js` lives at `apps/web/server.js`, not at the standalone root. Fixed: `CMD` updated to `node apps/web/server.js`; static files copy target updated to `./apps/web/.next/static`; public dir co-located with server.js at `./apps/web/public`. All 4 Docker containers now healthy.
+- **`.github/workflows/release.yml`**: Added optional Railway deploy webhook step — reads `RAILWAY_WEBHOOK_API` + `RAILWAY_WEBHOOK_WEB` from GitHub Secrets; skips silently when not yet configured.
+- **`docs/deployment/railway.md`**: New deployment guide — Railway project setup, PostgreSQL plugin, Cloudflare R2 vs MinIO storage options, API + web service Dockerfile configuration, all environment variables, database seeding, GitHub Secrets for webhook automation, custom domains, and self-hosted GHCR pull alternative.
+
 ### Added - Phase 6.2 Submittals (Session 31, 2026-03-25)
 
 - **Prisma schema**: 2 new models — `Submittal` (SubmittalType/SubmittalStatus enums, specSection, title, revision, submittedDate/requiredByDate/returnedDate, ballInCourt, approver) + `SubmittalDocument` (MinIO fileKey/fileName/fileSize). 2 new enums (9 type values, 8 status values). 57 models total. Back-relations added to Organization, Project, User.

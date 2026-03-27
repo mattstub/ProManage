@@ -13,7 +13,9 @@ let _socket: Socket | null = null
 export function getSocket(accessToken: string): Socket {
   if (_socket && _socket.connected) return _socket
 
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001'
+  // Socket.io connects directly to the API (uses JWT token auth, not cookies).
+  // Falls back to NEXT_PUBLIC_API_URL so local dev needs no extra config.
+  const baseUrl = process.env.NEXT_PUBLIC_SOCKET_URL ?? process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001'
 
   _socket = io(baseUrl, {
     auth: { token: accessToken },
